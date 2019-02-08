@@ -6,6 +6,7 @@ class PostTags(models.Model):
     tag = models.CharField(max_length=64)
     
 class Post(models.Model):
+    id = models.UUIDField("id", primary_key=True)
     title = models.CharField(max_length=150)
     source = models.URLField()
     origin = models.URLField()
