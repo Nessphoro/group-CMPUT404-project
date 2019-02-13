@@ -1,4 +1,4 @@
-from author import Author
+from .author import Author
 from django.db import models
 
 
@@ -13,9 +13,9 @@ class Post(models.Model):
     description = models.CharField(max_length = 280)
     contentType = models.CharField(max_length=64)
     content = models.TextField()
-    author = models.ManyToOne(Author, on_delete=models.CASCADE)
-    categories = models.ManyToManyField(PostTags)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="author")
+    categories = models.ForeignKey(PostTags, on_delete=models.CASCADE)
     published = models.DateTimeField()
     visibility = models.CharField(max_length=64)
-    visibleTo = models.ManyToManyField(Author)
+    visibleTo = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="visibleTo")
     unlisted = models.BooleanField()

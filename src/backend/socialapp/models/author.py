@@ -8,4 +8,4 @@ class Author(models.Model):
     bio =  models.TextField()
     host = models.URLField()
     localuser = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    friends = models.ManyToManyField(Author, blank=True)
+    friends = models.ForeignKey("Author", blank=True, on_delete=models.CASCADE, related_name="reverse_friends")
