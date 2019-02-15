@@ -1,13 +1,19 @@
 from django.shortcuts import render
 from django.http import  HttpResponse
+from django.views.generic import TemplateView
 from rest_framework import viewsets
-from . import serializers
-from . import models
+from .. import serializers
+from .. import models
 # Create your views here.
 
 
-def index(req):
-    return HttpResponse("Hello")
+class Index(TemplateView):
+    template_engine = 'jinja2'
+    template_name = 'socialapp/socialapp_base.html'
+
+    def get_context_data(self, **kwargs):
+        pass
+
 
 # API
 
