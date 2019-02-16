@@ -7,6 +7,10 @@ api_router = routers.DefaultRouter()
 api_router.register(r'Author', views.AuthorViewSet)
 api_router.register(r'Comment', views.CommentViewSet)
 api_router.register(r'Post', views.PostViewSet)
+api_router.register(r'PostTags', views.PostTagsViewSet)
+api_router.register(r'User', views.UserViewSet)
+
+
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
