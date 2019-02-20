@@ -10,3 +10,7 @@ class Comment(models.Model):
     comment = models.TextField()
     contentType = models.CharField(max_length=64)
     published = models.DateTimeField()
+
+    def __str__(self):
+        pass
+
