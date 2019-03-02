@@ -4,7 +4,7 @@ class Index(TemplateView):
     template_engine = 'jinja2'
     template_name = 'socialapp/socialapp_base.html'
 
-class Test(TemplateView):
+class Author(TemplateView):
     template_engine = 'jinja2'
     template_name = 'socialapp/Author.html'
 
