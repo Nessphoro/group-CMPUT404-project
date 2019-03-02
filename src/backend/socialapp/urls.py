@@ -14,6 +14,6 @@ api_router.register(r'User', views.UserViewSet)
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
-    path('Author/', views.Index.as_view(), name='test'), #broken
+    path('Author/', views.Author.as_view(), name='test'), #broken
     path('api/',include(api_router.urls))
 ]
