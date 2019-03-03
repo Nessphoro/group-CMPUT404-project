@@ -17,7 +17,7 @@ urlpatterns = [
     path('Author/', views.Author.as_view(), name='test1'),
     path('Comment/', views.Comment.as_view(), name='test2'),
     path('Post/', views.Post.as_view(), name='test3'),
-    #path('User/', views.User.as_view(), name='test4'),
+    path('User/', views.User1.as_view(), name='test4'),
     path('api/',include(api_router.urls))
 ]
 
