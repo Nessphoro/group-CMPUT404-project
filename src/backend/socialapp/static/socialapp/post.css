@@ -29,12 +29,11 @@ rightbar{
 }
 
 postbox{
-    border: 1px solid black;
     color: grey;
     z-index: 1;
     position: relative;
-    top: 10em;
+    top: 12em;
     width: 80%;
     margin: auto;
-    
+    left: 20%;
 }
