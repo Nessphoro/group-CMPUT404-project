@@ -6,6 +6,7 @@
 
     <link rel="stylesheet" href={{ static("socialapp/post.css")}}>
     <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/components/card.css")}}>
+    <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/components/comment.css")}}>
 
 </head>
 <body>
@@ -18,17 +19,22 @@
     <postbox>
         Post Title<br>
         <br>
-        <div class="ui cards">
-            <div class="card">
-                <div class="content">
-                    <div class="header">
-                        Test Post.<br>
-                    </div>
-                    <div class="meta">
-                        Has no friends.
-                    </div>
-                    <div class="description">
-                        This a post body. This. The body of the post. words. words words words word words. Testing. tEsTiNg.
+        <div class="ui one column grid">
+            <div class="column">
+                <div class="ui fluid cards">
+                    <div class="card">
+                        <div class="content">
+                            <div class="header">
+                                Test Post.<br>
+                            </div>
+                            <div class="meta">
+                                Has no friends.
+                                <hr>
+                            </div>
+                            <div class="description">
+                                This a post body. This. The body of the post. words. words words words word words. Testing. tEsTiNg.
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
