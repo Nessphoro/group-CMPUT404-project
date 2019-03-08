@@ -5,6 +5,7 @@
     <title>Title</title>
 
     <link rel="stylesheet" href={{ static("socialapp/post.css")}}>
+    <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/components/card.css")}}>
 
 </head>
 <body>
@@ -17,7 +18,21 @@
     <postbox>
         Post Title<br>
         <br>
-        Insert Comment Here?<br>
+        <div class="ui cards">
+            <div class="card">
+                <div class="content">
+                    <div class="header">
+                        Test Post.<br>
+                    </div>
+                    <div class="meta">
+                        Has no friends.
+                    </div>
+                    <div class="description">
+                        This a post body. This. The body of the post. words. words words words word words. Testing. tEsTiNg.
+                    </div>
+                </div>
+            </div>
+        </div>
         <br>
         Setup/debugging stuff:<br>
     <a href="../Comment/">Comment</a><br>

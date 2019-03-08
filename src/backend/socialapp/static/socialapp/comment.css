@@ -1,0 +1,16 @@
+a{
+    color: blue;
+    text-decoration: underline;
+    text-decoration-color: blue;
+}
+
+topbar{
+    background-color:black;
+    height: 100px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
