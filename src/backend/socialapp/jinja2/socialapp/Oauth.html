@@ -1,0 +1,6 @@
+{% extends 'socialapp/socialapp_base.html' %}
+
+{% block content  %}
+  <h2>Login</h2>
+  <a href="{{ url ('social:begin', args=['github']) }}">Login with GitHub</a><br>
+{% endblock %}
