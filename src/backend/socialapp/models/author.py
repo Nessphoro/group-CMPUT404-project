@@ -17,23 +17,3 @@ class Author(models.Model):
     def __str__(self):
         return "Author({},{},{})".format(self.displayName, self.localuser, self.github)
 
-# @receiver(post_save, sender=User)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Author.objects.create(localuser=instance)
-
-# @receiver(post_save, sender=User)
-# def save_user_profile(sender, instance, **kwargs):
-#     instance.profile.save()
-
-
-# def new_users_handler(sender, user, response, details, **kwargs):
-#     user.is_new = True
-#     f= open("log.txt","w+")
-#     f.write(json.dumps(user))
-#     f.write(json.dumps(response))
-#     f.write(json.dumps(details))
-#     f.close() 
-#     return False
-
-# socialauth_registered.connect(new_users_handler, sender=None)
