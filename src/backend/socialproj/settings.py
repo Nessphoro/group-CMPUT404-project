@@ -22,7 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '9gpl1u=h(+ise&p!a&3l=s88kv*cl9+-=-jfg0hkzpv27jevr='
 
+SOCIAL_AUTH_GITHUB_KEY = 'c55573c7ae415c79085c'
+SOCIAL_AUTH_GITHUB_SECRET = 'dd5af06757af01e21af0f8c9f51cc5bf4098c88b'
 # SECURITY WARNING: don't run with debug turned on in production!
+SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -38,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'socialapp.apps.SocialappConfig'
+    'socialapp.apps.SocialappConfig',
+    'social_django',  
 ]
 
 MIDDLEWARE = [
@@ -49,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'socialproj.urls'
@@ -65,7 +70,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-            ],
+                'social_django.context_processors.backends', 
+                'social_django.context_processors.login_redirect',            ],
         },
     },
     {
@@ -78,11 +84,18 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends', 
+                'social_django.context_processors.login_redirect', 
             ],
         },
     },
 ]
 
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 WSGI_APPLICATION = 'socialproj.wsgi.application'
 
 
@@ -136,4 +149,18 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
   os.path.join(BASE_DIR, 'static'),
+)
+
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'socialapp.pipeline.save_profile',  
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
 )
