@@ -1,5 +1,6 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 from rest_framework import routers
 from django.conf.urls import url, include
 from . import views
@@ -13,11 +14,11 @@ api_router.register(r'User', views.UserViewSet)
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = ''
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
-    path('Author/', views.Author.as_view(), name='test1'),
+    path('Author/', login_required(views.Author.as_view()), name='test1'),
     path('Comment/', views.Comment.as_view(), name='test2'),
     path('Post/', views.Post.as_view(), name='test3'),
     path('User/', views.User1.as_view(), name='test4'),

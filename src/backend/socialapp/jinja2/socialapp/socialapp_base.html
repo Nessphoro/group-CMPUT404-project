@@ -4,16 +4,49 @@
     <meta charset="UTF-8">
     <title>Title</title>
 
-    <link rel="stylesheet" href={{ static("socialapp/test.css")}}>
+    <!-- <link rel="stylesheet" href={{ static("socialapp/test.css")}}> -->   
+    <link rel="stylesheet" href={{ static("socialapp/base.css")}}>
+    <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/components/card.css")}}>
+    <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/components/comment.css")}}>
 
 </head>
+
 <body>
+    <topbar>
+    <innerbar>
+    <span style="color:brown">The</span><br>Social <span style="color:brown">Project</span><br>
+    </innerbar>
+    <rightbar>
+    <a href="../Author/">PROFILE</a><br>
+
+  {% if user.is_authenticated %}
+  <img src={{ Author.image }} alt='profile_pic' class='image'>
+
+  {% else %}
+    <a href="{{ url ('social:begin', args=['github']) }}">Login with GitHub</a><br>
+
+  {% endif %}
+
+</rightbar>
+    </topbar>
+    <postbox>
+
+    	{% block content %} {% endblock %}
+
+
+    <a href="../Comment/">Comment</a><br>
+    <a href="../Author/">Posted by</a>
+    </postbox>
+</body>
+
+
+<!-- <body>
 Hello
- {% block content %} {% endblock %}
+ 
 
 <p>
     Test Test Test
 </p>
 <a href="Author/">click here</a>
-</body>
+</body> -->
 </html>

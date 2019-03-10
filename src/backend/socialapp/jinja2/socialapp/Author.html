@@ -1,14 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+{% extends 'socialapp/socialapp_base.html' %}
 
-    <link rel="stylesheet" href={{ static("socialapp/site.css")}}>
-
-</head>
+{% block content %}
 <body>
+<!-- https://stackoverflow.com/questions/7844539/how-to-csrf-token-protection-in-jinja2-template-engine -->
+<form action="" method="post">
+	<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+	<div>
+    	<input type="text" id="displayName" name="displayName" value="{{ Author.displayName }}">
+    </div>
+    <div>
+    	<input type="text" id="bio" name="bio"  value="{{ Author.bio }}">
+    </div>
+   <input type = "submit" value = "submit" />
+</form>
+
+
     UsErNaMe01
     <a href="../Post/">What they're saying</a> <br>
     <a href="../User/">Back</a>
 </body>
+
+{% endblock %}
