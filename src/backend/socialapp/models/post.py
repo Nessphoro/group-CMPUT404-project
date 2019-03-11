@@ -25,8 +25,8 @@ class Post(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse('test3', args=[str(self.title)])  #TODO THIS NEEDS TO CHANGE
+        return reverse('test3', args=[str(self.id)])  #TODO THIS NEEDS TO CHANGE
 
     def __str__(self):
-        return str(id)
+        return str(self.id)
 
