@@ -14,7 +14,7 @@ class Author(models.Model):
 
     # Relations
     localuser = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    friends = models.ManyToManyField("Author", blank=True, null=True, related_name="reverse_friends")
+    friends = models.ManyToManyField("Author", blank=True, null=True, related_name="friend_by")
 
     # Data
     github = models.CharField(max_length=150, blank=False)
@@ -26,7 +26,7 @@ class Author(models.Model):
 
     # Methods
     def __str__(self):
-        return "Author({},{},{})".format(self.displayName, self.localuser, self.github)
+        return self.displayName
 
     def get_absolute_url(self):
         return reverse('author-id', args=[str(self.id)])

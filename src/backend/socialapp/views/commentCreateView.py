@@ -32,4 +32,8 @@ class CommentCreateView(CreateView):
         form_defaults = {
             "published": str(datetime.now())
         }
+
+        if self.request.user.is_authenticated:
+            form_defaults["author"] = self.request.user.author
+
         return form_defaults

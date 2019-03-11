@@ -36,6 +36,6 @@ class PostCreateView(CreateView):
         }
 
         if self.request.user.is_authenticated:
-            form_defaults["author"] = "Hello"
+            form_defaults["author"] = self.request.user.author
 
         return form_defaults
