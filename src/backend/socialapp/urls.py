@@ -25,11 +25,9 @@ urlpatterns = [
 
 
     path('Post/<uuid:pk>/', views.PostDetailView.as_view(), name='post-id'),
-    path('Post/create/', views.PostCreate.as_view(), name='post-create'),
-
-
-
-
+    path('Post/edit/<uuid:pk>', views.PostUpdateView.as_view(), name='post-update'),
+    path('Post/delete/<uuid:pk>', views.PostDeleteView.as_view(), name='post-delete'),
+    path('Post/create/', views.PostCreateView.as_view(), name='post-create'),
 
 
     path('Comment/', views.Comment.as_view(), name='test2'),

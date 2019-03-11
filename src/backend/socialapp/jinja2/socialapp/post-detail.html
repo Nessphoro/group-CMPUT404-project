@@ -14,8 +14,8 @@
 
 <div>
     <a> Add comment</a> |
-    <a href="{{}}"> Edit Post</a>   |
-    <a> Delete Post</a>
+    <a href="{{ url('post-update', args=[post.id]) }}"> Edit Post</a>   |
+    <a href="{{ url('post-delete', args=[post.id]) }}"> Delete Post</a>
 </div>
 
 
