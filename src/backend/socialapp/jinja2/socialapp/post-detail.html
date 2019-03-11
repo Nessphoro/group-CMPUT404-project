@@ -1,0 +1,36 @@
+
+{% extends 'socialapp/socialapp_base.html' %}
+
+{% block content %}
+
+<body>
+
+<h2> {{ post.title }}</h2>
+
+<div>
+    <span>{{post.author.displayName}}</span>
+    <span>{{post.published}}</span>
+</div>
+
+<div>
+    <a> Add comment</a> |
+    <a href="{{}}"> Edit Post</a>   |
+    <a> Delete Post</a>
+</div>
+
+
+
+
+
+
+<b> {{ post.description }}</b>
+<p> {{ post.content }}</p>
+
+<div>
+    <b> Comments</b>
+    <!-- TODO -->
+</div>
+
+
+
+{% endblock %}

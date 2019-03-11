@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>  {% block title %} {% endblock %} </title>
 
   <!-- <link rel="stylesheet" href={{ static("socialapp/test.css")}}>    -->
   <link rel="stylesheet" href={{ static("socialapp/base.css")}}>
@@ -19,8 +19,8 @@
     <rightbar>
 
       {% if user.is_authenticated %}
-      <a href="../Author/">PROFILE</a>
-      <a href="../NewPost/">New Post</a>
+      <a href=" {{ url('author')  }}">Profile</a>
+      <a href=" {{ url('post-create')   }}">New Post</a>
       <img src={{ ActiveUser.image }} alt='profile_pic' class='image'>
 
       {% else %}
@@ -35,16 +35,4 @@
 
   </postbox>
 </body>
-
-
-<!-- <body>
-Hello
- 
-
-<p>
-    Test Test Test
-</p>
-<a href="Author/">click here</a>
-</body> -->
-
 </html>

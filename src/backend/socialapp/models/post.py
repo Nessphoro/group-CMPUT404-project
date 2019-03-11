@@ -23,9 +23,8 @@ class Post(models.Model):
     visibleTo = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="visibleTo", blank=True,null=True) #temporary
     unlisted = models.BooleanField()
 
-
     def get_absolute_url(self):
-        return reverse('test3', args=[str(self.id)])  #TODO THIS NEEDS TO CHANGE
+        return reverse('post-id', args=[str(self.id)])
 
     def __str__(self):
         return str(self.id)

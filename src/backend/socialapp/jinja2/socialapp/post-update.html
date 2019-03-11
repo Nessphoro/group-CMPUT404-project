@@ -2,12 +2,14 @@
 
 
 {% block title %}
-New Post
+Post Update
 {% endblock %}
 
 {% block content %}
 
 <body>
+    <h2>Post Update</h2>
+    <small>Update a post using the form below!</small>
 
     <form action="" method="post">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">

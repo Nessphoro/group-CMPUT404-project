@@ -5,6 +5,7 @@ import uuid
 
 # from social_auth.signals import socialauth_registered
 
+
 class Author(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     github = models.CharField(max_length=150, blank=False)
@@ -20,4 +21,5 @@ class Author(models.Model):
         return "Author({},{},{})".format(self.displayName, self.localuser, self.github)
 
     def get_absolute_url(self):
-        return reverse('test4', args=[str(self.id)])
+        return reverse('author-id', args=[str(self.id)])
+
