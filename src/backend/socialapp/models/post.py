@@ -16,8 +16,13 @@ class Post(models.Model):
 
     # Choices for certain fields
     VISIBILITY_OPTIONS = {
-        ('PUBLIC', 'Public')
+        ('PUBLIC', 'Public'),
+        ('PRIVATE', 'Private To Me'),
+        ('PRIVATE Author', 'Private to Another Author'),
+        ('FRIENDS', 'Private to Friends'),
+        ('FRIENDS OF FRIENDS', 'Private to Friends of Friends'),
     }
+
     CONTENT_TYPE_OPTIONS = {
         ('MARKDOWN','Markdown'),
         ('JPEG-IMAGE','Image (jpeg)'),

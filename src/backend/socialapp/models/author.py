@@ -30,4 +30,3 @@ class Author(models.Model):
 
     def get_absolute_url(self):
         return reverse('author-id', args=[str(self.id)])
-
