@@ -29,7 +29,7 @@ SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+LOGIN_REDIRECT_URL = '/'
 
 # Application definition
 

@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 import uuid
+
 # from social_auth.signals import socialauth_registered
 
 class Author(models.Model):
@@ -17,3 +19,5 @@ class Author(models.Model):
     def __str__(self):
         return "Author({},{},{})".format(self.displayName, self.localuser, self.github)
 
+    def get_absolute_url(self):
+        return reverse('test4', args=[str(self.github)])

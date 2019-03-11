@@ -1,8 +1,6 @@
 {% extends 'socialapp/socialapp_base.html' %}
 
 {% block content %}
-
-
          Post Title<br>
         <br>
         <div class="ui one column grid">
@@ -25,8 +23,39 @@
                 </div>
             </div>
         </div>
-        <br>
-        Setup/debugging stuff:<br>
+
+
+
+        {% for post in Posts %}
+
+        <div class="ui one column grid">
+            <div class="column">
+                <div class="ui fluid cards">
+                    <div class="card">
+                        <div class="content">
+                            <div class="header">
+
+                                <a href="{{ post.get_absolute_url() }}">{{ post.title }}</a>
+
+                               <br>
+                            </div>
+                            <div class="meta">
+                                <!-- <a href="">By: {{ post.author.displayName }}</a> -->
+                                <a href="{{ post.author.get_absolute_url() }}">By: {{ post.author.displayName }}</a>
+                                <hr>
+                            </div>
+                            <div class="description">
+                                {{ post.description }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+
+
 
 
 {% endblock %}
