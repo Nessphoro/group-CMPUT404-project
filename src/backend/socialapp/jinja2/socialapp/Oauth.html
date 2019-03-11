@@ -1,0 +1,14 @@
+{% extends 'socialapp/socialapp_base.html' %}
+
+
+{% block content %}
+
+  {% if user.is_authenticated %}
+  <img src={{ Author.image }} alt='profile_pic' class='image'>
+
+  {% else %}
+    <a href="{{ url ('social:begin', args=['github']) }}">Login with GitHub</a><br>
+
+  {% endif %}
+
+{% endblock %}                 <!--                <a href="{{ post.author.get_absolute_url() }}">By: {{ post.author.displayName }}</a> -->

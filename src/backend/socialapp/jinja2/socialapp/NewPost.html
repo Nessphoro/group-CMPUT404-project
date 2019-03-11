@@ -1,0 +1,22 @@
+{% extends 'socialapp/socialapp_base.html' %}
+
+
+{% block title %}
+New Post
+{% endblock %}
+
+{% block content %}
+
+<body>
+
+    <form action="" method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <table>
+        {{ form }}
+    </table>
+        <input type="submit" value="submit" />
+    </form>
+
+</body>
+
+{% endblock %}

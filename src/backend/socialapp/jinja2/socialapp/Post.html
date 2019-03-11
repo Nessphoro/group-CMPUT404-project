@@ -1,0 +1,23 @@
+
+{% extends 'socialapp/socialapp_base.html' %}
+
+{% block content %}
+
+<body>
+
+<h2> {{ post.title }}</h2>
+<h2> {{ post.description }}</h2>
+<h2> {{ post.content }}</h2>
+
+
+<!-- <p>Comment<br></p>
+<form action="" method="post">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <div>
+        <input type="text" id="comment" name="comment"">
+    </div>
+   <input type = "submit" value = "submit" />
+</form>
+</body> -->
+
+{% endblock %}
