@@ -20,12 +20,12 @@ class Index(TemplateView):
             Auth = models.Author.objects.filter(localuser=self.request.user)
             # print(Auth)
             if Auth:
-                context['Author'] = Auth[0]
+                context['ActiveUser'] = Auth[0]
             # else:
             #     context['Author'] = None 
         return context
 
-
+#this should be update view
 class Author(TemplateView):
     template_engine = 'jinja2'
     template_name = 'socialapp/Author.html'
@@ -67,7 +67,7 @@ class Post(DetailView):
 
             Auth = models.Author.objects.filter(localuser=self.request.user)
             if Auth:
-                context['Author'] = Auth[0]
+                context['ActiveUser'] = Auth[0]
         return context
 
 class NewPost(CreateView):
@@ -83,7 +83,7 @@ class NewPost(CreateView):
 
             Auth = models.Author.objects.filter(localuser=self.request.user)
             if Auth:
-                context['Author'] = Auth[0]
+                context['ActiveUser'] = Auth[0]
         return context
 
 
@@ -105,17 +105,19 @@ class NewPost(CreateView):
     #         return redirect(profile.get_absolute_url())
     #     return redirect('/')
 
-class User1(TemplateView):
+# this needs to change, but i chose a bad context variable
+# i think i may need to change context['Author'] to something else
+class User1(DetailView):
     template_engine = 'jinja2'
     template_name = 'socialapp/User.html'
-
+    model = models.Author
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['userAuthor'] =  models.Author.objects.get(github=self.kwargs['github'])
+        # context['userAuthor'] =  models.Author.objects.get(github=self.kwargs['github'])
 
         if self.request.user.is_authenticated:
 
             Auth = models.Author.objects.filter(localuser=self.request.user)
             if Auth:
-                context['Author'] = Auth[0]
+                context['ActiveUser'] = Auth[0]
         return context

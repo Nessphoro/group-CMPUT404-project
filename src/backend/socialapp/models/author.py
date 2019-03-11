@@ -20,4 +20,4 @@ class Author(models.Model):
         return "Author({},{},{})".format(self.displayName, self.localuser, self.github)
 
     def get_absolute_url(self):
-        return reverse('test4', args=[str(self.github)])
+        return reverse('test4', args=[str(self.id)])

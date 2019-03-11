@@ -21,7 +21,7 @@ urlpatterns = [
     # path('User/', views.User1.as_view(), name='test4'),
     path('api/',include(api_router.urls)),
     url(r'^oauth/', include('social_django.urls' , namespace='social')),  # <--
-    path('User/<str:github>/', views.User1.as_view(), name='test4'),
+    path('User/<str:pk>/', views.User1.as_view(), name='test4'),
     path('NewPost/', views.NewPost.as_view(), name='test6'),
 
 
