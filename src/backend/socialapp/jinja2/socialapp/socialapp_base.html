@@ -1,41 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
 
-    <!-- <link rel="stylesheet" href={{ static("socialapp/test.css")}}> -->   
-    <link rel="stylesheet" href={{ static("socialapp/base.css")}}>
-    <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/components/card.css")}}>
-    <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/components/comment.css")}}>
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+  <!-- <link rel="stylesheet" href={{ static("socialapp/test.css")}}>    -->
+  <link rel="stylesheet" href={{ static("socialapp/base.css")}}>
+  <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/semantic.css")}}>
 
 </head>
 
 <body>
-    <topbar>
+  <topbar>
     <innerbar>
-    <span style="color:brown">The</span><br>Social <span style="color:brown">Project</span><br>
+      <span style="color:brown">The</span><br>Social <span style="color:brown">Project</span><br>
     </innerbar>
     <rightbar>
-   
 
-  {% if user.is_authenticated %}
-   <a href="../Author/">PROFILE</a><br>
-    <a href="../NewPost/">New Post</a><br>
-  <img src={{ Author.image }} alt='profile_pic' class='image'>
+      {% if user.is_authenticated %}
+      <a href="../Author/">PROFILE</a>
+      <a href="../NewPost/">New Post</a>
+      <img src={{ Author.image }} alt='profile_pic' class='image'>
 
-  {% else %}
-    <a href="{{ url ('social:begin', args=['github']) }}">Login with GitHub</a><br>
+      {% else %}
+      <button class="ui inverted green button" href="{{ url ('social:begin', args=['github']) }}">Login with GitHub</button>
+      {% endif %}
 
-  {% endif %}
+    </rightbar>
+  </topbar>
+  <postbox>
 
-</rightbar>
-    </topbar>
-    <postbox>
+    {% block content %} {% endblock %}
 
-    	{% block content %} {% endblock %}
-
-    </postbox>
+  </postbox>
 </body>
 
 
@@ -48,4 +46,5 @@ Hello
 </p>
 <a href="Author/">click here</a>
 </body> -->
+
 </html>

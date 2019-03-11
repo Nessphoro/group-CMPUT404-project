@@ -1,24 +1,23 @@
-
 {% extends 'socialapp/socialapp_base.html' %}
 
 {% block content %}
 
 <body>
 
-<form action="" method="post">
-	<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-	<div>
-    	<input type="text" id="title" name="title"">
-    </div>
-    <div>
-    	<input type="text" id="description" name="description"">
-    </div>
+    <form action="" method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <div>
+            <input type="text" id="title" name="title">
+        </div>
+        <div>
+            <input type="text" id="description" name="description">
+        </div>
 
         <div>
-    	<input type="text" id="content" name="content"">
-    </div>
-   <input type = "submit" value = "submit" />
-</form>
+            <input type="text" id="content" name="content">
+        </div>
+        <input type="submit" value="submit" />
+    </form>
 
 </body>
 
