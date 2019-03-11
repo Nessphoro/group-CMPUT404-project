@@ -8,7 +8,7 @@
 <h2> {{ post.title }}</h2>
 
 <div>
-    <span> <a href="{{ url('author') }}">{{post.author.displayName}}</a> </span>
+    <span> <a href="{{ url('author-id', args=[post.author.id]) }}">{{post.author.displayName}}</a> </span>
     <span>{{post.published}}</span>
 </div>
 

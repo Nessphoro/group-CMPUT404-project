@@ -39,7 +39,7 @@
                                <br>
                             </div>
                             <div class="meta">
-                                <a href="{{ url('author') }}">By: {{ post.author.displayName }}</a>
+                                <a href="{{ url('author-id', args=[post.author.id]) }}">By: {{ post.author.displayName }}</a>
                                 <hr>
                             </div>
                             <div class="description">

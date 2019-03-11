@@ -20,7 +20,7 @@ class Comment(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
 
     # Relations
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="comments_by")
     post   = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     # Data
@@ -30,5 +30,5 @@ class Comment(models.Model):
 
     # Methods
     def __str__(self):
-        return str(self.id)
+        return str(self.comment[:25])
 

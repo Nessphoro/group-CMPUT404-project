@@ -8,9 +8,11 @@ from datetime import datetime
 from django.urls import reverse_lazy
 
 #this should be update view
-class AuthorDetailView(TemplateView):
+class AuthorDetailView(DetailView):
     template_engine = 'jinja2'
     template_name = 'socialapp/author-detail.html'
+    model = models.Author
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -21,11 +23,3 @@ class AuthorDetailView(TemplateView):
             if Auth:
                 context['ActiveUser'] = Auth[0]
         return context
-
-    def post(self, request, *args, **kwargs):
-        context = super().get_context_data(**kwargs) #probably not needed
-        user = request.POST.get('displayName')
-        descr = request.POST.get('bio')
-        if user and descr:
-            models.Author.objects.filter(localuser=self.request.user).update(displayName=user,bio=descr)
-        return redirect('/Author')

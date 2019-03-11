@@ -27,7 +27,7 @@ class Post(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
 
     # Relations
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="author")
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="posts_by")
     visibleTo = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="visibleTo", blank=True,null=True) #temporary
 
     # Data
@@ -47,5 +47,5 @@ class Post(models.Model):
         return reverse('post-id', args=[str(self.id)])
 
     def __str__(self):
-        return str(self.id)
+        return str(self.title)
 
