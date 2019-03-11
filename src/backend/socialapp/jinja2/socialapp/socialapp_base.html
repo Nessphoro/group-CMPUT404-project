@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <title>  {% block title %} {% endblock %} </title>
 
-  <!-- <link rel="stylesheet" href={{ static("socialapp/test.css")}}>    -->
   <link rel="stylesheet" href={{ static("socialapp/base.css")}}>
   <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/semantic.css")}}>
 
@@ -14,7 +13,7 @@
 <body>
   <topbar>
     <innerbar>
-      <span style="color:brown">The</span><br>Social <span style="color:brown">Project</span><br>
+      <a href="{{ url('index') }}"><span style="color:brown">The</span><br>Social <span style="color:brown">Project</span><br></a>
     </innerbar>
     <rightbar>
 

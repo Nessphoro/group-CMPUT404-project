@@ -12,6 +12,8 @@ from .postDeleteView import PostDeleteView
 
 # Comment Views
 from .commentCreateView import CommentCreateView
+from .commentUpdateView import CommentUpdateView
+from .commentDeleteView import CommentDeleteView
 
 # API
 from .RESTfulAPI import *

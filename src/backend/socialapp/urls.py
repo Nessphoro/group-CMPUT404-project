@@ -12,15 +12,12 @@ api_router.register(r'Post', views.PostViewSet)
 api_router.register(r'PostTags', views.PostTagsViewSet)
 api_router.register(r'User', views.UserViewSet)
 
-
-
-
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
 
     # Authors
     path('Author/', login_required(views.AuthorDetailView.as_view()), name='author'),
-    path('User/<str:pk>/', views.User1.as_view(), name='test4'),
+    path('User/<str:pk>/', views.User1.as_view(), name='test4'), # TODO: I don't know if this is still used
 
     # Posts
     path('Post/<uuid:pk>/', views.PostDetailView.as_view(), name='post-id'),
@@ -29,8 +26,9 @@ urlpatterns = [
     path('Post/create/', views.PostCreateView.as_view(), name='post-create'),
 
     # Comments
-    path('Comment/', views.Comment.as_view(), name='test2'),
     path('Comment/create/', views.CommentCreateView.as_view(), name='comment-create'),
+    path('Comment/edit/<uuid:pk>', views.CommentUpdateView.as_view(), name='comment-update'),
+    path('Comment/delete/<uuid:pk>', views.CommentDeleteView.as_view(), name='comment-delete'),
 
     # API - Should be done via the router
     path('api/',include(api_router.urls)),
