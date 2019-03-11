@@ -5,6 +5,7 @@ import json
 from .. import models
 import pytz
 from datetime import datetime
+from django.urls import reverse_lazy
 
 class Index(TemplateView):
     template_engine = 'jinja2'
@@ -69,9 +70,12 @@ class Post(DetailView):
                 context['Author'] = Auth[0]
         return context
 
-class NewPost(TemplateView):
+class NewPost(CreateView):
     template_engine = 'jinja2'
     template_name = 'socialapp/NewPost.html'
+    model = models.Post
+    fields = '__all__'
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -82,19 +86,24 @@ class NewPost(TemplateView):
                 context['Author'] = Auth[0]
         return context
 
-    def post(self, request, *args, **kwargs):
-        context = super().get_context_data(**kwargs) #probably not needed
-        Auth = models.Author.objects.filter(localuser=self.request.user)
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        content = request.POST.get('content')
-        profile = None
-        if title and description and content:
-            profile = models.Post(title=title,source="http://127.0.0.1:8000/",origin="http://127.0.0.1:8000/",contentType='text',description=description,content=content,author=Auth[0], published=datetime.utcnow().replace(tzinfo=pytz.utc),unlisted=False)
-            profile.save()
-        if profile:
-            return redirect(profile.get_absolute_url())
-        return redirect('/')
+
+    def get_success_url(self):
+        # return redirect(self.model.get_absolute_url())
+        return reverse_lazy('test3',kwargs={'pk':str(self.object.id)})
+
+    # def post(self, request, *args, **kwargs):
+    #     context = super().get_context_data(**kwargs) #probably not needed
+    #     Auth = models.Author.objects.filter(localuser=self.request.user)
+    #     title = request.POST.get('title')
+    #     description = request.POST.get('description')
+    #     content = request.POST.get('content')
+    #     profile = None
+    #     if title and description and content:
+    #         profile = models.Post(title=title,source="http://127.0.0.1:8000/",origin="http://127.0.0.1:8000/",contentType='text',description=description,content=content,author=Auth[0], published=datetime.utcnow().replace(tzinfo=pytz.utc),unlisted=False)
+    #         profile.save()
+    #     if profile:
+    #         return redirect(profile.get_absolute_url())
+    #     return redirect('/')
 
 class User1(TemplateView):
     template_engine = 'jinja2'
