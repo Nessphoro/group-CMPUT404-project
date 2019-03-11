@@ -24,7 +24,7 @@
       <img src={{ Author.image }} alt='profile_pic' class='image'>
 
       {% else %}
-      <button class="ui inverted green button" href="{{ url ('social:begin', args=['github']) }}">Login with GitHub</button>
+      <a class="ui inverted green button" href="{{ url ('social:begin', args=['github']) }}">Login with GitHub</a>
       {% endif %}
 
     </rightbar>
