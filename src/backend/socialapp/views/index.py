@@ -37,7 +37,7 @@ class Author(TemplateView):
 
             Auth = models.Author.objects.filter(localuser=self.request.user)
             if Auth:
-                context['Author'] = Auth[0]
+                context['ActiveUser'] = Auth[0]
         return context
 
     def post(self, request, *args, **kwargs):
