@@ -8,27 +8,37 @@
 <h2> {{ post.title }}</h2>
 
 <div>
-    <span>{{post.author.displayName}}</span>
+    <span> <a href="{{ url('author') }}">{{post.author.displayName}}</a> </span>
     <span>{{post.published}}</span>
 </div>
 
 <div>
-    <a> Add comment</a> |
+    <a href="{{ url('comment-create') }}"> Add comment</a> |
     <a href="{{ url('post-update', args=[post.id]) }}"> Edit Post</a>   |
     <a href="{{ url('post-delete', args=[post.id]) }}"> Delete Post</a>
 </div>
-
-
-
-
-
 
 <b> {{ post.description }}</b>
 <p> {{ post.content }}</p>
 
 <div>
     <b> Comments</b>
-    <!-- TODO -->
+
+    {% for comment in post.comment_set.all() %}
+
+        <div>
+            <div>
+              <span>{{ comment.author.displayName }}</span>
+              <span>{{ comment.published }}</span>
+            </div>
+
+            <div>
+                {{ comment.comment}}
+            </div>
+        </div>
+
+    {% endfor %}
+
 </div>
 
 

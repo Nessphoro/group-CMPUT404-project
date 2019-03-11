@@ -9,17 +9,28 @@ class PostTags(models.Model):
 
 
 class Post(models.Model):
+    class Meta:
+        ordering = ['-published']
+
+    VISIBILITY_OPTIONS = {
+        ('PUBLIC', 'Public')
+    }
+    CONTENT_TYPE_OPTIONS = {
+        ('MARKDOWN','Markdown'),
+        ('JPEG-IMAGE','Image (jpeg)'),
+    }
+
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     title = models.CharField(max_length=150)
     source = models.URLField()
     origin = models.URLField()
     description = models.CharField(max_length = 280)
-    contentType = models.CharField(max_length=64)
+    contentType = models.CharField(max_length=64, choices=CONTENT_TYPE_OPTIONS, default = "MARKDOWN")
     content = models.TextField()
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="author")
     categories = models.ForeignKey(PostTags, on_delete=models.CASCADE, blank=True, null=True)
     published = models.DateTimeField()
-    visibility = models.CharField(max_length=64, blank=True) #temporary
+    visibility = models.CharField(max_length=64, choices=VISIBILITY_OPTIONS, default="PUBLIC") #temporary
     visibleTo = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="visibleTo", blank=True,null=True) #temporary
     unlisted = models.BooleanField()
 

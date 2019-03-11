@@ -10,6 +10,8 @@ from .postUpdateView import PostUpdateView
 from .postCreateView import PostCreateView
 from .postDeleteView import PostDeleteView
 
+# Comment Views
+from .commentCreateView import CommentCreateView
 
 # API
 from .RESTfulAPI import *

@@ -24,7 +24,6 @@ class PostDeleteView(DeleteView):
                 context['ActiveUser'] = Auth[0]
         return context
 
-
     # Get normally displays a deletion confirmation
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)

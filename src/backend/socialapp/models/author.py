@@ -3,10 +3,8 @@ from django.db import models
 from django.urls import reverse
 import uuid
 
-# from social_auth.signals import socialauth_registered
-
-
 class Author(models.Model):
+
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     github = models.CharField(max_length=150, blank=False)
     displayName = models.CharField(max_length=150, blank=False)

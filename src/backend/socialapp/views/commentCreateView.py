@@ -10,11 +10,11 @@ import pytz
 from datetime import datetime
 from django.urls import reverse_lazy
 
-class PostCreateView(CreateView):
+class CommentCreateView(CreateView):
     template_engine = 'jinja2'
-    template_name = 'socialapp/post-create.html'
+    template_name = 'socialapp/comment-create.html'
 
-    model = models.Post
+    model = models.Comment
     fields = '__all__'
     success_url = reverse_lazy("index")
 
@@ -30,12 +30,6 @@ class PostCreateView(CreateView):
     def get_initial(self):
         """Return the initial data to use for forms on this view."""
         form_defaults = {
-            "source": "http://127.0.0.1:8000",
-            "origin": "http://127.0.0.1:8000",
-            "published": str(datetime.now()),
+            "published": str(datetime.now())
         }
-
-        if self.request.user.is_authenticated:
-            form_defaults["author"] = "Hello"
-
         return form_defaults
