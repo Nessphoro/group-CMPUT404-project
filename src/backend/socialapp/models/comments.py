@@ -8,7 +8,7 @@ class Comment(models.Model):
 
     # Django Metadata on class
     class Meta:
-        ordering = ['-published']
+        ordering = ['-published'] # Order By Date Published By Default
 
     # Choices for certain fields
     CONTENT_TYPE_OPTIONS = {

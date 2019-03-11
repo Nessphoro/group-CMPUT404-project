@@ -9,9 +9,12 @@ class PostTags(models.Model):
 
 
 class Post(models.Model):
-    class Meta:
-        ordering = ['-published']
 
+    # Django Metadata on class
+    class Meta:
+        ordering = ['-published'] # Order By Date Published By Default
+
+    # Choices for certain fields
     VISIBILITY_OPTIONS = {
         ('PUBLIC', 'Public')
     }
@@ -20,20 +23,26 @@ class Post(models.Model):
         ('JPEG-IMAGE','Image (jpeg)'),
     }
 
+    # Identifiers
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+
+    # Relations
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="author")
+    visibleTo = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="visibleTo", blank=True,null=True) #temporary
+
+    # Data
     title = models.CharField(max_length=150)
     source = models.URLField()
     origin = models.URLField()
     description = models.CharField(max_length = 280)
     contentType = models.CharField(max_length=64, choices=CONTENT_TYPE_OPTIONS, default = "MARKDOWN")
     content = models.TextField()
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="author")
     categories = models.ForeignKey(PostTags, on_delete=models.CASCADE, blank=True, null=True)
     published = models.DateTimeField()
     visibility = models.CharField(max_length=64, choices=VISIBILITY_OPTIONS, default="PUBLIC") #temporary
-    visibleTo = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="visibleTo", blank=True,null=True) #temporary
     unlisted = models.BooleanField()
 
+    # Methods
     def get_absolute_url(self):
         return reverse('post-id', args=[str(self.id)])
 
