@@ -16,8 +16,8 @@ class Index(TemplateView):
         context['Posts'] = post_list
         # get author image
         if self.request.user.is_authenticated:
-
             Auth = models.Author.objects.filter(localuser=self.request.user)
+            # print(Auth)
             if Auth:
                 context['Author'] = Auth[0]
             # else:
