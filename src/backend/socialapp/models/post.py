@@ -1,5 +1,6 @@
 from .author import Author
 from django.db import models
+from django.urls import reverse
 import uuid
 
 
@@ -16,12 +17,16 @@ class Post(models.Model):
     contentType = models.CharField(max_length=64)
     content = models.TextField()
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="author")
-    categories = models.ForeignKey(PostTags, on_delete=models.CASCADE)
+    categories = models.ForeignKey(PostTags, on_delete=models.CASCADE, blank=True, null=True)
     published = models.DateTimeField()
-    visibility = models.CharField(max_length=64)
-    visibleTo = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="visibleTo")
+    visibility = models.CharField(max_length=64, blank=True) #temporary
+    visibleTo = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="visibleTo", blank=True,null=True) #temporary
     unlisted = models.BooleanField()
 
+
+    def get_absolute_url(self):
+        return reverse('test3', args=[str(self.title)])  #TODO THIS NEEDS TO CHANGE
+
     def __str__(self):
-        pass
+        return str(id)
 

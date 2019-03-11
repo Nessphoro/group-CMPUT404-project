@@ -17,9 +17,11 @@
     <span style="color:brown">The</span><br>Social <span style="color:brown">Project</span><br>
     </innerbar>
     <rightbar>
-    <a href="../Author/">PROFILE</a><br>
+   
 
   {% if user.is_authenticated %}
+   <a href="../Author/">PROFILE</a><br>
+    <a href="../NewPost/">New Post</a><br>
   <img src={{ Author.image }} alt='profile_pic' class='image'>
 
   {% else %}
@@ -33,9 +35,6 @@
 
     	{% block content %} {% endblock %}
 
-
-    <a href="../Comment/">Comment</a><br>
-    <a href="../Author/">Posted by</a>
     </postbox>
 </body>
 

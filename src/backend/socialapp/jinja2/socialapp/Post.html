@@ -1,60 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
 
-    <link rel="stylesheet" href={{ static("socialapp/post.css")}}>
-    <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/components/card.css")}}>
-    <link rel="stylesheet" href={{ static("socialapp/Semantic-UI-CSS-master/components/comment.css")}}>
+{% extends 'socialapp/socialapp_base.html' %}
 
-</head>
+{% block content %}
+
 <body>
-    <topbar>
-    <innerbar>
-    <span style="color:brown">The</span><br>Social <span style="color:brown">Project</span><br>
-    </innerbar>
-    <rightbar>Sign in</rightbar>
-    </topbar>
-    <postbox>
-        Post Title<br>
-        <br>
-        <div class="ui one column grid">
-            <div class="column">
-                <div class="ui fluid cards">
-                    <div class="card">
-                        <div class="content">
-                            <div class="header">
-                                Test Post.<br>
-                            </div>
-                            <div class="meta">
-                                Has no friends.
-                                <hr>
-                            </div>
-                            <div class="description">
-                                This a post body. This. The body of the post. words. words words words word words. Testing. tEsTiNg.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ui comments">
-                    <h3 class="ui dividing header">Comments</h3>
-                    <div class="comment">
-                        <div class="content">
-                            <div class="text">
-                                This Post is nake fews.
-                            </div>
-                            <div class="actions">
-                                <a class="reply">Reply</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br>
-        Setup/debugging stuff:<br>
-    <a href="../Comment/">Comment</a><br>
-    <a href="../Author/">Posted by</a>
-    </postbox>
-</body>
+
+<h2> {{ post.title }}</h2>
+<h2> {{ post.description }}</h2>
+<h2> {{ post.content }}</h2>
+
+
+<!-- <p>Comment<br></p>
+<form action="" method="post">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <div>
+        <input type="text" id="comment" name="comment"">
+    </div>
+   <input type = "submit" value = "submit" />
+</form>
+</body> -->
+
+{% endblock %}
