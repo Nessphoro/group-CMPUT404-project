@@ -6,6 +6,7 @@ from .. import models
 import pytz
 from datetime import datetime
 from django.urls import reverse_lazy
+import requests
 
 class Index(TemplateView):
     template_engine = 'jinja2'
@@ -30,7 +31,36 @@ class Index(TemplateView):
         for f in active_user.friends.all():
             post = post | models.Post.objects.filter(author=f)
         post = post | models.Post.objects.filter(author=active_user)
-        return post 
+        feed = self.get_feed(active_user.feed)
+        if feed: 
+            post = self.feed_processing(feed,post,active_user)
+
+        return post
+
+    def get_feed(self,url):
+        req = requests.get(url)
+        if req.status_code ==200:
+            return  json.loads(req.content.decode('utf8')) #in dictojary format
+        else:
+            return None
+
+    def feed_processing(self,feed,post,active_user):
+        post = list(post)
+        for item in feed:
+            try:
+                title  = item['type'] #+ ": " + item['repo']['name']
+                description = item['type']
+                payload = item['repo']['url']
+                date = item['created_at']
+                name = item['repo']['name']
+                add_feed = models.Post(author=active_user,title=title, source=payload,origin=payload,contentType='GITHUB',description=name,content=name,unlisted=False)
+                post.append(add_feed)
+            except KeyError: #this should be logged
+                pass
+
+
+
+        return post
 
     def public_user(self):
         return models.Post.objects.filter(visibility='PUBLIC')

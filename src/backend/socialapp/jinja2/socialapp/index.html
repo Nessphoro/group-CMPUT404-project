@@ -35,7 +35,12 @@
                         <div class="content">
                             <div class="header">
 
-                                <a href="{{ url('post-id', args=[post.id]) }}">{{ post.title }}</a>
+                                {% if post.contentType == 'GITHUB' %}
+                                    <a href="{{ post.source }}">{{ post.title }}</a>
+                                {% else %}
+                                    <a href="{{ url('post-id', args=[post.id]) }}">{{ post.title }}</a>
+                                {% endif %}
+
                                <br>
                             </div>
                             <div class="meta">
