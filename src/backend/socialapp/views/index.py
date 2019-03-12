@@ -13,21 +13,27 @@ class Index(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        post_list = models.Post.objects.all()
-        context['Posts'] = post_list
         # get author image
         if self.request.user.is_authenticated:
             Auth = models.Author.objects.filter(localuser=self.request.user)
-            # print(Auth)
             if Auth:
                 context['ActiveUser'] = Auth[0]
-            # else:
-            #     context['Author'] = None 
+                context['Posts'] = self.logged_user(Auth[0])
+        else:
+            context['Posts'] = self.public_user()
+
         return context
 
+    def logged_user(self,active_user):
+        # post = models.Post.objects
+        post = models.Post.objects.filter(visibility='PUBLIC')
+        for f in active_user.friends.all():
+            post = post | models.Post.objects.filter(author=f)
+        post = post | models.Post.objects.filter(author=active_user)
+        return post 
 
-
-
+    def public_user(self):
+        return models.Post.objects.filter(visibility='PUBLIC')
 
 class Comment(TemplateView):
     template_engine = 'jinja2'
