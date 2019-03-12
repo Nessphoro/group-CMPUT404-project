@@ -14,17 +14,36 @@ api_router.register(r'User', views.UserViewSet)
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
-    path('Author/', login_required(views.Author.as_view()), name='test1'),
-    path('Comment/', views.Comment.as_view(), name='test2'),
-    # path('Post/', views.Post.as_view(), name='test3'),
-    path('Post/<uuid:pk>/', views.Post.as_view(), name='test3'),
-    # path('User/', views.User1.as_view(), name='test4'),
+
+    # Authors
+    path('Author/<uuid:pk>', login_required(views.AuthorDetailView.as_view()), name='author-id'),
+    path('User/<str:pk>/', views.User1.as_view(), name='test4'), # TODO: I don't know if this is still used
+
+    # Posts
+    path('Post/<uuid:pk>/', views.PostDetailView.as_view(), name='post-id'),
+    path('Post/edit/<uuid:pk>', views.PostUpdateView.as_view(), name='post-update'),
+    path('Post/delete/<uuid:pk>', views.PostDeleteView.as_view(), name='post-delete'),
+    path('Post/create/', views.PostCreateView.as_view(), name='post-create'),
+
+    # Comments
+    path('Comment/create/', views.CommentCreateView.as_view(), name='comment-create'),
+    path('Comment/edit/<uuid:pk>', views.CommentUpdateView.as_view(), name='comment-update'),
+    path('Comment/delete/<uuid:pk>', views.CommentDeleteView.as_view(), name='comment-delete'),
+
+    # API - Should be done via the router
     path('api/',include(api_router.urls)),
+
+    # Oauth - For Github Login, done by separate app
     url(r'^oauth/', include('social_django.urls' , namespace='social')),  # <--
-    path('User/<str:pk>/', views.User1.as_view(), name='test4'),
-    path('NewPost/', views.NewPost.as_view(), name='test6'),
-
-
 ]
 
-#Alright, so, new plan, you have to change __init__.py to import all the classes, and change the url pattern to be more general. 
+
+
+
+
+
+
+
+
+
+#Alright, so, new plan, you have to change __init__.py to import all the classes, and change the url pattern to be more general.

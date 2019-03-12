@@ -1,0 +1,24 @@
+{% extends 'socialapp/socialapp_base.html' %}
+
+
+{% block title %}
+New Comment
+{% endblock %}
+
+{% block content %}
+
+<body>
+    <h2>New Comment</h2>
+    <small>Create a comment using the form below!</small>
+
+    <form action="" method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <table>
+        {{ form }}
+    </table>
+        <input type="submit" value="submit" />
+    </form>
+
+</body>
+
+{% endblock %}

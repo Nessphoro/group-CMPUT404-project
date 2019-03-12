@@ -1,0 +1,52 @@
+{% extends 'socialapp/socialapp_base.html' %}
+
+{% block title %}
+
+{% endblock %}
+
+
+
+
+{% block content %}
+<body>
+
+    <h2>{{ author.displayName }}</h2>
+    <p>{{ author.bio }}</p>
+
+    {% if user.is_authenticated %}
+    <h4>Actions</h4>
+    <div class="author-actions">
+
+        {% if user.author != author %}
+        <!-- TODO: Make this do friendship stuff -->
+        <a href="">Send Friend Invite</a> |
+        {% endif%}
+
+        {% if user.author == author %}
+        <!-- TODO: Make this do profile update stuff -->
+        <a href="">Edit Profile</a>
+        {% endif%}
+
+    </div>
+    {% endif %}
+
+
+    <h4>Posts:</h4>
+    <div class="author-posts">
+    <!-- TODO: Flesh these out a bit ... -->
+    {% for post in author.posts_by.all() %}
+        <a href="{{ url('post-id', args=[post.id]) }}">{{ post.title }}</a>
+    {% endfor %}
+    </div>
+
+    <h4>Comments:</h4>
+    <div class="author-comments">
+    <!-- TODO: Flesh these out a bit ... -->
+    {% for comment in author.comments_by.all() %}
+        <a href="{{ url('post-id', args=[comment.post.id]) }}">{{ comment.comment }}</a>
+    {% endfor %}
+    </div>
+
+</body>
+
+{% endblock %}

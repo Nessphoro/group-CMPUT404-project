@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 
 class Index(TemplateView):
     template_engine = 'jinja2'
-    template_name = 'socialapp/Home.html'
+    template_name = 'socialapp/index.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -25,28 +25,9 @@ class Index(TemplateView):
             #     context['Author'] = None 
         return context
 
-#this should be update view
-class Author(TemplateView):
-    template_engine = 'jinja2'
-    template_name = 'socialapp/Author.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # get author image
-        if self.request.user.is_authenticated:
 
-            Auth = models.Author.objects.filter(localuser=self.request.user)
-            if Auth:
-                context['ActiveUser'] = Auth[0]
-        return context
 
-    def post(self, request, *args, **kwargs):
-        context = super().get_context_data(**kwargs) #probably not needed
-        user = request.POST.get('displayName')
-        descr = request.POST.get('bio')
-        if user and descr:
-            models.Author.objects.filter(localuser=self.request.user).update(displayName=user,bio=descr)
-        return redirect('/Author')
 
 class Comment(TemplateView):
     template_engine = 'jinja2'
@@ -55,24 +36,9 @@ class Comment(TemplateView):
     def get_context_data(self, **kwargs):
         pass
 
-class Post(DetailView):
-    template_engine = 'jinja2'
-    template_name = 'socialapp/Post.html'
-    model = models.Post
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # context['post'] =  models.Post.objects.get(title=self.kwargs['title'])
-        if self.request.user.is_authenticated:
-
-            Auth = models.Author.objects.filter(localuser=self.request.user)
-            if Auth:
-                context['ActiveUser'] = Auth[0]
-        return context
-
 class NewPost(CreateView):
     template_engine = 'jinja2'
-    template_name = 'socialapp/NewPost.html'
+    template_name = 'socialapp/post-create.html'
     model = models.Post
     fields = '__all__'
 

@@ -1,0 +1,59 @@
+
+{% extends 'socialapp/socialapp_base.html' %}
+
+{% block content %}
+
+<body>
+
+<h2> {{ post.title }}</h2>
+
+<div>
+    <span> <a href="{{ url('author-id', args=[post.author.id]) }}">{{post.author.displayName}}</a> </span>
+    <span>{{post.published}}</span>
+</div>
+
+<div>
+    {% if user.is_authenticated %}
+        <a href="{{ url('comment-create') }}"> Add comment</a> |
+
+        {% if user.author == post.author%}
+            <a href="{{ url('post-update', args=[post.id]) }}"> Edit Post</a>   |
+            <a href="{{ url('post-delete', args=[post.id]) }}"> Delete Post</a>
+        {% endif %}
+
+    {% endif %}
+</div>
+
+<b> {{ post.description }}</b>
+<p> {{ post.content }}</p>
+
+<div>
+    <b> Comments</b>
+
+    {% for comment in post.comment_set.all() %}
+
+        <div class="comment">
+            <div class="comment-header">
+              <span>{{ comment.author.displayName }}</span>
+              <span>{{ comment.published }}</span>
+            </div>
+
+            <div class="comment-body">
+                {{ comment.comment}}
+            </div>
+
+            {% if user.author == comment.author %}
+                <small class="comment-footer">
+                    <a href="{{ url('comment-update', args=[comment.id]) }}">Edit</a> |
+                    <a href="{{ url('comment-delete', args=[comment.id]) }}">Delete</a>
+                </small>
+            {% endif %}
+        </div>
+
+    {% endfor %}
+
+</div>
+
+
+
+{% endblock %}
