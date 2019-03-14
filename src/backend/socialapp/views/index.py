@@ -16,6 +16,7 @@ class Index(MixinIndex,TemplateView ):
 
     def logged_user(self,active_user):
         # post = models.Post.objects
+        self.refresh_feed(active_user, active_user.feed)
         post = models.Post.objects.filter(visibility='PUBLIC')
         for f in active_user.friends.all():
             if f.friends.filter(pk=active_user.id):   
@@ -30,17 +31,52 @@ class Index(MixinIndex,TemplateView ):
         post = post | models.Post.objects.filter(author=active_user) #get all self posts
 
         #warning, queryset is converted into a list after this, cant use filter
-        feed = self.get_feed(active_user.feed)
-        if feed: 
-            post = self.feed_processing(feed,post,active_user)
+        # feed = self.get_feed(active_user.feed)
+        # if feed: 
+        #     post = self.feed_processing(feed,post,active_user)
 
 
         return post
 
-    def get_feed(self,url):
+    def refresh_feed(self, active_user, url):
         req = requests.get(url)
-        if req.status_code ==200:
-            return  json.loads(req.content.decode('utf8')) #in dictojary format
+        if req.status_code == 200:
+            data = json.loads(req.content.decode('utf8'))
+            for item in data:
+                try:
+                    itemId = int(item["id"])
+                    if models.Post.objects.filter(correlationId=itemId):
+                        continue
+                    
+                    title  = item['type']
+                    descriptin = "about Github"
+                    content = "No Content"
+                    timeAt = item["created_at"]
+
+                    if title == "PushEvent":
+                        description = f"I just pushed to my repository {item['repo']['name']}"
+                    elif title == "ForkEvent":
+                        description = f"I just forked {item['repo']['name']}"
+                    elif title == "CreateEvent":
+                        description = f"I just created {item['repo']['name']}"
+
+                    title = "about Github"
+
+                    p = models.Post(author=active_user, 
+                                    origin="http://127.0.0.1:8000", 
+                                    source="http://127.0.0.1:8000",
+                                    title=title,
+                                    description=description,
+                                    content=content,
+                                    contentType="text/markdown",
+                                    published=timeAt,
+                                    correlationId = itemId,
+                                    unlisted=False
+                                    )
+                    p.save()
+                except Exception as e:
+                    print(e)
+                    
         else:
             return None
 

@@ -41,6 +41,7 @@ class Post(models.Model):
 
     # Identifiers
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    correlationId = models.IntegerField(editable=False, default=-1, blank=True)
 
     # Relations
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="posts_by")
