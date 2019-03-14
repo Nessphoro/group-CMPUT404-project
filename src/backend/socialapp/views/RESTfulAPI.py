@@ -26,7 +26,3 @@ class PostTagsViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
-
-
-#class TestViewSet(viewsets.ModelViewSet):
-    #queryset = 
