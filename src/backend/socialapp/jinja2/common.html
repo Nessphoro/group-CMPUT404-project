@@ -1,0 +1,59 @@
+
+{% macro postMeta(post) %}
+<div class="meta">
+    <a href="{{ url('post-id', args=[post.id]) }}">
+        <i class="external alternate icon"></i> More
+    </a>
+</div>
+{% endmacro %}
+
+{% macro imagePost(post) %}
+<div class="event">
+    <div class="label">
+        <img src="{{post.author.image}}">
+    </div>
+    <div class="content">
+        <div class="summary">
+            <a href="{{ url('author-id', args=[post.author.id]) }}" class="user">{{post.author.displayName}}</a>
+            Posted a new image {{post.title}}
+            <div class="date">
+                {{post.published | naturaltime}}
+            </div>
+        </div>
+        <div class="extra text">
+            {{post.description}}
+        </div>
+        <div class="extra">
+            <a href="{{ url('post-id', args=[post.id]) }}">
+                {% if post.contentType == "image/png;base64" %}
+                    <img class="ui fluid rounded image" src="data:image/png;base64,{{post.content}}"/>
+                {% elif post.contentType == "image/jpeg;base64" %} 
+                    <img class="ui fluid rounded image" src="data:image/jpeg;base64,{{post.content}}"/>
+                {%endif%}
+            </a>
+        </div>
+        {{postMeta(post)}}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro generalPost(post) %}
+<div class="event">
+    <div class="label">
+        <img src="{{post.author.image}}">
+    </div>
+    <div class="content">
+        <div class="summary">
+            <a href="{{ url('author-id', args=[post.author.id]) }}" class="user">{{post.author.displayName}}</a>
+            Made a new post {{post.title}}
+            <div class="date">
+                {{post.published | naturaltime}}
+            </div>
+        </div>
+        <div class="extra text">
+            {{post.description}}
+        </div>
+        {{postMeta(post)}}
+    </div>
+</div>
+{% endmacro %}

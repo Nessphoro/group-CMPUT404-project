@@ -7,7 +7,7 @@ class Author(models.Model):
 
     # Django Metadata on class
     class Meta:
-        ordering = ['displayName'] # Order By Date Published By Default
+        ordering = ['displayName'] # Order By Display Name By Default
 
     # Identifiers
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)

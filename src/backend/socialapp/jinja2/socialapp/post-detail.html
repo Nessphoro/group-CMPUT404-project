@@ -53,21 +53,18 @@
                     <div class="text">
                         {{ comment.comment}}
                     </div>
+                    {% if user.author == comment.author %}
+                        <div class="actions">
+                            <a class="reply" href="{{ url('comment-update', args=[comment.id]) }}">Edit</a> |
+                            <a class="reply" href="{{ url('comment-delete', args=[comment.id]) }}">Delete</a>
+                        </div>
+                    {% endif %}
                 </div>
-            
-               
-    
-                {% if user.author == comment.author %}
-                    <small class="comment-footer">
-                        <a href="{{ url('comment-update', args=[comment.id]) }}">Edit</a> |
-                        <a href="{{ url('comment-delete', args=[comment.id]) }}">Delete</a>
-                    </small>
-                {% endif %}
             </div>
     
         {% endfor %}
         {% if user.is_authenticated %}
-            <a class="ui basic primary button" href="{{ url('comment-create') }}"> Add comment</a>
+            <a style="margin-top: 1em;" class="ui basic primary button" href="{{ url('comment-create') }}"> Add comment</a>
         {% endif %}
     </div>
 </article>

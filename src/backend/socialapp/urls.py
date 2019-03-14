@@ -17,7 +17,7 @@ urlpatterns = [
 
     # Authors
     path('Author/<uuid:pk>', login_required(views.AuthorDetailView.as_view()), name='author-id'),
-    path('User/<str:pk>/', views.User1.as_view(), name='test4'), # TODO: I don't know if this is still used
+    # path('User/<str:pk>/', views.User1.as_view(), name='test4'), # TODO: I don't know if this is still used
 
     # Posts
     path('Post/<uuid:pk>/', views.PostDetailView.as_view(), name='post-id'),

@@ -1,8 +1,20 @@
 {% extends 'socialapp/socialapp_base.html' %}
-
+{% import "common.html" as common %}
 {% block title %}Home{% endblock %}
 {% block content %}
+
+<div class="centered ten wide column">
+    <div class="ui feed">
         {% for post in Posts %}
+            {% if post.contentType.startswith("image") %}
+                {{common.imagePost(post)}}
+            {% else %}
+                {{common.generalPost(post)}}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+        <!-- {% for post in Posts %}
 
         <div class="four wide column">
             <div class="ui fluid cards">
@@ -29,5 +41,5 @@
                 </div>
             </div>
         </div>
-        {% endfor %}
+        {% endfor %} -->
 {% endblock %}

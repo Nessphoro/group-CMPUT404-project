@@ -1,5 +1,5 @@
 from .index import Index
-from .index import Comment, User1, NewPost
+from .index import Comment
 
 # Author views
 from .authorDetailView import AuthorDetailView
