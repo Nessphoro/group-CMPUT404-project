@@ -1,3 +1,6 @@
+""" Serializers are used by the django-restframework library to configure the pages for individual objects.
+    Register new models here.
+"""
 from .models import Author, Comment, Post, PostTags
 from django.contrib.auth.models import User
 from rest_framework import serializers
