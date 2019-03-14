@@ -7,33 +7,33 @@ import pytz
 from datetime import datetime
 from django.urls import reverse_lazy
 import requests
+from .mixin import MixinContext, MixinIndex
 
-class Index(TemplateView):
+
+class Index(MixinIndex,TemplateView ):
     template_engine = 'jinja2'
     template_name = 'socialapp/index.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # get author image
-        if self.request.user.is_authenticated:
-            Auth = models.Author.objects.filter(localuser=self.request.user)
-            if Auth:
-                context['ActiveUser'] = Auth[0]
-                context['Posts'] = self.logged_user(Auth[0])
-        else:
-            context['Posts'] = self.public_user()
-
-        return context
 
     def logged_user(self,active_user):
         # post = models.Post.objects
         post = models.Post.objects.filter(visibility='PUBLIC')
         for f in active_user.friends.all():
-            post = post | models.Post.objects.filter(author=f)
-        post = post | models.Post.objects.filter(author=active_user)
+            if f.friends.filter(pk=active_user.id):   
+                post = post | models.Post.objects.filter(author=f).filter(visibility='FRIENDS') # filter friend post
+                post = post | models.Post.objects.filter(author=f).filter(visibility='FRIENDS OF FRIENDS') # filter friend post
+            post = post | models.Post.objects.filter(author=f).filter(visibleTo=active_user)  # filter author post
+            
+            for fof in f.friends.all():
+                if fof.friends.filter(pk=f.id): # bad
+                    post = post | models.Post.objects.filter(author=fof).filter(visibility='FRIENDS OF FRIENDS') # filter friend post
+        post = post.filter(unlisted=False)
+        post = post | models.Post.objects.filter(author=active_user) #get all self posts
+
+        #warning, queryset is converted into a list after this, cant use filter
         feed = self.get_feed(active_user.feed)
         if feed: 
             post = self.feed_processing(feed,post,active_user)
+
 
         return post
 
@@ -57,9 +57,6 @@ class Index(TemplateView):
                 post.append(add_feed)
             except KeyError: #this should be logged
                 pass
-
-
-
         return post
 
     def public_user(self):
@@ -72,22 +69,11 @@ class Comment(TemplateView):
     def get_context_data(self, **kwargs):
         pass
 
-class NewPost(CreateView):
+class NewPost(MixinContext,CreateView):
     template_engine = 'jinja2'
     template_name = 'socialapp/post-create.html'
     model = models.Post
     fields = '__all__'
-
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.user.is_authenticated:
-
-            Auth = models.Author.objects.filter(localuser=self.request.user)
-            if Auth:
-                context['ActiveUser'] = Auth[0]
-        return context
-
 
     def get_success_url(self):
         # return redirect(self.model.get_absolute_url())
@@ -109,17 +95,8 @@ class NewPost(CreateView):
 
 # this needs to change, but i chose a bad context variable
 # i think i may need to change context['Author'] to something else
-class User1(DetailView):
+class User1(MixinContext,DetailView):
     template_engine = 'jinja2'
     template_name = 'socialapp/User.html'
     model = models.Author
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # context['userAuthor'] =  models.Author.objects.get(github=self.kwargs['github'])
 
-        if self.request.user.is_authenticated:
-
-            Auth = models.Author.objects.filter(localuser=self.request.user)
-            if Auth:
-                context['ActiveUser'] = Auth[0]
-        return context

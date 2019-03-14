@@ -6,20 +6,11 @@ from .. import models
 import pytz
 from datetime import datetime
 from django.urls import reverse_lazy
+from .mixin import MixinContext
 
 #this should be update view
-class AuthorDetailView(DetailView):
+class AuthorDetailView(MixinContext,DetailView):
     template_engine = 'jinja2'
     template_name = 'socialapp/author-detail.html'
     model = models.Author
 
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # get author image
-        if self.request.user.is_authenticated:
-
-            Auth = models.Author.objects.filter(localuser=self.request.user)
-            if Auth:
-                context['ActiveUser'] = Auth[0]
-        return context
