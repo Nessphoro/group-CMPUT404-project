@@ -1,64 +1,33 @@
 {% extends 'socialapp/socialapp_base.html' %}
 
+{% block title %}Home{% endblock %}
 {% block content %}
-         Post Title<br>
-        <br>
-        <div class="ui one column grid">
-            <div class="column">
-                <div class="ui fluid cards">
-                    <div class="card">
-                        <div class="content">
-                            <div class="header">
-                                Test Post.<br>
-                            </div>
-                            <div class="meta">
-                                By: user
-                                <hr>
-                            </div>
-                            <div class="description">
-                                This a post body. This. The body of the post. words. words words words word words. Testing. tEsTiNg.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
         {% for post in Posts %}
 
-        <div class="ui one column grid">
-            <div class="column">
-                <div class="ui fluid cards">
-                    <div class="card">
-                        <div class="content">
-                            <div class="header">
+        <div class="four wide column">
+            <div class="ui fluid cards">
+                <div class="card">
+                    <div class="content">
+                        <div class="header">
 
-                                {% if post.contentType == 'GITHUB' %}
-                                    <a href="{{ post.source }}">{{ post.title }}</a>
-                                {% else %}
-                                    <a href="{{ url('post-id', args=[post.id]) }}">{{ post.title }}</a>
-                                {% endif %}
+                            {% if post.contentType == 'GITHUB' %}
+                                <a href="{{ post.source }}">{{ post.title }}</a>
+                            {% else %}
+                                <a href="{{ url('post-id', args=[post.id]) }}">{{ post.title }}</a>
+                            {% endif %}
 
-                               <br>
-                            </div>
-                            <div class="meta">
-                                <a href="{{ url('author-id', args=[post.author.id]) }}">By: {{ post.author.displayName }}</a>
-                                <hr>
-                            </div>
-                            <div class="description">
-                                {{ post.description }}
-                            </div>
+                            <br>
+                        </div>
+                        <div class="meta">
+                            <a href="{{ url('author-id', args=[post.author.id]) }}">By: {{ post.author.displayName }}</a>
+                            <hr>
+                        </div>
+                        <div class="description">
+                            {{ post.description }}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
         {% endfor %}
-
-
-
-
 {% endblock %}

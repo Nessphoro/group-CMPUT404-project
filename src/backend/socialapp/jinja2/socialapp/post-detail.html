@@ -3,57 +3,74 @@
 
 {% block content %}
 
-<body>
+<article class="twelve wide centered column">
+    <h1 class="ui dividing header"> {{ post.title }}</h1>
 
-<h2> {{ post.title }}</h2>
+    <p>
+        <a href="{{ url('author-id', args=[post.author.id]) }}" class="ui teal image label">
+                <img src="{{post.author.image}}">
+                {{post.author.displayName}}
+        </a>
+        <span class="demphasize">{{post.published|naturaltime}}</span>
 
-<div>
-    <span> <a href="{{ url('author-id', args=[post.author.id]) }}">{{post.author.displayName}}</a> </span>
-    <span>{{post.published}}</span>
-</div>
-
-<div>
-    {% if user.is_authenticated %}
-        <a href="{{ url('comment-create') }}"> Add comment</a> |
-
-        {% if user.author == post.author%}
-            <a href="{{ url('post-update', args=[post.id]) }}"> Edit Post</a>   |
-            <a href="{{ url('post-delete', args=[post.id]) }}"> Delete Post</a>
-        {% endif %}
-
-    {% endif %}
-</div>
-
-<b> {{ post.description }}</b>
-<p> {{ post.content }}</p>
-
-<div>
-    <b> Comments</b>
-
-    {% for comment in post.comment_set.all() %}
-
-        <div class="comment">
-            <div class="comment-header">
-              <span>{{ comment.author.displayName }}</span>
-              <span>{{ comment.published }}</span>
-            </div>
-
-            <div class="comment-body">
-                {{ comment.comment}}
-            </div>
-
-            {% if user.author == comment.author %}
-                <small class="comment-footer">
-                    <a href="{{ url('comment-update', args=[comment.id]) }}">Edit</a> |
-                    <a href="{{ url('comment-delete', args=[comment.id]) }}">Delete</a>
-                </small>
+        <span class="right">
+            {% if user.is_authenticated %}
+                {% if user.author == post.author%}
+                    <a class="demphasize" href="{{ url('post-update', args=[post.id]) }}"> Edit Post</a>   |
+                    <a class="demphasize" href="{{ url('post-delete', args=[post.id]) }}"> Delete Post</a>
+                {% endif %}
+        
             {% endif %}
-        </div>
+        </span>
+    </p>
 
-    {% endfor %}
-
-</div>
-
+    
+    
+    <!-- <b> {{ post.description }}</b> -->
+    {% if post.contentType == "image/png;base64" %}
+        <img class="ui fluid rounded image" src="data:image/png;base64,{{post.content}}"/>
+    {%endif%}
+    <div>
+    {% if post.contentType.startswith("text") %}
+        {{post.content|markdown|safe}}
+    {%endif%}
+    </div>
+    
+    <div class="ui comments">
+        <h3 class="ui dividing header">Comments</h3>
+    
+        {% for comment in post.comments.all() %}
+    
+            <div class="comment">
+                <a class="avatar">
+                    <img src="{{comment.author.image}}">
+                </a>
+                <div class="content">
+                    <a href="" class="author">{{ comment.author.displayName }}</a>
+                    <div class="metadata">
+                        <span class="date">{{comment.published|naturaltime}}</span>
+                    </div>
+                    <div class="text">
+                        {{ comment.comment}}
+                    </div>
+                </div>
+            
+               
+    
+                {% if user.author == comment.author %}
+                    <small class="comment-footer">
+                        <a href="{{ url('comment-update', args=[comment.id]) }}">Edit</a> |
+                        <a href="{{ url('comment-delete', args=[comment.id]) }}">Delete</a>
+                    </small>
+                {% endif %}
+            </div>
+    
+        {% endfor %}
+        {% if user.is_authenticated %}
+            <a class="ui basic primary button" href="{{ url('comment-create') }}"> Add comment</a>
+        {% endif %}
+    </div>
+</article>
 
 
 {% endblock %}

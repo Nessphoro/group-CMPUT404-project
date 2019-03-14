@@ -24,8 +24,10 @@ class Post(models.Model):
     }
 
     CONTENT_TYPE_OPTIONS = {
-        ('MARKDOWN','Markdown'),
-        ('JPEG-IMAGE','Image (jpeg)'),
+        ('text/markdown','Markdown'),
+        ('application/base64','File'),
+        ('image/png;base64','PNG'),
+        ('image/jpeg;base64','JPEG')
     }
 
     # Identifiers
@@ -33,14 +35,14 @@ class Post(models.Model):
 
     # Relations
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="posts_by")
-    visibleTo = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="visibleTo", blank=True,null=True) #temporary
+    visibleTo = models.ManyToManyField(Author, related_name="visibleTo", blank=True,null=True) #temporary
 
     # Data
     title = models.CharField(max_length=150)
     source = models.URLField()
     origin = models.URLField()
     description = models.CharField(max_length = 280)
-    contentType = models.CharField(max_length=64, choices=CONTENT_TYPE_OPTIONS, default = "MARKDOWN")
+    contentType = models.CharField(max_length=64, choices=CONTENT_TYPE_OPTIONS, default = "text/markdown")
     content = models.TextField()
     categories = models.ForeignKey(PostTags, on_delete=models.CASCADE, blank=True, null=True)
     published = models.DateTimeField()

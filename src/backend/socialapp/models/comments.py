@@ -21,7 +21,7 @@ class Comment(models.Model):
 
     # Relations
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="comments_by")
-    post   = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post   = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
 
     # Data
     comment = models.TextField()

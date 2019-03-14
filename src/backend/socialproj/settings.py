@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django_jinja.contrib._humanize',
     'django.contrib.staticfiles',
+    'django_jinja',
     'rest_framework',
     'socialapp.apps.SocialappConfig',
     'social_django',  
@@ -60,11 +62,18 @@ ROOT_URLCONF = 'socialproj.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'BACKEND': 'django_jinja.backend.Jinja2',
+        'NAME': 'jinja2',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
+            "match_extension": ".html",
+            "app_dirname": "jinja2",
             'environment': 'socialapp.jinja2.environment',
+            "filters": {
+                "addclass": "socialapp.templatetags.addclass.addclass",
+                "markdown": "socialapp.templatetags.markdown.md"
+            },
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',

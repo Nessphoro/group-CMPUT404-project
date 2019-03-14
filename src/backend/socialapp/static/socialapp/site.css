@@ -1,9 +1,15 @@
-p {
-    color: blue;
+.main-block {
+    margin-top: 7em !important;
 }
 
-a{
-    color: blue;
-    text-decoration: underline;
-    text-decoration-color: blue;
+.hidden {
+    display: none;
+}
+
+.demphasize {
+    color: rgba(0,0,0, 0.4);
+}
+
+.right {
+    float: right;
 }
