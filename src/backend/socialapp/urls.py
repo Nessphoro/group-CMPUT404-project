@@ -9,11 +9,10 @@ from django.conf.urls import url, include
 from . import views
 
 api_router = routers.DefaultRouter()
-api_router.register(r'Author', views.AuthorViewSet)
-api_router.register(r'Comment', views.CommentViewSet)
-api_router.register(r'Post', views.PostViewSet)
-api_router.register(r'PostTags', views.PostTagsViewSet)
-api_router.register(r'User', views.UserViewSet)
+api_router.register(r'author', views.AuthorViewSet)
+api_router.register(r'posts', views.PostViewSet)
+api_router.register(r'posttags', views.PostTagsViewSet)
+api_router.register(r'user', views.UserViewSet)
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),

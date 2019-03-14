@@ -48,3 +48,4 @@ class PostCreateView(MixinContext,CreateView):
             form_defaults["author"] = self.request.user.author
         
         return form_defaults
+
