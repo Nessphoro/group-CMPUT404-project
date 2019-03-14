@@ -15,9 +15,27 @@ Profile - {{author.displayName}}
                 <h1>{{author.displayName}}</h1>
                 <img class="ui fluid rounded image" src="{{author.image}}">
                 <h3>Bio</h3>
+                <hr>
                 <p>
                     {{author.bio}}
                 </p>
+                {% if user.is_authenticated %}
+                    
+                    {% if user.author != author %}
+                        <a class="primary basic fluid ui button">
+                            Send Friend Request
+                        </a>
+                    {% endif%}
+
+                    {% if user.author == author %}
+                        <a style="margin-top: 1em;" class="blue basic fluid ui button">
+                            Edit Profile
+                        </a>
+                        <a style="margin-top: 1em;" class="red basic fluid ui button">
+                            Logout
+                        </a>
+                    {% endif%}
+                {% endif %}
         </div>
         <div class="twelve wide column">
             <h1>Recent Activity</h1>
