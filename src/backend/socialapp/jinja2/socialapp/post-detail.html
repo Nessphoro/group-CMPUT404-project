@@ -27,7 +27,7 @@
     
     
     <!-- <b> {{ post.description }}</b> -->
-    {% if post.contentType == "image/png;base64" %}
+    {% if (post.contentType == "image/png;base64") or (post.contentType == "image/jpeg;base64") %}
         <img class="ui fluid rounded image" src="data:image/png;base64,{{post.content}}"/>
     {%endif%}
     <div>

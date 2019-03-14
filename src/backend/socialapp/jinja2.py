@@ -1,3 +1,7 @@
+""" This file configures the environment settings for jinja2 templates. See the jinja 2 folder for actual templates.
+"""
+
+
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import reverse
 from jinja2 import Environment

@@ -5,6 +5,12 @@ import uuid
 
 
 class Comment(models.Model):
+    """ Comments represent responses to a post by the authors who can view the post.
+
+        TODO: Check if comments need to be in markdown as well.
+    """
+
+
 
     # Django Metadata on class
     class Meta:

@@ -5,10 +5,19 @@ import uuid
 
 
 class PostTags(models.Model):
+    """ TODO: Current a dummy class, presumably used to link posts to post categories.
+    """
     tag = models.CharField(max_length=64)
 
 
 class Post(models.Model):
+    """ Posts represent a blog post in the application.
+
+    Posts represent a user created entry, a post can be either an image post or a markdown post. Post content is
+    to be base64 encoded.
+
+    A posts's visibility may be limited to the author's friend group by one of the VISIBILITY_OPTIONS
+    """
 
     # Django Metadata on class
     class Meta:

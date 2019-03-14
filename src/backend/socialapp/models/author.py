@@ -4,6 +4,14 @@ from django.urls import reverse
 import uuid
 
 class Author(models.Model):
+    """ Authors represent a user in the social app's context, note they are distinct from users for modularity.
+
+    Authors can establish relations to other authors on the site and to their github profile.
+
+    Authors can make posts and comments which are the primary content of the site.
+    """
+
+
 
     # Django Metadata on class
     class Meta:
