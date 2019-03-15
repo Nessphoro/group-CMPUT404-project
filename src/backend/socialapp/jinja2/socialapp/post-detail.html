@@ -5,7 +5,6 @@
 
 <article class="twelve wide centered column">
     <h1 class="ui dividing header"> {{ post.title }}</h1>
-
     <p>
         <a href="{{ url('author-id', args=[post.author.id]) }}" class="ui teal image label">
                 <img src="{{post.author.image}}">
@@ -22,6 +21,11 @@
         
             {% endif %}
         </span>
+
+        <h3>
+            <b>{{post.description}}</b>
+        </h3>
+
     </p>
 
     
