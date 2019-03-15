@@ -32,6 +32,10 @@ urlpatterns = [
     path('Comment/edit/<uuid:pk>', views.CommentUpdateView.as_view(), name='comment-update'),
     path('Comment/delete/<uuid:pk>', views.CommentDeleteView.as_view(), name='comment-delete'),
 
+    # Friend Requests
+    path('Author/<uuid:pk>/friendrequests/accept', views.friendRequestHandleView.as_view(), {'action' = 'accept_request'}, name='friend-request-accept')
+    path('Author/<uuid:pk>/friendrequests/decline', views.friendRequestHandleView.as_view(), {'action' = 'decline_request'}, name='friend-request-decline')
+
     # API - Should be done via the router
     path('api/',include(api_router.urls)),
 
