@@ -128,3 +128,6 @@ class Author(models.Model):
         output |= self.get_public()
 
         return output
+
+    def get_visible_posts_for(self, user):
+        pass
