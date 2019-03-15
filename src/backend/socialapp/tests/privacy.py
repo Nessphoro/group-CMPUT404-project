@@ -235,30 +235,3 @@ class TestPrivacy(TestCase):
 	def testIsMe(self):
 		self.assertTrue(self.author1.is_me(self.author1))
 		self.assertFalse(self.author1.is_me(self.author2))
-
-	#Get Friend
-	def testGetFriend(self):
-		result = self.author1.get_friends()
-		self.assertTrue(bool(result))
-		self.assertEqual(len(result), 1)
-		for friend in result:
-			self.assertEqual(friend, self.author3)
-		
-	#Get FOF
-	def testGetFOF(self):
-		result = self.author1.get_friends_of_friends()
-		self.assertTrue(bool(result))
-		self.assertEqual(len(result), 2)		
-		A = {self.author3, self.author4}
-		print("FLAG", result)
-		self.assertEqual(result, A)
-
-	#is friend
-	def testIsFriend(self):
-		result = self.author1.is_friend(self.author3.id)
-		self.assertTrue(result)
-
-	#is FOF
-	def testIsFOF(self):
-		result = self.author4.is_friend_of_friend(self.author1.id)
-		self.assertTrue(result)

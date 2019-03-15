@@ -43,7 +43,11 @@ class Author(models.Model):
         return reverse('author-id', args=[str(self.id)])
 
     def get_friends(self):
-        return set(self.friends.all())
+        output = set()
+        for friend in self.friends.all():
+            if friend.friends.filter(pk=self.id):
+                output.add(friend)
+        return output
 
     def get_friends_of_friends(self):
         output = set()
@@ -54,7 +58,6 @@ class Author(models.Model):
                 for friend_of_friend in friend.friends.all():
                     if friend_of_friend.friends.filter(pk=friend.id):
                         output.add(friend_of_friend)
-
         return output
 
     def get_posts_of_friends(self):
@@ -73,7 +76,7 @@ class Author(models.Model):
             if f.friends.filter(pk=self.id):
                 output = output | mod.Post.objects.filter(author=f,visibility='FOAF',unlisted=False)
             for fof in f.friends.all():
-                if fof.friends.filter(pk=self.id):
+                if fof.friends.filter(pk=f.id):
                     output = output | mod.Post.objects.filter(author=fof,visibility='FOAF',unlisted=False)
         return output
 
@@ -91,7 +94,7 @@ class Author(models.Model):
             return True
         else:
             for friend in user.friends.all():
-                if friend.friends.filter(pk=self.id).exists():
+                if friend.friends.filter(pk=friend.id).exists():
                     return True
         return False
 
