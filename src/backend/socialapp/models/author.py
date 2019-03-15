@@ -52,3 +52,28 @@ class Author(models.Model):
 
     def check_foaf(self):
         pass
+
+    def get_friends_of_friends(self):
+        output = set()
+
+        for friend in self.friends:
+            for friend_of_friend in friend.friends:
+                output.add(friend_of_friend)
+
+        return output
+
+    def get_posts_of_friends(self):
+        pass
+
+
+    def get_posts_of_friends_of_friends(self):
+        pass
+
+
+
+
+
+
+
+
+
