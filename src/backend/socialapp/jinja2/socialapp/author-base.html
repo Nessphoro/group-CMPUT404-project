@@ -14,8 +14,11 @@
                 {% if user.is_authenticated %}
                     
                     {% if user.author != author %}
-                        <a class="primary basic fluid ui button">
+                        <a href="{{ url('friend-request-create' args=[user.author.id]) }}" class="primary basic fluid ui button">
                             Send Friend Request
+                        </a>
+                        <a style="margin-top: 1em;" class="blue basic fluid ui button">
+                            Friends
                         </a>
                     {% endif%}
 
@@ -23,11 +26,38 @@
                         <a style="margin-top: 1em;" class="blue basic fluid ui button">
                             Edit Profile
                         </a>
+                        # TODO: Reference to Friends Page
+                        <a" style="margin-top: 1em;" class="blue basic fluid ui button">
+                            Friends
+                        </a>
+                        {% if author.requested_by.all()|count == 0 %}
+                            <div style="margin-top: 1em" class="ui labeled button" tabindex="0">
+                                # TODO: Reference to Friends Requests Page
+                                <div class="ui blue button">
+                                    <i class="users icon"></i> Friend Requests
+                                </div>
+                                <a class="ui basic blue left pointing label">
+                                    0
+                                </a>   
+                            </div>
+                        {% endif%}
+
+                        {%if author.requested_by.all()|count > 0 %}
+                            <div style="margin-top: 1em" class="ui labeled button" tabindex="0">
+                                # TODO: Reference to Friends Requests Page
+                                <div class="ui red button">
+                                    <i class="users icon"></i> Friend Requests
+                                </div>
+                                <a class="ui basic red left pointing label">
+                                    {{author.requested_by.all()|count}}
+                                </a>   
+                            </div>
+                        {% endif %}  
                         <a style="margin-top: 1em;" class="red basic fluid ui button">
                             Logout
                         </a>
                     {% endif%}
-                {% endif %}
+                {% endif%}
         </div>
         <div class="twelve wide column">
             {% block authorContent %} {% endblock %}

@@ -19,8 +19,17 @@ Profile - {{author.displayName}}
         </div>
         <div class="content">
             <div class="summary">
-
+                <a href="{{ url('author-id', args=[request.author.id]) }}" class="user">{{request.author.displayName}}</a>
+                wants to be friends.
             </div>
+        </div>
+        <div>
+            <button href="{{ url('friend-request-accept' args=[request.author.id]) }}" class="circular ui icon button">
+                <i class="check icon"></i>
+            </button>
+            <button href="{{ url('friend-request-decline' args=[request.author.id]) }}" class="circular ui icon button">
+                <i class="x icon"></i>
+            </button>
         </div>
 
     {% endfor %}

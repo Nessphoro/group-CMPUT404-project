@@ -1,0 +1,29 @@
+{% extends 'socialapp/author-base.html' %}
+{% import "common.html" as common %}
+
+{% block title %}
+Profile - {{author.displayName}}
+{% endblock %}
+
+
+
+{% block authorContent %}
+
+<h1>Friends</h1>
+<div class="ui feed">
+    {% for friend in author.friended_by.all() %}
+        <div class="event">
+            <div class="label">
+                <img src="{{friends.author.image}}">
+            </div>
+        </div>
+        <div class="content">
+            <div class="summary">
+                <a href="{{ url('author-id', args=[post.author.id]) }}" class="user">{{post.author.displayName}}</a>
+            </div>
+        </div>
+
+    {% endfor %}
+</div>
+
+{% endblock %}

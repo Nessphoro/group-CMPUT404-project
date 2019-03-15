@@ -22,7 +22,7 @@ class Author(models.Model):
 
     # Relations
     localuser = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    friends = models.ManyToManyField("Author", blank=True, null=True, related_name="friend_by")
+    friends = models.ManyToManyField("Author", blank=True, null=True, related_name="friended_by")
     followers = models.ManyToManyField("Author", blank=True, null=True, related_name="followed_by")
     friendrequests = models.ForeignKey("Author", blank=True, null=True, related_name="requested_by", on_delete=models.CASCADE)
 
@@ -41,17 +41,20 @@ class Author(models.Model):
     def get_absolute_url(self):
         return reverse('author-id', args=[str(self.id)])
 
-    def send_friend_request(self):
+    def get_friend_requests(self):
+        return set(self.friendrequests)
+
+    def send_friend_request(self, id):
         pass
 
-    def accept_friend_request(self):
-        pass
+    def accept_friend_request(self, id):
+        if self.friendrequests(pk=id).exists():
+            self.friends.filter(id=id).add()
+            self.friendrequests.filter(id=id).delete()
 
-    def decline_friend_request(self):
-        pass
-
-    def check_foaf(self):
-        pass
+    def decline_friend_request(self, id):
+        if self.friendrequests(pk=id).exists():
+            self.friendrequests.filter(id=id).delete()
 
     def get_friends_of_friends(self):
         output = set()

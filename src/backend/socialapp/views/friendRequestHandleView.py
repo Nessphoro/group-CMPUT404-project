@@ -1,11 +1,23 @@
-from  django.urls import reverse
+from django.urls import reverse
+from django.views.generic import RedirectView
 
-from ../models import authorDetailView
 
-class FriendRequestHandler(RedirectView):
+from ..models import Author
 
-    def 
+class FriendRequestHandleView(RedirectView):
 
-    if  action = "accept_request":
+    def get_redirect_url(self, *args, **kwargs):
 
-    if action = "decline_request":
+        action = kwargs.get('action')
+
+        if action == 'send_friend_request':
+            author.send_friend_request(id)
+            return reverse('')
+
+        elif action == 'accept_friend_request':
+            author.accept_friend_request(id)
+            return reverse('')
+
+        elif action == 'decline_friend_request':
+            author.decline_friend_request(id)
+            return reverse('')
