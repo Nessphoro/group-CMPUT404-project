@@ -27,9 +27,9 @@ class Post(models.Model):
     VISIBILITY_OPTIONS = {
         ('PUBLIC', 'Public'),
         ('PRIVATE', 'Private To Me'),
-        ('PRIVATE Author', 'Private to Another Author'),
+        ('SERVERONLY', 'Public To This Host')
         ('FRIENDS', 'Private to Friends'),
-        ('FRIENDS OF FRIENDS', 'Private to Friends of Friends'),
+        ('FOAF', 'Private to Friends of Friends'),
     }
 
     CONTENT_TYPE_OPTIONS = {

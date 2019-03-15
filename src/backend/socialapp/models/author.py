@@ -38,3 +38,25 @@ class Author(models.Model):
 
     def get_absolute_url(self):
         return reverse('author-id', args=[str(self.id)])
+
+
+    def get_friends_of_friends(self):
+        output = set()
+
+        for friend in self.friends:
+            for friend_of_friend in friend.friends:
+                output.add(friend_of_friend)
+
+        return output
+
+
+
+
+
+
+
+
+
+
+
+
