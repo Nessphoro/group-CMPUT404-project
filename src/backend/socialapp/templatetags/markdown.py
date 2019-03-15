@@ -1,6 +1,7 @@
 from django import template
 import markdown
 import bleach
+from bs4 import BeautifulSoup
 
 register = template.Library()
 
@@ -12,5 +13,10 @@ def md(value):
     text = markdown.markdown(value)
     print(text)
     html = bleach.clean(text, tags=allowed, attributes=attrs)
+    
+    soup = BeautifulSoup(html, "html.parser")
+
+    images = soup.find_all("img")
+    print(images)
     return html
     
