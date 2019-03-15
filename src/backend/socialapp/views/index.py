@@ -21,12 +21,12 @@ class Index(MixinIndex,TemplateView ):
         for f in active_user.friends.all():
             if f.friends.filter(pk=active_user.id):   
                 post = post | models.Post.objects.filter(author=f).filter(visibility='FRIENDS') # filter friend post
-                post = post | models.Post.objects.filter(author=f).filter(visibility='FRIENDS OF FRIENDS') # filter friend post
+                post = post | models.Post.objects.filter(author=f).filter(visibility='FOAF') # filter friend post
             post = post | models.Post.objects.filter(author=f).filter(visibleTo=active_user)  # filter author post
             
             for fof in f.friends.all():
                 if fof.friends.filter(pk=f.id): # bad
-                    post = post | models.Post.objects.filter(author=fof).filter(visibility='FRIENDS OF FRIENDS') # filter friend post
+                    post = post | models.Post.objects.filter(author=fof).filter(visibility='FOAF') # filter friend post
         post = post.filter(unlisted=False)
         post = post | models.Post.objects.filter(author=active_user) #get all self posts
         active_user.get_posts_of_friends()

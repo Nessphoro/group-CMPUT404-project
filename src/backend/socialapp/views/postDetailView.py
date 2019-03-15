@@ -23,12 +23,10 @@ class PostDetailView(MixinContext,UserPassesTestMixin,DetailView):
         user = post.author
         visibility  = post.visibility
         if self.request.user.is_authenticated:
-            Auth = models.Author.objects.filter(localuser=self.request.user)
-            if Auth:
-                return Auth[0].post_permission(post)
-            else: # Todo: make a better solution maybe
-                if visibility != 'PUBLIC':
-                    return False
+            Auth = self.request.user.author
+            return Auth.post_permission(post)
+        if visibility != 'PUBLIC':
+            return False
         # if active:
         #     if visibility=="PRIVATE":
         #         if user!=active:
