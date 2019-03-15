@@ -4,6 +4,8 @@ from .index import Comment
 # Author views
 from .authorDetailView import AuthorDetailView
 
+from .friendRequestHandleView import FriendRequestHandleView
+
 # Post Views
 from .postDetailView import PostDetailView
 from .postUpdateView import PostUpdateView
@@ -17,6 +19,7 @@ from .commentDeleteView import CommentDeleteView
 
 # API
 from .RESTfulAPI import *
+
 
 
 

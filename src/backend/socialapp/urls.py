@@ -35,7 +35,7 @@ urlpatterns = [
     # Friend Requests
     path('Request/create/<uuid:pk>', views.FriendRequestHandleView.as_view(), {'action':'send_friend_request'},name='friend-request-create'),
     path('Request/<uuid:pk>/accept', views.FriendRequestHandleView.as_view(), {'action':'accept_friend_request'}, name='friend-request-accept'),
-    path('Request/decline/<uuid:pk>', views.FriendRequestHandleView.as_view(), {'action':'decline_friend_request'}, name='friend-request-decline'),
+    path('Request/<uuid:pk>/decline/', views.FriendRequestHandleView.as_view(), {'action':'decline_friend_request'}, name='friend-request-decline'),
 
     # API - Should be done via the router
     path('api/',include(api_router.urls)),

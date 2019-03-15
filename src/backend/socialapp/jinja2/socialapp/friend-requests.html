@@ -7,7 +7,7 @@ Profile - {{author.displayName}}
 
 
 
-{% block authorContent %}
+{% block friendRequestsContent %}
 
 <h1>Friend Requests</h1>
 <div class="ui feed">
@@ -24,10 +24,10 @@ Profile - {{author.displayName}}
             </div>
         </div>
         <div>
-            <button href="{{ url('friend-request-accept' args=[request.author.id]) }}" class="circular ui icon button">
+            <button href="{{ url('friend-request-accept', args=[request.author.id]) }}" class="circular ui icon button">
                 <i class="check icon"></i>
             </button>
-            <button href="{{ url('friend-request-decline' args=[request.author.id]) }}" class="circular ui icon button">
+            <button href="{{ url('friend-request-decline', args=[request.author.id]) }}" class="circular ui icon button">
                 <i class="x icon"></i>
             </button>
         </div>

@@ -48,16 +48,35 @@ class Author(models.Model):
         return set(self.friendrequests)
 
     def send_friend_request(self, id):
-        pass
+        # self = A
+        # id = B
+  
+        if self.author.filter(pk=id).exists():
+            request_target = Author.objects.get(pk=id)
+            request_target.friendrequests.add(self.id)
+            self.followers.add(request_target)
+            
 
     def accept_friend_request(self, id):
-        if self.friendrequests(pk=id).exists():
-            self.friends.filter(id=id).add()
-            self.friendrequests.filter(id=id).delete()
+        # Self = B
+        # Id = A
+              
+        if self.friendrequests.filter(pk=id).exists():
+            request_sender = Author.objects.get(pk=id)
+            self.friends.add(request_sender)
+            request_sender.friends.add(self.id)
+
+            self.friendrequests(pk=id).delete()
+            request_sender.followers.delete(self.id)
 
     def decline_friend_request(self, id):
-        if self.friendrequests(pk=id).exists():
-            self.friendrequests.filter(id=id).delete()
+        # Self = B
+        # Id = A
+
+        if self.friendrequests.filter(pk=id).exists():
+            request_sender = Author.objects.get(pk=id)
+            self.friendrequests.delete(request_sender)
+    
     def get_friends(self):
         return set(self.friends)
 
