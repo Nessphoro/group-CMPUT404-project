@@ -29,7 +29,7 @@ class Index(MixinIndex,TemplateView ):
                     post = post | models.Post.objects.filter(author=fof).filter(visibility='FRIENDS OF FRIENDS') # filter friend post
         post = post.filter(unlisted=False)
         post = post | models.Post.objects.filter(author=active_user) #get all self posts
-        
+        active_user.get_posts_of_friends()
         return post
 
     def refresh_feed(self, active_user, url):

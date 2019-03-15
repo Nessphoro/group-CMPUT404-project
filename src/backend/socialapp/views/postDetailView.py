@@ -33,10 +33,11 @@ class PostDetailView(MixinContext,UserPassesTestMixin,DetailView):
         if active:
             if visibility=="PRIVATE":
                 if user!=active:
-                    return False 
-            elif visibility=="PRIVATE Author":
-                if post.visibleTo!= active:
-                    return False
+                    if post.visibleTo.filter(pk=active.id)==None:
+                        return False 
+            # elif visibility=="PRIVATE Author":
+            #     if post.visibleTo!= active:
+            #         return False
             elif visibility=="FRIENDS" or visibility=="FRIENDS OF FRIENDS":
                 if user.friends.filter(pk=active.id)==None:
                     return False
