@@ -58,7 +58,8 @@ class Author(models.Model):
         output = mod.Post.objects.none()
 
         for f in self.friends.all():
-            output = output | mod.Post.objects.filter(author=f,visibility='FRIENDS',unlisted=False)
+            if f.friends.filter(pk=self.id):
+                output = output | mod.Post.objects.filter(author=f,visibility='FRIENDS',unlisted=False)
         return output
 
 
@@ -66,9 +67,11 @@ class Author(models.Model):
         output = mod.Post.objects.none()
 
         for f in self.friends.all():
-            output = output | mod.Post.objects.filter(author=f,visibility='FOAF',unlisted=False)
+            if f.friends.filter(pk=self.id):
+                output = output | mod.Post.objects.filter(author=f,visibility='FOAF',unlisted=False)
             for fof in f.friends.all():
-                output = output | mod.Post.objects.filter(author=fof,visibility='FOAF',unlisted=False)
+                if fof.friends.filter(pk=self.id):
+                    output = output | mod.Post.objects.filter(author=fof,visibility='FOAF',unlisted=False)
         return output
 
     def get_private(self):
@@ -76,14 +79,14 @@ class Author(models.Model):
 
 
     def is_friend(self, id):
-        return friend.friends.filter(pk=id).exists() 
+        return self.friend.friends.filter(pk=self.id).exists() 
 
     def is_friend_of_friend(self, id):
-        if self.friends.filter(pk=id).exists():
+        if self.friends.filter(pk=self.id).exists():
             return True
         else:
             for friend in self.friends.all():
-                if friend.friends.filter(pk=id).exists():
+                if friend.friends.filter(pk=self.id).exists():
                     return True
         return False
 
