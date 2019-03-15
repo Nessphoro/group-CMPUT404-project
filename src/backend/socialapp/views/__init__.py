@@ -18,5 +18,8 @@ from .commentDeleteView import CommentDeleteView
 # API
 from .RESTfulAPI import *
 
+# Users
+from .userLogoutView import UserLogoutView
+
 
 
