@@ -83,11 +83,3 @@ class Comment(TemplateView):
 
     def get_context_data(self, **kwargs):
         pass
-
-# this needs to change, but i chose a bad context variable
-# i think i may need to change context['Author'] to something else
-class User1(MixinContext,DetailView):
-    template_engine = 'jinja2'
-    template_name = 'socialapp/User.html'
-    model = models.Author
-

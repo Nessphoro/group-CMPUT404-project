@@ -14,32 +14,4 @@
         {% endfor %}
     </div>
 </div>
-        <!-- {% for post in Posts %}
-
-        <div class="four wide column">
-            <div class="ui fluid cards">
-                <div class="card">
-                    <div class="content">
-                        <div class="header">
-
-                            {% if post.contentType == 'GITHUB' %}
-                                <a href="{{ post.source }}">{{ post.title }}</a>
-                            {% else %}
-                                <a href="{{ url('post-id', args=[post.id]) }}">{{ post.title }}</a>
-                            {% endif %}
-
-                            <br>
-                        </div>
-                        <div class="meta">
-                            <a href="{{ url('author-id', args=[post.author.id]) }}">By: {{ post.author.displayName }}</a>
-                            <hr>
-                        </div>
-                        <div class="description">
-                            {{ post.description }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %} -->
 {% endblock %}

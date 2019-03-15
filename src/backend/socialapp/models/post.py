@@ -26,7 +26,7 @@ class Post(models.Model):
     # Choices for certain fields
     VISIBILITY_OPTIONS = {
         ('PUBLIC', 'Public'),
-        ('PRIVATE', 'Private To Me'),
+        ('PRIVATE', 'Private To Me (And Selected People)'),
         ('SERVERONLY', 'Public To This Host'),
         ('FRIENDS', 'Private to Friends'),
         ('FOAF', 'Private to Friends of Friends'),
