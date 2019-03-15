@@ -14,8 +14,6 @@ class Author(models.Model):
     Authors can make posts and comments which are the primary content of the site.
     """
 
-
-
     # Django Metadata on class
     class Meta:
         ordering = ['displayName'] # Order By Display Name By Default
@@ -94,7 +92,7 @@ class Author(models.Model):
             return True
         else:
             for friend in user.friends.all():
-                if friend.friends.filter(pk=friend.id).exists():
+                if friend.friends.filter(pk=self.id).exists():
                     return True
         return False
 
