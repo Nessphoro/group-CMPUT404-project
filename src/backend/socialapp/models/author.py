@@ -79,14 +79,14 @@ class Author(models.Model):
 
 
     def is_friend(self, id):
-        return self.friend.friends.filter(pk=self.id).exists() 
+        return self.friend.friends.filter(pk=id).exists() 
 
     def is_friend_of_friend(self, id):
-        if self.friends.filter(pk=self.id).exists():
+        if self.friends.filter(pk=id).exists():
             return True
         else:
             for friend in self.friends.all():
-                if friend.friends.filter(pk=self.id).exists():
+                if friend.friends.filter(pk=id).exists():
                     return True
         return False
 
