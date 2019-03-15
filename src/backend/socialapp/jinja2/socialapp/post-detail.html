@@ -5,7 +5,6 @@
 
 <article class="twelve wide centered column">
     <h1 class="ui dividing header"> {{ post.title }}</h1>
-
     <p>
         <a href="{{ url('author-id', args=[post.author.id]) }}" class="ui teal image label">
                 <img src="{{post.author.image}}">
@@ -22,6 +21,11 @@
         
             {% endif %}
         </span>
+
+        <h3>
+            <b>{{post.description}}</b>
+        </h3>
+
     </p>
 
     
@@ -63,8 +67,9 @@
             </div>
     
         {% endfor %}
+
         {% if user.is_authenticated %}
-            <a style="margin-top: 1em;" class="ui basic primary button" href="{{ url('comment-create') }}"> Add comment</a>
+            <a style="margin-top: 1em;" class="ui basic primary button" href="{{ url('comment-create', args=[post.id]) }}"> Add comment</a>
         {% endif %}
     </div>
 </article>

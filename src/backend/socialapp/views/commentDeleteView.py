@@ -16,3 +16,6 @@ class CommentDeleteView(MixinContext,DeleteView):
     # Get normally displays a deletion confirmation
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy("post-id", kwargs={'pk': self.get_object().post.id})

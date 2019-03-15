@@ -14,4 +14,6 @@ class PostUpdateView(MixinContext,UpdateView):
 
     model = models.Post
     fields = '__all__'
-    success_url = reverse_lazy("index")
+
+    def get_success_url(self):
+        return reverse_lazy("post-id", kwargs={'pk': self.get_object().id})
