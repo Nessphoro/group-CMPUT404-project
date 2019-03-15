@@ -37,6 +37,10 @@ urlpatterns = [
 
     # Oauth - For Github Login, done by separate app
     url(r'^oauth/', include('social_django.urls' , namespace='social')),  # <--
+
+    # Users
+    path('logout', views.UserLogoutView.as_view(), name='logout')
+
 ]
 
 
