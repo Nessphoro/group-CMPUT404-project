@@ -37,3 +37,5 @@ class TestFriends(TestCase):
 		cls.author3.friends.add(cls.author1)
 		cls.author4.friends.add(cls.author3)
 		cls.author3.friends.add(cls.author4)
+
+    #Test to make sure we don't get weird data in friends.
