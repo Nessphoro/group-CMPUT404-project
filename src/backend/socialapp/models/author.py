@@ -51,9 +51,9 @@ class Author(models.Model):
         # self = A
         # id = B
   
-        if self.author.filter(pk=id).exists():
-            request_target = Author.objects.get(pk=id)
-            request_target.friendrequests.add(self.id)
+        request_target = mod.Author.objects.get(pk=id)
+        if request_target:
+            request_target.friendrequests.add(self.user.author)
             self.followers.add(request_target)
             
 
@@ -62,19 +62,19 @@ class Author(models.Model):
         # Id = A
               
         if self.friendrequests.filter(pk=id).exists():
-            request_sender = Author.objects.get(pk=id)
+            request_sender = mod.Author.objects.get(pk=id)
             self.friends.add(request_sender)
-            request_sender.friends.add(self.id)
+            request_sender.friends.add(self.user.author)
 
             self.friendrequests(pk=id).delete()
-            request_sender.followers.delete(self.id)
+            request_sender.followers.delete(self.user.author)
 
     def decline_friend_request(self, id):
         # Self = B
         # Id = A
 
         if self.friendrequests.filter(pk=id).exists():
-            request_sender = Author.objects.get(pk=id)
+            request_sender = mod.Author.objects.get(pk=id)
             self.friendrequests.delete(request_sender)
     
     def get_friends(self):
