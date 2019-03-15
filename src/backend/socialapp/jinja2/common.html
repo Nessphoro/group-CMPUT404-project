@@ -57,3 +57,71 @@
     </div>
 </div>
 {% endmacro %}
+
+
+{% macro postScript() %}
+    <script>
+        const acceptedImages = {
+            "image/jpeg;base64": true,
+            "image/png;base64": true
+        }
+    
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+    
+        $('.ui.dropdown').dropdown();
+        $('.ui.checkbox').checkbox();
+    
+        $("#ct_dropdown .ui.dropdown").dropdown({
+            action: "activate",
+            onChange: (value, text, selected) => {
+                if(value == "FILE") {
+                    $("#content").hide(600);
+                    $("#fileUpload").show(600);
+                }
+                else {
+                    $("#id_contentType").val("text/markdown");
+                    $("#content > textarea").val("");
+                    $("#content").show(600);
+                    $("#fileUpload").hide(600);
+                }
+            }
+        });
+    
+        $("#visibilityDropdown .ui.dropdown").dropdown({
+            action: "activate",
+            onChange: (value, text, selected) => {
+                if(value == "PRIVATE") {
+                    $("#visibleTo").show(600);
+                }
+                else {
+                    $("#visibleTo").hide(600);
+                }
+            }
+        });
+    
+        $("#attachmentName").change(async (e) => {
+            let file = e.target;
+            let f = file.files[0];
+            $("#_attachmentName").val(f.name);
+            const b64data = await getBase64(f);
+            const comma = b64data.indexOf(",");
+    
+            const contentType = b64data.substr(5, comma - 5);
+            const data = b64data.substr(comma + 1);
+            if(contentType in acceptedImages) {
+                $("#id_contentType").val(contentType);
+            }
+            else {
+                $("#id_contentType").val("application/base64");
+            }
+            $("#content > textarea").val(data);
+        });
+    </script>
+{% endmacro %}

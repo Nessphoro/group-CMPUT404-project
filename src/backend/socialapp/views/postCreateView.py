@@ -21,7 +21,7 @@ class PostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         author = kwargs.pop("author")
         super(PostForm, self).__init__(*args, **kwargs)
-        self.fields["visibleTo"].queryset = author.friends
+        self.fields["visibleTo"].queryset = models.Author.objects.exclude(id=author.id)
 
 class PostCreateView(MixinContext,CreateView):
     template_engine = 'jinja2'
@@ -42,10 +42,7 @@ class PostCreateView(MixinContext,CreateView):
             "source": "http://127.0.0.1:8000",
             "origin": "http://127.0.0.1:8000",
             "published": str(datetime.now()),
+            "author": self.request.user.author
         }
-
-        if self.request.user.is_authenticated:
-            form_defaults["author"] = self.request.user.author
-        
         return form_defaults
 

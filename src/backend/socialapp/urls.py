@@ -18,19 +18,19 @@ urlpatterns = [
     path('', views.Index.as_view(), name='index'),
 
     # Authors
-    path('Author/<uuid:pk>', login_required(views.AuthorDetailView.as_view()), name='author-id'),
+    path('Author/<uuid:pk>', views.AuthorDetailView.as_view(), name='author-id'),
     # path('User/<str:pk>/', views.User1.as_view(), name='test4'), # TODO: I don't know if this is still used
 
     # Posts
     path('Post/<uuid:pk>/', views.PostDetailView.as_view(), name='post-id'),
-    path('Post/edit/<uuid:pk>', views.PostUpdateView.as_view(), name='post-update'),
-    path('Post/delete/<uuid:pk>', views.PostDeleteView.as_view(), name='post-delete'),
+    path('Post/<uuid:pk>/edit', views.PostUpdateView.as_view(), name='post-update'),
+    path('Post/<uuid:pk>/delete', views.PostDeleteView.as_view(), name='post-delete'),
     path('Post/create/', views.PostCreateView.as_view(), name='post-create'),
 
     # Comments
-    path('Comment/create/<uuid:post_pk>', views.CommentCreateView.as_view(), name='comment-create'),
-    path('Comment/edit/<uuid:pk>', views.CommentUpdateView.as_view(), name='comment-update'),
-    path('Comment/delete/<uuid:pk>', views.CommentDeleteView.as_view(), name='comment-delete'),
+    path('Comment/<uuid:post_pk>/create', views.CommentCreateView.as_view(), name='comment-create'),
+    path('Comment/<uuid:pk>/edit', views.CommentUpdateView.as_view(), name='comment-update'),
+    path('Comment/<uuid:pk>/delete', views.CommentDeleteView.as_view(), name='comment-delete'),
 
     # Friend Requests
     path('Request/create/<uuid:pk>', views.FriendRequestHandleView.as_view(), {'action':'send_friend_request'},name='friend-request-create'),
