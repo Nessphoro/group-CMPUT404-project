@@ -7,18 +7,33 @@ New Comment
 
 {% block content %}
 
-<body>
+<div class="centered eight wide column">
     <h2>New Comment</h2>
     <small>Create a comment using the form below!</small>
 
-    <form action="" method="post">
+
+
+    <form class="ui form" action="" method="post">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-    <table>
-        {{ form }}
-    </table>
+
+        {{form.author.as_hidden()}}
+        {{form.post.as_hidden()}}
+        {{form.published.as_hidden()}}
+
+        <div class="field">
+            <label for="{{ form.comment.id_for_label }}">Comment</label>
+            {{form.comment}}
+        </div>
+
+        <div class="field">
+            <label for="{{ form.contentType.id_for_label }}">Content Type</label>
+            {{form.contentType}}
+        </div>
+
+
         <input type="submit" value="submit" />
     </form>
 
-</body>
+</div>
 
 {% endblock %}

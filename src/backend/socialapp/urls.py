@@ -28,7 +28,7 @@ urlpatterns = [
     path('Post/create/', views.PostCreateView.as_view(), name='post-create'),
 
     # Comments
-    path('Comment/create/', views.CommentCreateView.as_view(), name='comment-create'),
+    path('Comment/create/<uuid:post_pk>', views.CommentCreateView.as_view(), name='comment-create'),
     path('Comment/edit/<uuid:pk>', views.CommentUpdateView.as_view(), name='comment-update'),
     path('Comment/delete/<uuid:pk>', views.CommentDeleteView.as_view(), name='comment-delete'),
 

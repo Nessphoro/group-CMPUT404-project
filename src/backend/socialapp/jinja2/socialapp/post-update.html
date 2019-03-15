@@ -11,14 +11,127 @@ Post Update
     <h2>Post Update</h2>
     <small>Update a post using the form below!</small>
 
-    <form action="" method="post">
+    <form class="ui form" action="" method="post">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-    <table>
-        {{ form }}
-    </table>
-        <input type="submit" value="submit" />
+        {{form.author.as_hidden()}}
+        {{form.source.as_hidden()}}
+        {{form.origin.as_hidden()}}
+        {{form.published.as_hidden()}}
+        {{form.contentType.as_hidden()}}
+
+        <div class="field">
+            <label for="{{ form.title.id_for_label }}">Title</label>
+            {{form.title}}
+        </div>
+        <div class="field">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{form.description}}
+        </div>
+        <div id="ct_dropdown" class="field">
+            <label>Content Type</label>
+            <select class="ui dropdown">
+                <option value="MARKDOWN">Markdown</option>
+                <option value="FILE">File</option>
+            </select>
+        </div>
+        <div id="fileUpload" class="field hidden">
+            <div class="ui action input">
+                <input disabled placeholder="File Name" type="text" id="_attachmentName">
+                <label for="attachmentName" class="ui icon button btn-file">
+                        <i class="file icon"></i>
+                        <input type="file" id="attachmentName" style="display: none">
+                </label>
+            </div>
+        </div>
+        <div id="content" class="field">
+            <label for="{{ form.content.id_for_label }}">Content</label>
+            {{form.content}}
+        </div>
+        <div id="visibilityDropdown" class="field">
+            <label for="{{ form.visibility.id_for_label }}">Visibility</label>
+            {{form.visibility|addclass("ui dropdown")}}
+        </div>
+        <div id="visibleTo" class="field hidden">
+            <label for="{{ form.visibleTo.id_for_label }}">Visible To</label>
+            {{form.visibleTo|addclass("ui dropdown")}}
+        </div>
+        <div class="field">
+            <div class="ui toggle checkbox">
+                <label for="{{ form.unlisted.id_for_label }}">Unlisted</label>
+                {{form.unlisted|addclass("ui hidden")}}
+            </div>
+
+        </div>
+        <button class="basic green fluid ui button" type="submit">Post</button>
     </form>
 
 </body>
 
+{% endblock %}
+
+{% block script %}
+<script>
+    const acceptedImages = {
+        "image/jpeg;base64": true,
+        "image/png;base64": true
+    }
+
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    $('.ui.dropdown').dropdown();
+    $('.ui.checkbox').checkbox();
+
+    $("#ct_dropdown .ui.dropdown").dropdown({
+        action: "activate",
+        onChange: (value, text, selected) => {
+            if(value == "FILE") {
+                $("#content").hide(600);
+                $("#fileUpload").show(600);
+            }
+            else {
+                $("#id_contentType").val("text/markdown");
+                $("#content > textarea").val("");
+                $("#content").show(600);
+                $("#fileUpload").hide(600);
+            }
+        }
+    });
+
+    $("#visibilityDropdown .ui.dropdown").dropdown({
+        action: "activate",
+        onChange: (value, text, selected) => {
+            if(value == "PRIVATE Author") {
+                $("#visibleTo").show(600);
+            }
+            else {
+                $("#visibleTo").hide(600);
+            }
+        }
+    });
+
+    $("#attachmentName").change(async (e) => {
+        let file = e.target;
+        let f = file.files[0];
+        $("#_attachmentName").val(f.name);
+        const b64data = await getBase64(f);
+        const comma = b64data.indexOf(",");
+
+        const contentType = b64data.substr(5, comma - 5);
+        const data = b64data.substr(comma + 1);
+        if(contentType in acceptedImages) {
+            $("#id_contentType").val(contentType);
+        }
+        else {
+            $("#id_contentType").val("application/base64");
+        }
+        $("#content > textarea").val(data);
+    });
+</script>
 {% endblock %}
