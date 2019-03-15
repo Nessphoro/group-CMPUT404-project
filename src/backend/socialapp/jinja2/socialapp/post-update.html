@@ -11,12 +11,50 @@ Post Update
     <h2>Post Update</h2>
     <small>Update a post using the form below!</small>
 
-    <form action="" method="post">
+    <form class="ui form" action="" method="post">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-    <table>
-        {{ form }}
-    </table>
-        <input type="submit" value="submit" />
+
+        {{form.author.as_hidden()}}
+        {{form.source.as_hidden()}}
+        {{form.origin.as_hidden()}}
+        {{form.published.as_hidden()}}
+
+        <div class="field">
+            <label for="{{ form.title.id_for_label }}">Title</label>
+            {{form.title}}
+        </div>
+        <div class="field">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{form.description}}
+        </div>
+        <div class="field">
+            <label for="{{ form.contentType.id_for_label }}">Content Type</label>
+            {{form.contentType}}
+        </div>
+        <div class="field">
+            <label for="{{ form.content.id_for_label }}">Content</label>
+            {{form.content}}
+        </div>
+        <div class="field">
+            <label for="{{ form.categories.id_for_label }}">Categories</label>
+            {{form.categories}}
+        </div>
+        <div class="field">
+            <label for="{{ form.visibility.id_for_label }}">Visibility</label>
+            {{form.visibility}}
+        </div>
+
+        <div class="field">
+            <label for="{{ form.unlisted.id_for_label }}">Unlisted</label>
+            {{form.unlisted}}
+        </div>
+
+        <div class="field">
+            <label for="{{ form.visibleTo.id_for_label }}">Visible To</label>
+            {{form.visibleTo}}
+        </div>
+
+        <input class="basic green fluid ui button" type="submit" value="submit" />
     </form>
 
 </body>
