@@ -17,7 +17,6 @@ class CommentCreateView(MixinContext,CreateView):
 
     model = models.Comment
     fields = '__all__'
-    success_url = reverse_lazy("index")
 
     def get_initial(self):
         """Return the initial data to use for forms on this view."""
@@ -30,3 +29,6 @@ class CommentCreateView(MixinContext,CreateView):
             form_defaults["post"] = self.kwargs["post_pk"]
 
         return form_defaults
+
+    def get_success_url(self):
+        return reverse_lazy("post-id", kwargs={'pk': self.kwargs["post_pk"]})
