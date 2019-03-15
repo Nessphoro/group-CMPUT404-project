@@ -8,13 +8,18 @@ import pytz
 from datetime import datetime
 from django.urls import reverse_lazy
 from .mixin import MixinContext
+from .postCreateView import PostForm
 
 class PostUpdateView(UserPassesTestMixin, MixinContext, UpdateView):
     template_engine = 'jinja2'
     template_name = 'socialapp/post-update.html'
-
     model = models.Post
-    fields = '__all__'
+    form_class = PostForm
+
+    def get_form_kwargs(self):
+        kwargs = super(PostUpdateView, self).get_form_kwargs()
+        kwargs["author"] = self.request.user.author
+        return kwargs
 
     def get_success_url(self):
         return reverse_lazy("post-id", kwargs={'pk': self.get_object().id})

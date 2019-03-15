@@ -1,0 +1,53 @@
+<form class="ui form" action="" method="post">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    {{form.author.as_hidden()}}
+    {{form.source.as_hidden()}}
+    {{form.origin.as_hidden()}}
+    {{form.published.as_hidden()}}
+    {{form.contentType.as_hidden()}}
+    
+    <div class="field">
+        <label for="{{ form.title.id_for_label }}">Title</label>
+        {{form.title}}
+    </div>
+    <div class="field">
+        <label for="{{ form.description.id_for_label }}">Description</label>
+        {{form.description}}
+    </div>
+    <div id="ct_dropdown" class="field">
+        <label>Content Type</label>
+        <select class="ui dropdown">
+            <option value="MARKDOWN">Markdown</option>
+            <option value="FILE">File</option>
+        </select>
+    </div>
+    <div id="fileUpload" class="field hidden">
+        <div class="ui action input">
+            <input disabled placeholder="File Name" type="text" id="_attachmentName">
+            <label for="attachmentName" class="ui icon button btn-file">
+                    <i class="file icon"></i>
+                    <input type="file" id="attachmentName" style="display: none">
+            </label>
+        </div>
+    </div>
+    <div id="content" class="field">
+        <label for="{{ form.content.id_for_label }}">Content</label>
+        {{form.content}}
+    </div>
+    <div id="visibilityDropdown" class="field">
+        <label for="{{ form.visibility.id_for_label }}">Visibility</label>
+        {{form.visibility|addclass("ui dropdown")}}
+    </div>
+    <div id="visibleTo" class="field hidden">
+        <label for="{{ form.visibleTo.id_for_label }}">Visible To</label>
+        {{form.visibleTo|addclass("ui dropdown")}}
+    </div>
+    <div class="field">
+        <div class="ui toggle checkbox">
+            <label for="{{ form.unlisted.id_for_label }}">Unlisted</label>
+            {{form.unlisted|addclass("ui hidden")}}
+        </div>
+
+    </div>
+    <button class="basic green fluid ui button" type="submit">Post</button>
+</form>
