@@ -27,5 +27,6 @@ class CommentCreateView(MixinContext,CreateView):
 
         if self.request.user.is_authenticated:
             form_defaults["author"] = self.request.user.author
+            form_defaults["post"] = self.kwargs["post_pk"]
 
         return form_defaults
