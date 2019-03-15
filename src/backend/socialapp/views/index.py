@@ -14,6 +14,7 @@ class Index(MixinIndex,TemplateView ):
     template_engine = 'jinja2'
     template_name = 'socialapp/index.html'
 
+    #Todo, delete if not being used??
     def logged_user(self,active_user):
         # post = models.Post.objects
         self.refresh_feed(active_user, active_user.feed)
@@ -43,7 +44,7 @@ class Index(MixinIndex,TemplateView ):
                         continue
                     
                     title  = item['type']
-                    descriptin = "about Github"
+                    description = "about Github"
                     content = "No Content"
                     timeAt = item["created_at"]
 
@@ -75,7 +76,7 @@ class Index(MixinIndex,TemplateView ):
             return None
 
     def public_user(self):
-        return models.Post.objects.filter(visibility='PUBLIC')
+        return models.Post.objects.filter(visibility='PUBLIC',unlisted=False)
 
 class Comment(TemplateView):
     template_engine = 'jinja2'

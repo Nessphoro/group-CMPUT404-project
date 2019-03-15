@@ -95,7 +95,7 @@ class Author(models.Model):
         return mod.Post.objects.none()
 
     def get_public(self):
-        return mod.Post.objects.filter(visibility='PUBLIC')
+        return mod.Post.objects.filter(visibility='PUBLIC',unlisted=False)
 
     def post_permission(self, post):
         user = post.author
@@ -109,8 +109,9 @@ class Author(models.Model):
             if visibility=="FRIENDS" and user.friends.filter(pk=self.id).exists()==False:
                 return False
             if visibility=="FOAF":
+                friend_check = user.friends.filter(pk=self.id).exists()
                 for fof in user.friends.all():
-                    if fof.friends.filter(pk=self.id).exists()==False:
+                    if fof.friends.filter(pk=self.id).exists()==False and friend_check == False:
                         return False
         elif visibility=='SERVERONLY':
 

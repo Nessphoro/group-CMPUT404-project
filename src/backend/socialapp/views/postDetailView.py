@@ -27,43 +27,6 @@ class PostDetailView(MixinContext,UserPassesTestMixin,DetailView):
             return Auth.post_permission(post)
         if visibility != 'PUBLIC':
             return False
-        # if active:
-        #     if visibility=="PRIVATE":
-        #         if user!=active:
-        #             if post.visibleTo.filter(pk=active.id)==None:
-        #                 return False 
-        #     # elif visibility=="PRIVATE Author":
-        #     #     if post.visibleTo!= active:
-        #     #         return False
-        #     elif visibility=="FRIENDS" or visibility=="FRIENDS OF FRIENDS":
-        #         if user.friends.filter(pk=active.id)==None:
-        #             return False
-        #         if visibility=="FRIENDS OF FRIENDS":
-        #             for fof in user.friends.all():
-        #                 if fof.friends.filter(pk=active.id)==None:
-        #                     return False
-        # else:
-        #     if visibility != 'PUBLIC':
-        #         return False
+
         return True
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-
-    #     if 'ActiveUser' in context:
-    #         post = context['post']
-    #         user = context['post'].author
-    #         active = context['ActiveUser']
-    #         visibility  = post.visibility
-
-    #     return context
-
-
-    # VISIBILITY_OPTIONS = {
-    #     ('PUBLIC', 'Public'),
-    #     ('PRIVATE', 'Private To Me'),
-    #     ('PRIVATE Author', 'Private to Another Author'),
-    #     ('FRIENDS', 'Private to Friends'),
-    #     ('FRIENDS OF FRIENDS', 'Private to Friends of Friends'),
-    # }
-	#visibility
