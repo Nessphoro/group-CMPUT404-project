@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 # from django.contrib.sites.models import get_current_site
+# from django.contrib.sites.models import Site
 from .. import models as mod
 from django.db import models
 from django.urls import reverse
@@ -90,9 +91,9 @@ class Author(models.Model):
     def get_my_feed(self):
         return mod.Post.objects.filter(author=self)
 
-    def get_server(self): #todo
-        # return set(models.Post.objects.filter(visibility='SERVERONLY',unlisted=False,origin=('http://'+get_current_site(request).domain)))
-        return mod.Post.objects.none()
+    def get_server(self): #todo dont hardcode
+        return mod.Post.objects.filter(visibility='SERVERONLY',unlisted=False,origin="http://127.0.0.1:8000")
+        # return mod.Post.objects.none()
 
     def get_public(self):
         return mod.Post.objects.filter(visibility='PUBLIC',unlisted=False)
@@ -114,7 +115,8 @@ class Author(models.Model):
                     if fof.friends.filter(pk=self.id).exists()==False and friend_check == False:
                         return False
         elif visibility=='SERVERONLY':
-
+            if post.origin!="http://127.0.0.1:8000":
+                return False
 
             # if ('http://'+get_current_site(request).domain) != post.origin:
             #     return False
