@@ -49,8 +49,12 @@ class Author(models.Model):
 
         return output
 
+    def get_posts_of_friends(self):
+        pass
 
 
+    def get_posts_of_friends_of_friends(self):
+        pass
 
 
 

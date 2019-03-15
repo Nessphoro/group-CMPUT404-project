@@ -27,7 +27,7 @@ class Post(models.Model):
     VISIBILITY_OPTIONS = {
         ('PUBLIC', 'Public'),
         ('PRIVATE', 'Private To Me'),
-        ('SERVERONLY', 'Public To This Host')
+        ('SERVERONLY', 'Public To This Host'),
         ('FRIENDS', 'Private to Friends'),
         ('FOAF', 'Private to Friends of Friends'),
     }
