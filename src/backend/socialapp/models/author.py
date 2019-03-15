@@ -43,7 +43,7 @@ class Author(models.Model):
         return reverse('author-id', args=[str(self.id)])
 
     def get_friends(self):
-        return set(self.friends)
+        return set(self.friends.all())
 
     def get_friends_of_friends(self):
         output = set()

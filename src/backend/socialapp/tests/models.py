@@ -4,8 +4,8 @@ from socialapp import models;
 
 class TestModels(TestCase):
 
-	@classmethod
-	def setUpTestData(cls):
+    @classmethod
+    def setUpTestData(cls):
         pass
 
     #Test Author X
