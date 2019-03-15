@@ -49,8 +49,10 @@ class Author(models.Model):
         output = set()
 
         for friend in self.friends.all():
-            for friend_of_friend in friend.friends.all():
-                output.add(friend_of_friend)
+            if friend.friends.filter(pk=self.id):
+                for friend_of_friend in friend.friends.all():
+                    if friend_of_friend.friends.filter(pk=self.id):
+                        output.add(friend_of_friend)
 
         return output
 
