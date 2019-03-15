@@ -19,35 +19,34 @@ class PostDetailView(MixinContext,UserPassesTestMixin,DetailView):
 
     def test_func(self):
         active = None
-        if self.request.user.is_authenticated:
-            Auth = models.Author.objects.filter(localuser=self.request.user)
-            if Auth:
-                active = Auth[0]
-            else: # Todo: make a better solution maybe
-                return False
-
         post = self.get_object()
         user = post.author
         visibility  = post.visibility
-
-        if active:
-            if visibility=="PRIVATE":
-                if user!=active:
-                    if post.visibleTo.filter(pk=active.id)==None:
-                        return False 
-            # elif visibility=="PRIVATE Author":
-            #     if post.visibleTo!= active:
-            #         return False
-            elif visibility=="FRIENDS" or visibility=="FRIENDS OF FRIENDS":
-                if user.friends.filter(pk=active.id)==None:
+        if self.request.user.is_authenticated:
+            Auth = models.Author.objects.filter(localuser=self.request.user)
+            if Auth:
+                return Auth[0].post_permission(post)
+            else: # Todo: make a better solution maybe
+                if visibility != 'PUBLIC':
                     return False
-                if visibility=="FRIENDS OF FRIENDS":
-                    for fof in user.friends.all():
-                        if fof.friends.filter(pk=active.id)==None:
-                            return False
-        else:
-            if visibility != 'PUBLIC':
-                return False
+        # if active:
+        #     if visibility=="PRIVATE":
+        #         if user!=active:
+        #             if post.visibleTo.filter(pk=active.id)==None:
+        #                 return False 
+        #     # elif visibility=="PRIVATE Author":
+        #     #     if post.visibleTo!= active:
+        #     #         return False
+        #     elif visibility=="FRIENDS" or visibility=="FRIENDS OF FRIENDS":
+        #         if user.friends.filter(pk=active.id)==None:
+        #             return False
+        #         if visibility=="FRIENDS OF FRIENDS":
+        #             for fof in user.friends.all():
+        #                 if fof.friends.filter(pk=active.id)==None:
+        #                     return False
+        # else:
+        #     if visibility != 'PUBLIC':
+        #         return False
         return True
 
     # def get_context_data(self, **kwargs):
