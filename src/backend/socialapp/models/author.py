@@ -52,7 +52,7 @@ class Author(models.Model):
             if friend.friends.filter(pk=self.id):
                 output.add(friend)
                 for friend_of_friend in friend.friends.all():
-                    if friend_of_friend.friends.filter(pk=friends.id):
+                    if friend_of_friend.friends.filter(pk=friend.id):
                         output.add(friend_of_friend)
 
         return output
