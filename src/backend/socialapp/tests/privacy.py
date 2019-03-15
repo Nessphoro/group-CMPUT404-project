@@ -231,3 +231,7 @@ class TestPrivacy(TestCase):
 		self.assertFalse(result.filter(id=self.public_post_origin_unlisted.id).exists())
 		result = self.author2.get_server()
 		self.assertFalse(result.filter(id=self.public_post_origin_unlisted_bad.id).exists())
+
+	def testIsMe(self):
+		self.assertTrue(self.author1.is_me(self.author1))
+		self.assertFalse(self.author1.is_me(self.author2))

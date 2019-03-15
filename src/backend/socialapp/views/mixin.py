@@ -20,7 +20,6 @@ class MixinIndex(object):
             context['Posts'] = author.get_all_posts()
         else:
             context['Posts'] = self.public_user()
-
         return context
 
 
