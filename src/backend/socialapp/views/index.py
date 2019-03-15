@@ -29,13 +29,7 @@ class Index(MixinIndex,TemplateView ):
                     post = post | models.Post.objects.filter(author=fof).filter(visibility='FRIENDS OF FRIENDS') # filter friend post
         post = post.filter(unlisted=False)
         post = post | models.Post.objects.filter(author=active_user) #get all self posts
-
-        #warning, queryset is converted into a list after this, cant use filter
-        # feed = self.get_feed(active_user.feed)
-        # if feed: 
-        #     post = self.feed_processing(feed,post,active_user)
-
-
+        
         return post
 
     def refresh_feed(self, active_user, url):
@@ -79,21 +73,6 @@ class Index(MixinIndex,TemplateView ):
                     
         else:
             return None
-
-    def feed_processing(self,feed,post,active_user):
-        post = list(post)
-        for item in feed:
-            try:
-                title  = item['type'] #+ ": " + item['repo']['name']
-                description = item['type']
-                payload = item['repo']['url']
-                date = item['created_at']
-                name = item['repo']['name']
-                add_feed = models.Post(author=active_user,title=title, source=payload,origin=payload,contentType='GITHUB',description=name,content=name,unlisted=False)
-                post.append(add_feed)
-            except KeyError: #this should be logged
-                pass
-        return post
 
     def public_user(self):
         return models.Post.objects.filter(visibility='PUBLIC')
