@@ -82,7 +82,6 @@ class Author(models.Model):
         if self.friends.filter(pk=id).exists():
             return True
         else:
-            #not calling fof because set is returned
             for friend in self.friends.all():
                 if friend.friends.filter(pk=id).exists():
                     return True
@@ -123,7 +122,8 @@ class Author(models.Model):
             pass
         return True
 
-
+    def is_me(self, author):
+        return (author == self)
     def get_all_posts(self):
         output = self.get_my_feed()
         output |= self.get_posts_of_friends()
