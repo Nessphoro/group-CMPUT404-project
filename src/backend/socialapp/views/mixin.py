@@ -17,10 +17,9 @@ class MixinIndex(object):
             author = self.request.user.author
             context['ActiveUser'] = author
             self.refresh_feed(author, author.feed)
-            context['Posts'] = self.logged_user(author)
+            context['Posts'] = author.get_all_posts()
         else:
             context['Posts'] = self.public_user()
-
         return context
 
 

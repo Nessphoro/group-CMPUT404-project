@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 # from django.contrib.sites.models import get_current_site
+# from django.contrib.sites.models import Site
 from .. import models as mod
 from django.db import models
 from django.urls import reverse
@@ -42,59 +43,70 @@ class Author(models.Model):
         return reverse('author-id', args=[str(self.id)])
 
     def get_friends(self):
-        return set(self.friends)
+        output = set()
+        for friend in self.friends.all():
+            if friend.friends.filter(pk=self.id):
+                output.add(friend)
+        return output
 
     def get_friends_of_friends(self):
         output = set()
 
         for friend in self.friends.all():
-            for friend_of_friend in friend.friends.all():
-                output.add(friend_of_friend)
-
+            if friend.friends.filter(pk=self.id):
+                output.add(friend)
+                for friend_of_friend in friend.friends.all():
+                    if friend_of_friend.friends.filter(pk=friend.id):
+                        output.add(friend_of_friend)
         return output
 
     def get_posts_of_friends(self):
-        output = set()
+        output = mod.Post.objects.none()
 
         for f in self.friends.all():
-            output = output | mod.Post.objects.filter(author=f,visibility='FRIENDS',unlisted=False)
+            if f.friends.filter(pk=self.id):
+                output = output | mod.Post.objects.filter(author=f,visibility='FRIENDS',unlisted=False)
         return output
 
 
     def get_posts_of_friends_of_friends(self):
-        output = set()
+        output = mod.Post.objects.none()
+
         for f in self.friends.all():
-            output = output | mod.Post.objects.filter(author=f,visibility='FOAF',unlisted=False)
-            for fof in f.friends.all():
+            if f.friends.filter(pk=self.id):
                 output = output | mod.Post.objects.filter(author=f,visibility='FOAF',unlisted=False)
+            for fof in f.friends.all():
+                if fof.friends.filter(pk=f.id):
+                    output = output | mod.Post.objects.filter(author=fof,visibility='FOAF',unlisted=False)
         return output
 
     def get_private(self):
-        return set(mod.Post.objects.filter(visibleTo=self,unlisted=False))
+        return mod.Post.objects.filter(visibleTo=self,unlisted=False)
 
 
     def is_friend(self, id):
-        return friend.friends.filter(pk=id).exists() 
+        user =mod.Author.objects.get(id=id)
+        return user.friends.filter(pk=self.id).exists() 
 
     def is_friend_of_friend(self, id):
-        if self.friends.filter(pk=id).exists():
+        user =mod.Author.objects.get(id=id)
+        if user.friends.filter(pk=self.id).exists():
             return True
         else:
-            #not calling fof because set is returned
-            for friend in self.friends.all():
-                if friend.friends.filter(pk=id).exists():
+            for friend in user.friends.all():
+                if friend.friends.filter(pk=friend.id).exists():
                     return True
         return False
 
     def get_my_feed(self):
-        return set(mod.Post.objects.filter(author=self))
+        return mod.Post.objects.filter(author=self)
 
-    def get_server(self): #todo
-        # return set(models.Post.objects.filter(visibility='SERVERONLY',unlisted=False,origin=('http://'+get_current_site(request).domain)))
-        return set()
+    def get_server(self): #todo dont hardcode
+        return mod.Post.objects.filter(visibility='SERVERONLY',unlisted=False,origin="http://127.0.0.1:8000")
+        # return mod.Post.objects.none()
 
     def get_public(self):
-        return set(mod.Post.objects.filter(visibility='PUBLIC'))
+        return mod.Post.objects.filter(visibility='PUBLIC',unlisted=False)
 
     def post_permission(self, post):
         user = post.author
@@ -102,25 +114,29 @@ class Author(models.Model):
 
         if visibility=="PRIVATE":
             if user!=self:
-                if post.visibleTo.filter(pk=self.id)==None:
+                if post.visibleTo.filter(pk=self.id).exists()==False:
                     return False 
         elif visibility=="FRIENDS" or visibility=="FOAF":
-            if user.friends.filter(pk=self.id)==None:
+            if visibility=="FRIENDS" and user.friends.filter(pk=self.id).exists()==False:
                 return False
             if visibility=="FOAF":
+                friend_check = user.friends.filter(pk=self.id).exists()
                 for fof in user.friends.all():
-                    if fof.friends.filter(pk=self.id)==None:
+                    if fof.friends.filter(pk=self.id).exists()==False and friend_check == False:
                         return False
         elif visibility=='SERVERONLY':
+            if post.origin!="http://127.0.0.1:8000":
+                return False
+
             # if ('http://'+get_current_site(request).domain) != post.origin:
             #     return False
             pass
         return True
 
-
+    def is_me(self, author):
+        return (author == self)
     def get_all_posts(self):
-        output = set()
-        output |= self.get_my_feed()
+        output = self.get_my_feed()
         output |= self.get_posts_of_friends()
         output |= self.get_posts_of_friends_of_friends()
         output |= self.get_private()
