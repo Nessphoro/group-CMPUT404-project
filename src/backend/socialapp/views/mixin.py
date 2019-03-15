@@ -17,14 +17,15 @@ class MixinIndex(object):
             Auth = models.Author.objects.filter(localuser=self.request.user)
             if Auth:
                 context['ActiveUser'] = Auth[0]
-                context['Posts'] = self.logged_user(Auth[0])
+                context['Posts'] = Auth[0].get_all_posts()
+                self.refresh_feed(Auth[0], Auth[0].feed)
         else:
             context['Posts'] = self.public_user()
 
         return context
 
 
-
+# this is a build in mixin called UserPassesTestMixin and test_func
 class DenyAcess(object):
 	def deny(self):
 		pass
