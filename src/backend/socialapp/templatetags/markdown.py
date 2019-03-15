@@ -2,6 +2,7 @@ from django import template
 import markdown
 import bleach
 from bs4 import BeautifulSoup
+from ..models import Post
 
 register = template.Library()
 
@@ -17,6 +18,24 @@ def md(value):
     soup = BeautifulSoup(html, "html.parser")
 
     images = soup.find_all("img")
-    print(images)
-    return html
+    for image in images:
+        image["class"] = "ui fluid round image"
+        if image["src"].startswith("http://127.0.0.1:8000/Post/"):
+            # Reference to a local image
+            preId = image["src"][27:]
+            if preId[-1] == "/":
+                preId = preId[0:-1]
+            
+            
+            postReference = Post.objects.filter(id=preId)
+            if not postReference:
+                continue
+            
+            post = postReference[0]
+
+            
+            if post.contentType.startswith("image"):
+                image["src"] = f"data:{post.contentType},{post.content}"
+
+    return soup.prettify()
     
