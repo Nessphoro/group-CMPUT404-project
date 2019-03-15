@@ -111,7 +111,7 @@ class Author(models.Model):
                 for fof in user.friends.all():
                     if fof.friends.filter(pk=self.id)==None:
                         return False
-        elif visibleTo=='SERVERONLY':
+        elif visibility=='SERVERONLY':
             # if ('http://'+get_current_site(request).domain) != post.origin:
             #     return False
             pass

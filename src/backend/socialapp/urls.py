@@ -18,7 +18,7 @@ urlpatterns = [
     path('', views.Index.as_view(), name='index'),
 
     # Authors
-    path('Author/<uuid:pk>', login_required(views.AuthorDetailView.as_view()), name='author-id'),
+    path('Author/<uuid:pk>', views.AuthorDetailView.as_view(), name='author-id'),
     # path('User/<str:pk>/', views.User1.as_view(), name='test4'), # TODO: I don't know if this is still used
 
     # Posts
