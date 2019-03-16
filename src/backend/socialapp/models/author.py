@@ -150,7 +150,9 @@ class Author(models.Model):
 
     def send_friend_request(self, target_author):
         # Adds target_author to this author's friends and sends the other author a friend request
-        # If the target_author has sent this author a friend request, no additional request is sent, it is taken as the two authors becoming friends.
+        # If the target_author has sent this author a friend request, no additional request is sent
+        # it is taken as the current author accepting the friend request.
+
         self.friends.add(target_author)
 
         if target_author in self.friend_requests.all():
@@ -159,7 +161,6 @@ class Author(models.Model):
 
         if self not in target_author.friend_requests.all():
             target_author.friend_requests.add(self)
-
 
 
     def remove_from_friends(self, target_author):
@@ -179,6 +180,4 @@ class Author(models.Model):
 
     def is_following(self, other_author):
         return (other_author in self.friends.all()) and (self not in other_author.friends.all())
-
-
 
