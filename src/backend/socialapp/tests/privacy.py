@@ -246,11 +246,9 @@ class TestPrivacy(TestCase):
 		
 	def testGetFOF(self):
 		result = self.author1.get_friends_of_friends()
-		print(result)
 		self.assertTrue(bool(result))
 		self.assertEqual(len(result), 3)		
 		A = {self.author1, self.author3, self.author4}
-		print("FLAG", result)
 		self.assertEqual(result, A)
 
 	def testIsFriend(self):
