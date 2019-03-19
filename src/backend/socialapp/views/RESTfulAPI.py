@@ -24,13 +24,36 @@ class PublicPostsViewSet(ListAPIView):
     pagination_class = StandardResultsSetPagination
 
 
-class AuthorFeedViewSet(ListAPIView):
-    # TODO: Returns the authenticated author's feed of posts
+class PostViewSet(ListAPIView):
+    # Returns a single post within a list (as request)
     serializer_class = serializers.PostSerializer
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        author = get_object_or_404(models.Author, id = self.request.query_params.get('pk'))
+        # TODO: Check Author Has Permissions To See The Post
+        post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
+        return [post]
+
+class PostCommentsViewSet(ListAPIView):
+    # Returns a list of the comments attached to the post
+    serializer_class = serializers.CommentSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        post = get_object_or_404(models.Post, id=self.kwargs.get("pk"))
+
+        return post.comments.all()
+
+    # TODO: Bind this same url to take comments via POST and create them server side
+
+
+class AuthorFeedViewSet(ListAPIView):
+    # Returns the logged in author's feed of posts
+    serializer_class = serializers.PostSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        author = self.request.user.author
         return author.get_all_posts()
 
 
@@ -39,12 +62,12 @@ class AuthoredByPostsViewSet(ListAPIView):
     # Results may differ depending on authentication
 
     serializer_class = serializers.PostSerializer
-    # pagination_class = StandardResultsSetPagination
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
 
         author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-        return author.posts_by
+        return author.posts_by.all()
 
 
 

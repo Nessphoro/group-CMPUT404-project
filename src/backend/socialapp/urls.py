@@ -34,11 +34,11 @@ urlpatterns = [
 
     # API - Should be done via the router
     path('api/posts/', views.PublicPostsViewSet.as_view(), name='api-posts'),
-    path('api/posts/<uuid:pk>', views.PublicPostsViewSet.as_view(), name='api-post'),  # TODO
-    path('api/posts/<uuid:pk>/comments', views.PublicPostsViewSet.as_view(), name='api-post-comments'),  # TODO
+    path('api/posts/<uuid:pk>', views.PostViewSet.as_view(), name='api-post'),
+    path('api/posts/<uuid:pk>/comments', views.PostCommentsViewSet.as_view(), name='api-post-comments'),
 
-    path('api/author/posts', views.AuthorFeedViewSet.as_view(), name='api-author-feed'), #TODO
-    path('api/author/<uuid:pk>/posts', views.AuthoredByPostsViewSet.as_view(), name='api-author-posts'), #TODO
+    path('api/author/posts/', login_required(views.AuthorFeedViewSet.as_view()), name='api-author-feed'),
+    path('api/author/<uuid:pk>/posts/', views.AuthoredByPostsViewSet.as_view(), name='api-author-posts'),
 
     # Oauth - For Github Login, done by separate app
     url(r'^oauth/', include('social_django.urls' , namespace='social')),  # <--
