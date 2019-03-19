@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,7 +27,7 @@ SOCIAL_AUTH_GITHUB_KEY = 'c55573c7ae415c79085c'
 SOCIAL_AUTH_GITHUB_SECRET = 'dd5af06757af01e21af0f8c9f51cc5bf4098c88b'
 # SECURITY WARNING: don't run with debug turned on in production!
 SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 LOGIN_REDIRECT_URL = '/'
@@ -112,11 +113,11 @@ WSGI_APPLICATION = 'socialproj.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+      'default': dj_database_url.config(
+          default='sqlite:////{0}'.format(os.path.join(BASE_DIR, 'db.sqlite3'))
+      )
+  }
+
 
 
 # Password validation
