@@ -8,11 +8,6 @@ from rest_framework import routers
 from django.conf.urls import url, include
 from . import views
 
-api_router = routers.DefaultRouter()
-api_router.register(r'author', views.AuthorViewSet)
-api_router.register(r'posts', views.PostViewSet)
-api_router.register(r'posttags', views.PostTagsViewSet)
-api_router.register(r'user', views.UserViewSet)
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
@@ -38,7 +33,12 @@ urlpatterns = [
     path('Comment/<uuid:pk>/delete', views.CommentDeleteView.as_view(), name='comment-delete'),
 
     # API - Should be done via the router
-    path('api/',include(api_router.urls)),
+    path('api/posts/', views.PublicPostsViewSet.as_view(), name='api-posts'),
+    path('api/posts/<uuid:pk>', views.PublicPostsViewSet.as_view(), name='api-post'),  # TODO
+    path('api/posts/<uuid:pk>/comments', views.PublicPostsViewSet.as_view(), name='api-post-comments'),  # TODO
+
+    path('api/author/posts', views.AuthorFeedViewSet.as_view(), name='api-author-feed'), #TODO
+    path('api/author/<uuid:pk>/posts', views.AuthoredByPostsViewSet.as_view(), name='api-author-posts'), #TODO
 
     # Oauth - For Github Login, done by separate app
     url(r'^oauth/', include('social_django.urls' , namespace='social')),  # <--
