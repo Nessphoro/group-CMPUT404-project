@@ -1,1 +1,1 @@
-web: gunicorn the-social-project.wsgi
+web: gunicorn socialproj.wsgi
