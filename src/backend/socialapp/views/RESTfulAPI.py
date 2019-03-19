@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from .. import serializers
 from .. import models
@@ -25,12 +25,13 @@ class PublicPostsViewSet(ListAPIView):
 
 
 class PostViewSet(ListAPIView):
-    # Returns a single post within a list (as request)
+    # Returns a single post
     serializer_class = serializers.PostSerializer
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         # TODO: Check Author Has Permissions To See The Post
+        # TODO: Check if Hindle actually wants this as a list of one item?
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
         return [post]
 
@@ -45,6 +46,18 @@ class PostCommentsViewSet(ListAPIView):
         return post.comments.all()
 
     # TODO: Bind this same url to take comments via POST and create them server side
+
+class AuthorViewSet(ListAPIView):
+    # Returns a single author
+    serializer_class = serializers.AuthorSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        # TODO: Check if Hindle actually wants this as a list of one item?
+        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
+        return [author]
+
+
 
 
 class AuthorFeedViewSet(ListAPIView):
@@ -70,48 +83,11 @@ class AuthoredByPostsViewSet(ListAPIView):
         return author.posts_by.all()
 
 
+class FriendsViewSet(ListAPIView):
+    pass
 
+class isFriendsViewSet(ListAPIView):
+    pass
 
-
-
-
-
-
-
-"""
-class AuthorViewSet(viewsets.ModelViewSet):
-    queryset = models.Author.objects.all()
-    serializer_class = serializers.AuthorSerializer
-    pagination_class = StandardResultsSetPagination
-
-
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = models.Comment.objects.all()
-    serializer_class = serializers.CommentSerializer
-    pagination_class = StandardResultsSetPagination
-
-
-class PostViewSet(viewsets.ModelViewSet):
-    queryset = models.Post.objects.all()
-    serializer_class = serializers.PostSerializer
-    pagination_class = StandardResultsSetPagination
-
-
-class PostTagsViewSet(viewsets.ModelViewSet):
-    queryset = models.PostTags.objects.all()
-    serializer_class = serializers.PostTagSerializer
-    pagination_class = StandardResultsSetPagination
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = serializers.UserSerializer
-    pagination_class = StandardResultsSetPagination
-"""
-
-
-
-
-
-
-
+class FriendsRequestViewSet(ListAPIView):
+    pass
