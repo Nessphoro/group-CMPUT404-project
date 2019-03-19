@@ -22,6 +22,8 @@ class TestREST(TestCase):
 									description='PUBLIC',content='PUBLIC',
 									unlisted=False,published='2019-03-13',
 									visibility='PUBLIC')
+        cls.public_post_comment = models.Comment.objects.create(author=cls.author1,post=cls.public_post,
+                                    comment="test",contentType='PUBLIC',published='2019-03-19')
 
     def testGetHome(self):
         client = APIClient()
@@ -39,3 +41,42 @@ class TestREST(TestCase):
         path = self.public_post.get_absolute_url()
         response = client.get(path)
         self.assertEqual(response.status_code, 200)
+ 
+    def testGetEditComment(self):
+        client = APIClient()
+        path = self.public_post_comment.get_absolute_url()
+        response = client.get(path)
+        self.assertEqual(response.status_code, 200)
+
+    def testGetCreateComment(self):
+        client = APIClient()
+        path = self.public_post.get_absolute_url()
+        path = "/Comment" + path[5:] + "create"
+        response = client.get(path)
+        self.assertEqual(response.status_code, 200)
+
+    """
+    def testPostPost(self):
+        client = APIClient()
+        path = "/Post/create/"
+
+        #author = self.author1
+        #title = "test"
+        #source = 'http://1.1'
+        #origin = 'http://1.1'
+        #contentType = 'PUBLIC'
+        #description = 'testpostpost'
+        #content = 'does it work?'
+        #unlisted = False
+        #published = '2019-03-19'
+        #visibility = 'PUBLIC'
+
+        responce = client.post(path, {'author': 'author1', 'title': 'test', 'source': 'http://1.1', 'origin': 'http://1.1', 
+        'contentType': 'PUBLIC', 'description': 'testpostpost', 'content': 'does it work?', 'unlisted': 'False', 
+        'published': '2019-03-19', 'visibility': 'PUBLIC'})
+
+        print('\n')
+        print(responce)
+        print('\n')
+    """
+    #login = self.client.login(username='user1')
