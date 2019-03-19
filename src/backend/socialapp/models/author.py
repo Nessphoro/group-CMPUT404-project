@@ -165,7 +165,7 @@ class Author(models.Model):
 
     def remove_from_friends(self, target_author):
         # Removes target_author from friends
-        # As a consequence, if the two authors are friends (not that one is following the other), from the target author's prespective, they become a follower of this author.
+        # As a consequence, if the two authors are friends (not that one is following the other), from the target author's perspective, they become a follower of this author.
         self.friends.remove(target_author)
 
     def accept_friend_request(self, sender_author):
@@ -174,6 +174,12 @@ class Author(models.Model):
 
     def decline_friend_request(self, sender_author):
         self.friend_requests.remove(sender_author)
+
+    def get_friend_requests(self):
+        output = set()
+        for friend_request in self.friend_requests.all():
+            output.add(friend_request)
+        return output
 
     def is_follower(self, other_author):
         return (self in other_author.friends.all()) and (other_author not in self.friends.all())
