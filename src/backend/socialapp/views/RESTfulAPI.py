@@ -49,7 +49,7 @@ class PostCommentsViewSet(ListAPIView):
 
 class AuthorViewSet(ListAPIView):
     # Returns a single author
-    serializer_class = serializers.AuthorSerializer
+    serializer_class = serializers.AuthorAltSerializer
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):

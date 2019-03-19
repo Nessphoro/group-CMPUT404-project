@@ -15,6 +15,18 @@ class AuthorSerializer(serializers.ModelSerializer):
         # TODO, add URL field to Authors Serializer
 
 
+class AuthorAltSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="author-id")
+    friends = AuthorSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Author
+        fields = ['id','url', 'host', 'displayName', 'github']
+        # TODO, add URL field to Authors Serializer
+
+
+
+
 class CommentSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(many=False, read_only=True)
     class Meta:
