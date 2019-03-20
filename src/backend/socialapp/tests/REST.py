@@ -11,19 +11,30 @@ class TestREST(TestCase):
     def setUpTestData(cls):
         User = get_user_model()
         cls.user1 = User.objects.create_user('user1', 'user1@user.com')
+        cls.user3 = User.objects.create_user('user3', 'user2@user.com')
+
         cls.author1 = models.Author.objects.create(github='https://api.github.com/users/jejewittt',
 									localuser=cls.user1,
 									displayName='user1',
 									image='https://avatars0.githubusercontent.com/u/25070007?v=4', 
-									feed='https://api.github.com/users/jejewittt/events')                               
+									feed='https://api.github.com/users/jejewittt/events') 
+        cls.author3 = models.Author.objects.create(github='https://api.github.com/users/jejewittt',
+									localuser=cls.user3,
+									displayName='user3',
+									image='https://avatars0.githubusercontent.com/u/25070007?v=4', 
+									feed='https://api.github.com/users/jejewittt/events')
+                                                            
         cls.public_post = models.Post.objects.create(author=cls.author1,title='public', 
 									source='http://1.1',
 									origin='http://1.1',contentType='PUBLIC',
 									description='PUBLIC',content='PUBLIC',
 									unlisted=False,published='2019-03-13',
 									visibility='PUBLIC')
+
         cls.public_post_comment = models.Comment.objects.create(author=cls.author1,post=cls.public_post,
                                     comment="test",contentType='PUBLIC',published='2019-03-19')
+
+        cls.author1.friends.add(cls.author3)
 
     def testGetHome(self):
         client = APIClient()
@@ -41,19 +52,55 @@ class TestREST(TestCase):
         path = self.public_post.get_absolute_url()
         response = client.get(path)
         self.assertEqual(response.status_code, 200)
- 
-    def testGetEditComment(self):
+  
+    def testGetPostEdit(self):
         client = APIClient()
-        path = self.public_post_comment.get_absolute_url()
+        path = self.public_post.get_absolute_url() + "edit"
+        response = client.get(path)
+        self.assertEqual(response.status_code, 302)
+
+    def testGetPostDelete(self):
+        client = APIClient()
+        path = self.public_post.get_absolute_url() + "delete"
+        response = client.get(path)
+        self.assertEqual(response.status_code, 302)
+ 
+    def testGetCommentEdit(self):
+        client = APIClient()
+        path = self.public_post_comment.get_edit_url()
         response = client.get(path)
         self.assertEqual(response.status_code, 200)
 
-    def testGetCreateComment(self):
+    def testGetCommentCreate(self):
         client = APIClient()
         path = self.public_post.get_absolute_url()
         path = "/Comment" + path[5:] + "create"
         response = client.get(path)
         self.assertEqual(response.status_code, 200)
+
+    def testGetCommentDelete(self):
+        client = APIClient()
+        path = self.public_post_comment.get_delete_url()
+        response = client.get(path)
+        self.assertEqual(response.status_code, 302)
+
+    """
+    def testGetAuthorRemoveFriend(self):
+        client = APIClient()
+        temp1 = self.author1.get_absolute_url()
+        temp2 = self.author3.get_absolute_url()
+        path = temp1[:8] + "remove-friend/" + temp2[8:]
+        response = client.get(path)
+        self.assertEqual(response.status_code, 200)
+    """
+
+    """
+    def testGetPostCreate(self):
+        client = APIClient()
+        path = "/Post/create/"
+        response = client.get(path)
+        self.assertEqual(response.status_code, 200)
+    """
 
     """
     def testPostPost(self):
@@ -79,4 +126,9 @@ class TestREST(TestCase):
         print(responce)
         print('\n')
     """
+
     #login = self.client.login(username='user1')
+
+    #print('\n')
+    #print(path)
+    #print('\n')

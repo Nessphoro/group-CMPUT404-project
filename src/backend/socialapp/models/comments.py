@@ -39,5 +39,8 @@ class Comment(models.Model):
     def __str__(self):
         return str(self.comment[:25])
 
-    def get_absolute_url(self):
+    def get_edit_url(self):
         return reverse('comment-update', args=[str(self.id)])
+
+    def get_delete_url(self):
+        return reverse('comment-delete', args=[str(self.id)])
