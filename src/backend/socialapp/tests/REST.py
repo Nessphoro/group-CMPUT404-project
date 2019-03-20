@@ -87,9 +87,35 @@ class TestREST(TestCase):
     """
     def testGetAuthorRemoveFriend(self):
         client = APIClient()
-        temp2 = self.author1.get_absolute_url()
         temp1 = self.author3.get_absolute_url()
-        path = temp1[:8] + "remove-friend/" + temp2[8:]
+        path = temp[:8] + "remove-friend/" + temp[8:]
+        response = client.get(path)
+        self.assertEqual(response.status_code, 200)
+    """
+
+    """
+    def testGetAuthorSendRequest(self):
+        client = APIClient()
+        temp = self.author3.get_absolute_url()
+        path = temp[:8] + "send-request/" + temp[8:]
+        response = client.get(path)
+        self.assertEqual(response.status_code, 200)
+    """
+
+    """
+    def testGetAuthorAcceptRequest(self):
+        client = APIClient()
+        temp1 = self.author1.get_absolute_url()
+        path = temp[:8] + "accept-request/" + temp[8:]
+        response = client.get(path)
+        self.assertEqual(response.status_code, 200)
+    """
+
+    """
+    def testGetAuthorDeclineRequest(self):
+        client = APIClient()
+        temp1 = self.author1.get_absolute_url()
+        path = temp[:8] + "decline-request/" + temp[8:]
         response = client.get(path)
         self.assertEqual(response.status_code, 200)
     """
