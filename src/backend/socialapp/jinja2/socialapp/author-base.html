@@ -30,9 +30,20 @@
                         <a style="margin-top: 1em;" class="blue basic fluid ui button">
                             Edit Profile
                         </a>
-                        <a href="{{ url('author-friends', args=[author.id]) }}" style="margin-top: 1em;" class="blue basic fluid ui button">
-                            Manage Friends
-                        </a>
+                        {% if len(user.author.friend_requests.all()) > 0 %}
+                            <a href="{{ url('author-friends', args=[author.id]) }}" style="margin-top: 1em;" class="blue basic fluid ui labeled button">
+                                <div class="basic blue fluid ui button">
+                                    Manage Friends
+                                </div>
+                                <div class="ui basic blue left pointing label">
+                                    {{len(user.author.friend_requests.all())}}
+                                </div>
+                            </a>
+                        {% else %}
+                            <a href="{{ url('author-friends', args=[author.id]) }}" style="margin-top: 1em;" class="blue basic fluid ui button">
+                                Manage Friends
+                            </a>
+                        {% endif %}
                         <a href="{{ url('logout') }}" style="margin-top: 1em;" class="red basic fluid ui button">
                             Logout
                         </a>
