@@ -15,14 +15,14 @@
    Done - As a server admin, I want to host multiple authors on my server
    Not Done - As a server admin, I want to share or not share posts with users on other servers.
    Not Done - As a server admin, I want to share or not share images with users on other servers.
-   INPROG - As an author, I want to pull in my github activity to my "stream"
+   Done - As an author, I want to pull in my github activity to my "stream"
    Done - As an author, I want to post posts to my "stream"
    Done - As an author, I want to delete my own posts.
-   INPROG - As an author, I want to befriend local authors
+   Done - As an author, I want to befriend local authors
    Not Done - As an author, I want to befriend remote authors
    Not Done - As an author, I want to feel safe about sharing images and posts with my friends -- images should not publicly accessible without authentication.
    Not Done - As an author, I want un-befriend local and remote authors
-   INPROG - As an author, I want to be able to use my web-browser to manage my profile
+   Done - As an author, I want to be able to use my web-browser to manage my profile
    Done - As an author, I want to be able to use my web-browser to manage/author my posts
    Done - As a server admin, I want to be able add, modify, and remove authors.
    Not Done - As a server admin, I want to be able allow users to sign up but require my OK to finally be on my server
@@ -31,8 +31,8 @@
    Not Done - As an author, other authors cannot modify my data
    Done - As an author, I want to comment on posts that I can access
    Done - As an author, my server will know about my friends
-   IN PROG - As an author, When I befriend someone it follows them, only when the other authors befriends me do I count as a real friend.
-   IN PROG - As an author, I want to know if I have friend requests.
+   Done - As an author, When I befriend someone it follows them, only when the other authors befriends me do I count as a real friend.
+   Done - As an author, I want to know if I have friend requests.
    Done - As an author I should be able to browse the public posts of everyone
    Done - As an author I should be able to browse the posts of others depending on my status
    Not Done - As a server admin, I want to be able to add nodes to share with
@@ -40,10 +40,10 @@
    Not Done - As a server admin, I can limit nodes connecting to me via authentication.
    Not Done - As a server admin, node to node connections can be authenticated with HTTP Basic Auth
    Not Done - As a server admin, I can disable the node to node interfaces for connections that are not authenticated!
-   Not Done - As an author, I want to be able to make posts that are unlisted, that are publicly shareable by URI alone (or for embedding images)
+   Done - As an author, I want to be able to make posts that are unlisted, that are publicly shareable by URI alone (or for embedding images)
 
-    15 Done
-    11 In-Progress
+    26 Done
+    1 In-Progress
 
     26 To Be Done By Part 1
 
