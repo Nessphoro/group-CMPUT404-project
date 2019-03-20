@@ -10,7 +10,7 @@ import pytz
 from datetime import datetime
 from django.urls import reverse_lazy
 from .mixin import MixinContext
-
+from django.conf import settings
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -39,8 +39,8 @@ class PostCreateView(MixinContext,CreateView):
     def get_initial(self):
         """Return the initial data to use for forms on this view."""
         form_defaults = {
-            "source": "http://127.0.0.1:8000",
-            "origin": "http://127.0.0.1:8000",
+            "source": settings.SITE_URL,
+            "origin": settings.SITE_URL,
             "published": str(datetime.now()),
             "author": self.request.user.author
         }

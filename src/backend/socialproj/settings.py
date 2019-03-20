@@ -24,7 +24,7 @@ SECRET_KEY = '9gpl1u=h(+ise&p!a&3l=s88kv*cl9+-=-jfg0hkzpv27jevr='
 
 if "PRODUCTION" in os.environ:
     DEBUG = True
-    ALLOWED_HOSTS = ["social.hydrated.app", "localhost"]
+    ALLOWED_HOSTS = ["social.hydrated.app", "localhost", "127.0.0.1"]
     print("Starting in prod")
     SOCIAL_AUTH_GITHUB_KEY = '34f3467ad4c26f25b53c'
     SOCIAL_AUTH_GITHUB_SECRET = 'ff406247b5aedcfe59acecee32b7975179a0add1'

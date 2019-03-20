@@ -8,6 +8,7 @@ from datetime import datetime
 from django.urls import reverse_lazy
 import requests
 from .mixin import MixinContext, MixinIndex
+from django.conf import settings
 
 
 class Index(MixinIndex,TemplateView ):
@@ -58,8 +59,8 @@ class Index(MixinIndex,TemplateView ):
                     title = "about Github"
 
                     p = models.Post(author=active_user, 
-                                    origin="http://127.0.0.1:8000", 
-                                    source="http://127.0.0.1:8000",
+                                    origin=settings.SITE_URL, 
+                                    source=settings.SITE_URL,
                                     title=title,
                                     description=description,
                                     content=content,
