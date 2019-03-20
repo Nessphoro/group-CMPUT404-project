@@ -25,12 +25,12 @@ class TestPrivacy(TestCase):
 									feed='https://api.github.com/users/jejewittt/events')
 		cls.author3 = models.Author.objects.create(github='https://api.github.com/users/jejewittt',
 									localuser=cls.user3,
-									displayName='user2',
+									displayName='user3',
 									image='https://avatars0.githubusercontent.com/u/25070007?v=4', 
 									feed='https://api.github.com/users/jejewittt/events')
 		cls.author4 = models.Author.objects.create(github='https://api.github.com/users/jejewittt',
 									localuser=cls.user4,
-									displayName='user2',
+									displayName='user4',
 									image='https://avatars0.githubusercontent.com/u/25070007?v=4', 
 									feed='https://api.github.com/users/jejewittt/events')
 		cls.author1.friends.add(cls.author3)
@@ -247,9 +247,8 @@ class TestPrivacy(TestCase):
 	def testGetFOF(self):
 		result = self.author1.get_friends_of_friends()
 		self.assertTrue(bool(result))
-		self.assertEqual(len(result), 2)		
-		A = {self.author3, self.author4}
-		print("FLAG", result)
+		self.assertEqual(len(result), 3)		
+		A = {self.author1, self.author3, self.author4}
 		self.assertEqual(result, A)
 
 	def testIsFriend(self):

@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 from .. import models as mod
 from django.db import models
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
 import uuid
+
 
 class Author(models.Model):
     """ Authors represent a user in the social app's context, note they are distinct from users for modularity.
@@ -14,8 +16,6 @@ class Author(models.Model):
     Authors can make posts and comments which are the primary content of the site.
     """
 
-
-
     # Django Metadata on class
     class Meta:
         ordering = ['displayName'] # Order By Display Name By Default
@@ -24,8 +24,9 @@ class Author(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
 
     # Relations
-    localuser = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    friends = models.ManyToManyField("Author", blank=True, null=True, related_name="friend_by")
+    localuser = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
+    friends = models.ManyToManyField("Author", blank=True, related_name="friend_by")
+    friend_requests = models.ManyToManyField("Author", blank=True, related_name="sent_friend_requests")
 
     # Data
     github = models.CharField(max_length=150, blank=False)
@@ -94,7 +95,7 @@ class Author(models.Model):
             return True
         else:
             for friend in user.friends.all():
-                if friend.friends.filter(pk=friend.id).exists():
+                if friend.friends.filter(pk=self.id).exists():
                     return True
         return False
 
@@ -135,6 +136,7 @@ class Author(models.Model):
 
     def is_me(self, author):
         return (author == self)
+
     def get_all_posts(self):
         output = self.get_my_feed()
         output |= self.get_posts_of_friends()
@@ -145,5 +147,43 @@ class Author(models.Model):
 
         return output
 
-    def get_visible_posts_for(self, user):
-        pass
+
+    def send_friend_request(self, target_author):
+        # Adds target_author to this author's friends and sends the other author a friend request
+        # If the target_author has sent this author a friend request, no additional request is sent
+        # it is taken as the current author accepting the friend request.
+
+        self.friends.add(target_author)
+
+        if target_author in self.friend_requests.all():
+            self.friend_requests.remove(target_author)
+            return
+
+        if self not in target_author.friend_requests.all():
+            target_author.friend_requests.add(self)
+
+
+    def remove_from_friends(self, target_author):
+        # Removes target_author from friends
+        # As a consequence, if the two authors are friends (not that one is following the other), from the target author's perspective, they become a follower of this author.
+        self.friends.remove(target_author)
+
+    def accept_friend_request(self, sender_author):
+        self.friends.add(sender_author)
+        self.friend_requests.remove(sender_author)
+
+    def decline_friend_request(self, sender_author):
+        self.friend_requests.remove(sender_author)
+
+    def get_friend_requests(self):
+        output = set()
+        for friend_request in self.friend_requests.all():
+            output.add(friend_request)
+        return output
+
+    def is_follower(self, other_author):
+        return (self in other_author.friends.all()) and (other_author not in self.friends.all())
+
+    def is_following(self, other_author):
+        return (other_author in self.friends.all()) and (self not in other_author.friends.all())
+

@@ -19,7 +19,12 @@ urlpatterns = [
 
     # Authors
     path('Author/<uuid:pk>', views.AuthorDetailView.as_view(), name='author-id'),
-    # path('User/<str:pk>/', views.User1.as_view(), name='test4'), # TODO: I don't know if this is still used
+
+    path('Author/remove-friend/<uuid:target_pk>', views.AuthorActionsView.as_view(), {'action': 'remove-friend'},name='author-remove-friend'),
+
+    path('Author/send-request/<uuid:target_pk>', views.AuthorActionsView.as_view(), {'action': 'send-friend-request'}, name='author-send-friend-request'),
+    path('Author/accept-request/<uuid:target_pk>', views.AuthorActionsView.as_view(), {'action': 'accept-friend-request'}, name='author-accept-friend-request'),
+    path('Author/decline-request/<uuid:target_pk>', views.AuthorActionsView.as_view(), {'action': 'decline-friend-request'}, name='author-decline-friend-request'),
 
     # Posts
     path('Post/<uuid:pk>/', views.PostDetailView.as_view(), name='post-id'),

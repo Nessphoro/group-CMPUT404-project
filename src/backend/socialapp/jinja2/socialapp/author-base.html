@@ -13,8 +13,8 @@
                 </p>
                 {% if user.is_authenticated %}
                     
-                    {% if user.author != author %}
-                        <a class="primary basic fluid ui button">
+                    {% if (user.author != author) and (author not in user.author.friends.all()) and user.author not in author.friend_requests.all() %}
+                        <a href="{{ url('author-send-friend-request', args=[author.id])}}"   class="primary basic fluid ui button">
                             Send Friend Request
                         </a>
                     {% endif%}

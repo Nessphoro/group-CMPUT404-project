@@ -3,6 +3,7 @@ from .index import Comment
 
 # Author views
 from .authorDetailView import AuthorDetailView
+from .authorActionsView import AuthorActionsView
 
 # Post Views
 from .postDetailView import PostDetailView
