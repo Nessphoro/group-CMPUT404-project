@@ -154,19 +154,19 @@ class Author(models.Model):
         output = self.get_my_feed()
         if not user.is_anonymous:
             user = user.author
-            # if not self.is_me(user):
-            output = output.filter(unlisted=False)
-            userId = user.id
-            if not self.is_friend(userId):
-                output = output.exclude(visibility="FRIENDS")
-            if not self.is_friend(userId):
-                output = output.exclude(visibility="FOAF")
-            for post in output.all():
-                if post.visibility=="PRIVATE" and not post.visibleTo.filter(id=userId).exists():
-                    # raise ValueError('A very specific bad thing happened.')
-                    output = output.exclude(id=post.id)
-            if user.host !=settings.SITE_URL:
-                output = output.exclude(visibility='SERVERONLY')
+            if not self.is_me(user):
+                output = output.filter(unlisted=False)
+                userId = user.id
+                if not self.is_friend(userId):
+                    output = output.exclude(visibility="FRIENDS")
+                if not self.is_friend(userId):
+                    output = output.exclude(visibility="FOAF")
+                for post in output.all():
+                    if post.visibility=="PRIVATE" and not post.visibleTo.filter(id=userId).exists():
+                        # raise ValueError('A very specific bad thing happened.')
+                        output = output.exclude(id=post.id)
+                if user.host !=settings.SITE_URL:
+                    output = output.exclude(visibility='SERVERONLY')
         else:
             output.filter(visibility="PUBLIC",unlisted=False)
         return output
