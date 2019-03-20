@@ -6,32 +6,40 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
-class AuthorSerializer(serializers.HyperlinkedModelSerializer):
+class AuthorSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="author-id")
+
     class Meta:
         model = Author
-        fields = '__all__'
+        fields = ['id','url', 'host', 'displayName', 'github']
+        # TODO, add URL field to Authors Serializer
 
 
-class CommentSerializer(serializers.HyperlinkedModelSerializer):
+class AuthorAltSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="author-id")
+    friends = AuthorSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Author
+        fields = ['id','url', 'host', 'displayName', 'github']
+        # TODO, add URL field to Authors Serializer
+
+
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer(many=False, read_only=True)
     class Meta:
         model = Comment
-        fields = '__all__'
+        ordering = ["-published"]
+        fields = ['author', 'comment', 'contentType', 'published', 'id']
 
 
-class PostSerializer(serializers.HyperlinkedModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer(many=False, read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
+
     class Meta:
         model = Post
-        fields = '__all__'
-
-
-class PostTagSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = PostTags
-        fields = '__all__'
-
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('email', 'first_name', 'last_name', 'is_superuser')
+        ordering = ["-published"]
+        fields = ['title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories','comments', 'published', 'id', 'visibility', 'visibleTo', 'unlisted']
