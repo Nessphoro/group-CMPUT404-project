@@ -8,4 +8,4 @@ WORKDIR /root/app/src/backend
 
 ENV PRODUCTION=true
 RUN python manage.py makemigrations
-CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000
+CMD python manage.py migrate --run-syncdb && python manage.py runserver 0.0.0.0:8000
