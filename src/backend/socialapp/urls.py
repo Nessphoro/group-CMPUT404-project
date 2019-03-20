@@ -8,11 +8,6 @@ from rest_framework import routers
 from django.conf.urls import url, include
 from . import views
 
-api_router = routers.DefaultRouter()
-api_router.register(r'author', views.AuthorViewSet)
-api_router.register(r'posts', views.PostViewSet)
-api_router.register(r'posttags', views.PostTagsViewSet)
-api_router.register(r'user', views.UserViewSet)
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
@@ -39,7 +34,17 @@ urlpatterns = [
     path('Comment/<uuid:pk>/delete', views.CommentDeleteView.as_view(), name='comment-delete'),
 
     # API - Should be done via the router
-    path('api/',include(api_router.urls)),
+    path('api/posts/', views.PublicPostsViewSet.as_view(), name='api-posts'),
+    path('api/posts/<uuid:pk>', views.PostViewSet.as_view(), name='api-post'),
+    path('api/posts/<uuid:pk>/comments', views.PostCommentsViewSet.as_view(), name='api-post-comments'),
+
+    path('api/author/posts/', login_required(views.AuthorFeedViewSet.as_view()), name='api-author-feed'),
+    path('api/author/<uuid:pk>', views.AuthorViewSet.as_view(), name='api-author'),
+    path('api/author/<uuid:pk>/posts/', views.AuthoredByPostsViewSet.as_view(), name='api-author-posts'),
+
+    path('api/author/<uuid:pk>/friends', views.FriendsViewSet.as_view(), name='api-list-friends'), # TODO
+    path('api/author/<uuid:pk1>/friends/<uuid:pk2>', views.isFriendsViewSet.as_view(), name='api-is-friends'), # TODO
+    path('api/friendrequest', views.FriendsRequestViewSet.as_view(), name='api-friend-request'),  # TODO
 
     # Oauth - For Github Login, done by separate app
     url(r'^oauth/', include('social_django.urls' , namespace='social')),  # <--

@@ -113,21 +113,22 @@ class Author(models.Model):
         user = post.author
         visibility  = post.visibility
 
-        if visibility=="PRIVATE":
-            if user!=self:
-                if post.visibleTo.filter(pk=self.id).exists()==False:
-                    return False 
-        elif visibility=="FRIENDS" or visibility=="FOAF":
-            if visibility=="FRIENDS" and user.friends.filter(pk=self.id).exists()==False:
-                return False
-            if visibility=="FOAF":
-                friend_check = user.friends.filter(pk=self.id).exists()
-                for fof in user.friends.all():
-                    if fof.friends.filter(pk=self.id).exists()==False and friend_check == False:
-                        return False
-        elif visibility=='SERVERONLY':
-            if post.origin!="http://127.0.0.1:8000":
-                return False
+        if user!=self:
+            if visibility=="PRIVATE":
+                if user!=self:
+                    if post.visibleTo.filter(pk=self.id).exists()==False:
+                        return False 
+            elif visibility=="FRIENDS" or visibility=="FOAF":
+                if visibility=="FRIENDS" and user.friends.filter(pk=self.id).exists()==False:
+                    return False
+                if visibility=="FOAF":
+                    friend_check = user.friends.filter(pk=self.id).exists()
+                    for fof in user.friends.all():
+                        if fof.friends.filter(pk=self.id).exists()==False and friend_check == False:
+                            return False
+            elif visibility=='SERVERONLY':
+                if post.origin!="http://127.0.0.1:8000":
+                    return False
 
             # if ('http://'+get_current_site(request).domain) != post.origin:
             #     return False
