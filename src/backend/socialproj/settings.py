@@ -22,8 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '9gpl1u=h(+ise&p!a&3l=s88kv*cl9+-=-jfg0hkzpv27jevr='
 
-SOCIAL_AUTH_GITHUB_KEY = 'c55573c7ae415c79085c'
-SOCIAL_AUTH_GITHUB_SECRET = 'dd5af06757af01e21af0f8c9f51cc5bf4098c88b'
+if "PRODUCTION" in os.environ:
+    print("Starting in prod")
+    SOCIAL_AUTH_GITHUB_KEY = '34f3467ad4c26f25b53c'
+    SOCIAL_AUTH_GITHUB_SECRET = 'ff406247b5aedcfe59acecee32b7975179a0add1'
+else:
+    SOCIAL_AUTH_GITHUB_KEY = 'c55573c7ae415c79085c'
+    SOCIAL_AUTH_GITHUB_SECRET = 'dd5af06757af01e21af0f8c9f51cc5bf4098c88b'
 # SECURITY WARNING: don't run with debug turned on in production!
 SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
 DEBUG = True
