@@ -87,8 +87,8 @@ class TestREST(TestCase):
     """
     def testGetAuthorRemoveFriend(self):
         client = APIClient()
-        temp1 = self.author1.get_absolute_url()
-        temp2 = self.author3.get_absolute_url()
+        temp2 = self.author1.get_absolute_url()
+        temp1 = self.author3.get_absolute_url()
         path = temp1[:8] + "remove-friend/" + temp2[8:]
         response = client.get(path)
         self.assertEqual(response.status_code, 200)
