@@ -18,6 +18,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 class AuthorAltSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="author-id")
     friends = AuthorSerializer(many=True, read_only=True)
+    friend_requests = AuthorSerializer(many=True, read_only=True)
 
     class Meta:
         model = Author
