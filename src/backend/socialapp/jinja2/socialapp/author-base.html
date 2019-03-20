@@ -15,7 +15,7 @@
                     
                     {% if (user.author != author) and (author not in user.author.friends.all()) %}
                         {% if author in user.author.friend_requests.all() %}
-                            <a href="{{ url('author-accept-friend-request', args=[author.id]) }}"   class="primary basic fluid ui button">
+                            <a href="{{ url('author-accept-friend-request', args=[author.id]) }}"   class="green basic fluid ui button">
                                 Accept Request
                             </a>
                         {% elif user.author not in author.friend_requests.all()  %}
