@@ -65,10 +65,10 @@ Profile - {{author.displayName}}
 
         <div class="event">
             <div class="label">
-                <img src="{{friend.image}}">
+                <img src="{{sender_author.image}}">
             </div>
             <div class="summary">
-                <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{sender_author.displayName}}</a>
+                <a href="{{ url('author-id', args=[sender_author.id]) }}" class="user">{{sender_author.displayName}}</a>
             </div>
             <div class="meta">
                 <a href="{{ url('author-accept-friend-request', args=[sender_author.id]) }}">
