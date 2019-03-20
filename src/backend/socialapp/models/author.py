@@ -5,6 +5,7 @@ from .. import models as mod
 from django.db import models
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 import uuid
 
 
@@ -31,7 +32,7 @@ class Author(models.Model):
     # Data
     github = models.CharField(max_length=150, blank=False)
     displayName = models.CharField(max_length=150, blank=False)
-    bio =  models.TextField(blank=True)
+    bio =  models.TextField(blank=True, default="No bio")
     host = models.URLField(blank=True)
     image = models.URLField(blank=True)
     feed = models.URLField(blank=True)
@@ -102,8 +103,8 @@ class Author(models.Model):
     def get_my_feed(self):
         return mod.Post.objects.filter(author=self)
 
-    def get_server(self): #todo dont hardcode
-        return mod.Post.objects.filter(visibility='SERVERONLY',unlisted=False,origin="http://127.0.0.1:8000")
+    def get_server(self): 
+        return mod.Post.objects.filter(visibility='SERVERONLY',unlisted=False,origin=settings.SITE_URL)
         # return mod.Post.objects.none()
 
     def get_public(self):
@@ -127,7 +128,7 @@ class Author(models.Model):
                         if fof.friends.filter(pk=self.id).exists()==False and friend_check == False:
                             return False
             elif visibility=='SERVERONLY':
-                if post.origin!="http://127.0.0.1:8000":
+                if post.origin!=settings.SITE_URL:
                     return False
 
             # if ('http://'+get_current_site(request).domain) != post.origin:

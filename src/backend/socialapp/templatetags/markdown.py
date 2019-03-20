@@ -3,6 +3,9 @@ import markdown
 import bleach
 from bs4 import BeautifulSoup
 from ..models import Post
+from django.conf import settings
+
+localsite = settings.SITE_URL + "/Post/"
 
 register = template.Library()
 
@@ -21,9 +24,9 @@ def md(value):
     for image in images:
         image["class"] = "ui fluid round image"
         try:
-            if image["src"].startswith("http://127.0.0.1:8000/Post/"):
+            if image["src"].startswith(localsite):
                 # Reference to a local image
-                preId = image["src"][27:]
+                preId = image["src"][len(localsite):]
                 if preId[-1] == "/":
                     preId = preId[0:-1]
                 
