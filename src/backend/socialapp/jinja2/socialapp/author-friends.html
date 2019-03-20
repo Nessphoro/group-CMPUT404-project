@@ -21,13 +21,15 @@ Profile - {{author.displayName}}
                 <div class="label">
                     <img src="{{friend.image}}">
                 </div>
-                <div class="summary">
-                    <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}}</a>
-                </div>
-                <div class="meta">
-                    <a href="{{ url('author-remove-friend', args=[friend.id]) }}">
-                        <i class="ban icon"></i> Unfriend
-                    </a>
+                <div class="content">
+                    <div class="summary">
+                        <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}}</a>
+                    </div>
+                    <div class="meta">
+                        <a href="{{ url('author-remove-friend', args=[friend.id]) }}">
+                            <i class="ban icon"></i> Unfriend
+                        </a>
+                    </div>
                 </div>
             </div>
         {% endif %}
@@ -44,13 +46,15 @@ Profile - {{author.displayName}}
                 <div class="label">
                     <img src="{{friend.image}}">
                 </div>
-                <div class="summary">
-                    <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}}</a>
-                </div>
-                <div class="meta">
-                    <a href="{{ url('author-remove-friend', args=[friend.id]) }}">
-                        <i class="ban icon"></i> Unfollow
-                    </a>
+                <div class="content">
+                    <div class="summary">
+                        <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}}</a>
+                    </div>
+                    <div class="meta">
+                        <a href="{{ url('author-remove-friend', args=[friend.id]) }}">
+                            <i class="ban icon"></i> Unfollow
+                        </a>
+                    </div>
                 </div>
             </div>
         {% endif %}
@@ -67,16 +71,18 @@ Profile - {{author.displayName}}
             <div class="label">
                 <img src="{{sender_author.image}}">
             </div>
-            <div class="summary">
-                <a href="{{ url('author-id', args=[sender_author.id]) }}" class="user">{{sender_author.displayName}}</a>
-            </div>
-            <div class="meta">
-                <a href="{{ url('author-accept-friend-request', args=[sender_author.id]) }}">
-                    <i class="check icon"></i> Accept
-                </a>
-                <a href="{{ url('author-decline-friend-request', args=[sender_author.id]) }}">
-                    <i class="close icon"></i> Decline
-                </a>
+            <div class="contet">
+                <div class="summary">
+                    <a href="{{ url('author-id', args=[sender_author.id]) }}" class="user">{{sender_author.displayName}}</a>
+                </div>
+                <div class="meta">
+                    <a href="{{ url('author-accept-friend-request', args=[sender_author.id]) }}">
+                        <i class="check icon"></i> Accept
+                    </a>
+                    <a href="{{ url('author-decline-friend-request', args=[sender_author.id]) }}">
+                        <i class="close icon"></i> Decline
+                    </a>
+                </div>
             </div>
         </div>
         
