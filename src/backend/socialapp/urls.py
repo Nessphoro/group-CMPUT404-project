@@ -19,6 +19,7 @@ urlpatterns = [
 
     # Authors
     path('Author/<uuid:pk>', views.AuthorDetailView.as_view(), name='author-id'),
+    path('Author/<uuid:pk>/friends', views.AuthorFriendsView.as_view(), name='author-friends'),
 
     path('Author/remove-friend/<uuid:target_pk>', views.AuthorActionsView.as_view(), {'action': 'remove-friend'},name='author-remove-friend'),
 

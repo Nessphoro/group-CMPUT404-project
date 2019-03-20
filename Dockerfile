@@ -1,5 +1,6 @@
 FROM python:3
 EXPOSE 8000
+VOLUME [ "/external" ]
 WORKDIR /root/app
 ADD . /root/app
 RUN pip install -r requirements.txt

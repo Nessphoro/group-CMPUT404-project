@@ -31,7 +31,7 @@ class Author(models.Model):
     # Data
     github = models.CharField(max_length=150, blank=False)
     displayName = models.CharField(max_length=150, blank=False)
-    bio =  models.TextField(blank=True)
+    bio =  models.TextField(blank=True, default="No bio")
     host = models.URLField(blank=True)
     image = models.URLField(blank=True)
     feed = models.URLField(blank=True)

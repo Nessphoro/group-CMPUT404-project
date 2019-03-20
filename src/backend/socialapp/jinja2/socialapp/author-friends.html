@@ -1,0 +1,87 @@
+{% extends 'socialapp/author-base.html' %}
+{% import "common.html" as common %}
+
+{% block title %}
+Profile - {{author.displayName}}
+{% endblock %}
+
+
+
+
+{% block authorContent %}
+
+
+{% if user.is_authenticated and user.author == author %}
+<h1>Friends</h1>
+<div class="ui feed"> 
+    {% for friend in user.author.friends.all() %}
+
+        {% if author.is_friend(friend.id) %}
+            <div class="event">
+                <div class="label">
+                    <img src="{{friend.image}}">
+                </div>
+                <div class="summary">
+                    <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}}</a>
+                </div>
+                <div class="meta">
+                    <a href="{{ url('author-remove-friend', args=[friend.id]) }}">
+                        <i class="ban icon"></i> Unfriend
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+    {% endfor %}
+</div>
+
+<h1>Following</h1>
+<div class="ui feed">
+    {% for friend in user.author.friends.all() %}
+
+        {% if friend.is_follower(user.author)  %}
+            <div class="event">
+                <div class="label">
+                    <img src="{{friend.image}}">
+                </div>
+                <div class="summary">
+                    <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}}</a>
+                </div>
+                <div class="meta">
+                    <a href="{{ url('author-remove-friend', args=[friend.id]) }}">
+                        <i class="ban icon"></i> Unfollow
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+    {% endfor %}
+</div>
+
+
+<h1>Friend Requests</h1>
+<div class="ui feed">
+    {% for sender_author in user.author.friend_requests.all()  %}
+
+        <div class="event">
+            <div class="label">
+                <img src="{{friend.image}}">
+            </div>
+            <div class="summary">
+                <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}}</a>
+            </div>
+            <div class="meta">
+                <a href="{{ url('author-accept-friend-request', args=[sender_author.id]) }}">
+                    <i class="check icon"></i> Accept
+                </a>
+                <a href="{{ url('author-decline-friend-request', args=[sender_author.id]) }}">
+                    <i class="close icon"></i> Decline
+                </a>
+            </div>
+        </div>
+        
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

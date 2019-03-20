@@ -13,15 +13,25 @@
                 </p>
                 {% if user.is_authenticated %}
                     
-                    {% if (user.author != author) and (author not in user.author.friends.all()) and user.author not in author.friend_requests.all() %}
-                        <a href="{{ url('author-send-friend-request', args=[author.id])}}"   class="primary basic fluid ui button">
-                            Send Friend Request
-                        </a>
+                    {% if (user.author != author) and (author not in user.author.friends.all()) %}
+                        {% if author in user.author.friend_requests.all() %}
+                            <a href="{{ url('author-accept-friend-request', args=[author.id]) }}"   class="primary basic fluid ui button">
+                                Accept Request
+                            </a>
+                        {% elif user.author not in author.friend_requests.all()  %}
+                            <a href="{{ url('author-send-friend-request', args=[author.id])}}"   class="primary basic fluid ui button">
+                                Send Friend Request
+                            </a>
+                        {% else %}
+                        {% endif %}
                     {% endif%}
 
                     {% if user.author == author %}
                         <a style="margin-top: 1em;" class="blue basic fluid ui button">
                             Edit Profile
+                        </a>
+                        <a href="{{ url('author-friends', args=[author.id]) }}" style="margin-top: 1em;" class="blue basic fluid ui button">
+                            Manage Friends
                         </a>
                         <a href="{{ url('logout') }}" style="margin-top: 1em;" class="red basic fluid ui button">
                             Logout
