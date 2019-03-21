@@ -2,7 +2,7 @@
    
    Done - As an author I want to make posts.
    Done - As an author, posts I create can link to images.
-   Done/MAYBE - As a server admin, images can be hosted on my server.
+   Done - As a server admin, images can be hosted on my server.
    Done - As an author, posts I create be private to me
    Done - As an author, posts I create be private to another author
    Done - As an author, posts I create be private to my friends
@@ -11,7 +11,7 @@
    Done - As an author, posts I create can be public
    Done - As an author, posts I make can be in simple plain text
    Done - As an author, posts I make can be in markdown (commonMark is good)
-   MAYBE - As an author, I want a consistent identity per server
+   Done - As an author, I want a consistent identity per server
    Done - As a server admin, I want to host multiple authors on my server
    Not Done - As a server admin, I want to share or not share posts with users on other servers.
    Not Done - As a server admin, I want to share or not share images with users on other servers.
@@ -28,7 +28,7 @@
    Not Done - As a server admin, I want to be able allow users to sign up but require my OK to finally be on my server
    Not Done - As a server admin, I don't want to do heavy setup to get the posts of my author's friends.
    INPROG - As a server admin, I want a restful interface for most operations
-   Not Done - As an author, other authors cannot modify my data
+   Done - As an author, other authors cannot modify my data
    Done - As an author, I want to comment on posts that I can access
    Done - As an author, my server will know about my friends
    Done - As an author, When I befriend someone it follows them, only when the other authors befriends me do I count as a real friend.
@@ -42,7 +42,7 @@
    Not Done - As a server admin, I can disable the node to node interfaces for connections that are not authenticated!
    Done - As an author, I want to be able to make posts that are unlisted, that are publicly shareable by URI alone (or for embedding images)
 
-    26 Done
+    27 Done
     1 In-Progress
 
     26 To Be Done By Part 1

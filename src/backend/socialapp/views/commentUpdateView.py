@@ -2,7 +2,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.sites.shortcuts import get_current_site
-
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 import json
 from .. import models
@@ -11,7 +11,7 @@ from datetime import datetime
 from django.urls import reverse_lazy
 from .mixin import MixinContext
 
-class CommentUpdateView(MixinContext,UpdateView):
+class CommentUpdateView(UserPassesTestMixin, MixinContext,UpdateView):
     template_engine = 'jinja2'
     template_name = 'socialapp/comment-update.html'
 
@@ -28,3 +28,9 @@ class CommentUpdateView(MixinContext,UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("post-id", kwargs={'pk': self.get_object().post.id})
+
+    def test_func(self):
+        if not self.request.user.is_authenticated:
+            return False
+
+        return self.get_object().author == self.request.user.author
