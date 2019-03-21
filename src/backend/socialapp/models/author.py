@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 import uuid
-
+from django.conf import settings
 
 class Author(models.Model):
     """ Authors represent a user in the social app's context, note they are distinct from users for modularity.
@@ -33,13 +33,13 @@ class Author(models.Model):
     github = models.CharField(max_length=150, blank=False)
     displayName = models.CharField(max_length=150, blank=False)
     bio =  models.TextField(blank=True, default="No bio")
-    host = models.URLField(blank=True)
+    host = models.URLField(blank=True, default=settings.SITE_URL)
     image = models.URLField(blank=True)
     feed = models.URLField(blank=True)
 
     # Methods
     def __str__(self):
-        return self.displayName
+        return f"{self.displayName} ({self.host})"
 
     def get_absolute_url(self):
         return reverse('author-id', args=[str(self.id)])
