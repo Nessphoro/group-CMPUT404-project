@@ -165,9 +165,9 @@ class FriendsViewSet(ListAPIView):
 
         author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
         return Response(OrderedDict[
-            ('query': 'friends'),
-            ('author': author.id),
-            ('authors': author.friend_by.id.all())
+            ('query', 'friends'),
+            ('author', author.id),
+            ('authors', author.friend_by.id.all())
         ])
 
 class isFriendsViewSet(ListAPIView):
@@ -183,9 +183,9 @@ class isFriendsViewSet(ListAPIView):
         if author1 in author2.friend_by.all() and author2 in author1.friend_by.all():
             are_friends = True
         return Response(OrderedDict[
-            ('query': 'friends'),
-            ('authors': [author1, author2]),
-            ('friends': are_friends)
+            ('query', 'friends'),
+            ('authors', [author1, author2]),
+            ('friends', are_friends)
         ])
 
 class FriendsRequestViewSet(ListAPIView):
