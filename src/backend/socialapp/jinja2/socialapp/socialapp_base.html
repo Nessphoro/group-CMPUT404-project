@@ -17,7 +17,7 @@
           {% if user.is_authenticated %}
           <a class="item" href=" {{ url('author-id', args=[user.author.id])  }}">Profile</a>
           <a class="item" href=" {{ url('post-create')   }}">New Post</a>
-          <a class="item"><img src="{{ ActiveUser.image }}" alt='profile_pic' class='image'></a> 
+          <a href=" {{ url('author-id', args=[user.author.id])  }}" class="item"><img src="{{ ActiveUser.image }}" alt='profile_pic' class='image'></a> 
     
           {% else %}
           <a class="ui inverted green button" href="{{ url ('social:begin', args=['github']) }}">Login with GitHub</a>
