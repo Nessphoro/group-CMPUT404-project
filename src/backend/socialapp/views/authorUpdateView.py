@@ -8,7 +8,7 @@ class AuthorUpdateView(UserPassesTestMixin,MixinContext,UpdateView):
     template_name = 'socialapp/author-update.html'
     model = models.Author
 
-    fields = ["bio", "displayName"]
+    fields = ["bio", "displayName", "firstName", "lastName", "email"]
 
     def get_success_url(self):
         return self.get_object().get_absolute_url()

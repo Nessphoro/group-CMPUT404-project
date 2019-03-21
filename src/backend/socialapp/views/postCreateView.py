@@ -51,9 +51,14 @@ class PostCreateView(UserPassesTestMixin, MixinContext,CreateView):
         # Paranoid mode
         post.author = self.request.user.author
         post.published = datetime.now()
-        post.source = settings.SITE_URL
-        post.origin = settings.SITE_URL
+        
         post.save()
+
+        post.source = f"{settings.SITE_URL}{reverse_lazy('api-post', kwargs={'pk': post.id})}"
+        post.origin = post.source
+
+        post.save()
+
         self.object = post
         return HttpResponseRedirect(self.get_success_url())
     def get_success_url(self):

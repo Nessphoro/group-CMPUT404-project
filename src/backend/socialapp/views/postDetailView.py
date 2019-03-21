@@ -20,7 +20,6 @@ class PostDetailView(MixinContext,UserPassesTestMixin,DetailView):
     def test_func(self):
         active = None
         post = self.get_object()
-        user = post.author
         visibility  = post.visibility
         if self.request.user.is_authenticated:
             Auth = self.request.user.author

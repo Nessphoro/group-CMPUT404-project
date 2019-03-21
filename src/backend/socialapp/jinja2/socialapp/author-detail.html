@@ -10,7 +10,15 @@ Profile - {{author.displayName}}
 
 {% block authorContent %}
 
-<h1>Recent Activity</h1>
+{% if user.is_authenticated %}
+    {% if user.author == author %}
+        <h1>Your Posts</h1>
+    {% else %}
+        <h1>Recent Activity</h1>
+    {% endif %}
+{% else %}
+    <h1>Recent Activity</h1>
+{% endif %}
 <div class="ui feed">
     {% for post in author.get_visitor(user) %}
         {% if post.contentType.startswith("image") %}

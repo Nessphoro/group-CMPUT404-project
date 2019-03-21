@@ -13,6 +13,18 @@
             {{form.displayName}}
         </div>
         <div class="field">
+            <label for="{{ form.firstName.id_for_label }}">First Name</label>
+            {{form.firstName}}
+        </div>
+        <div class="field">
+            <label for="{{ form.lastName.id_for_label }}">Last Name</label>
+            {{form.lastName}}
+        </div>
+        <div class="field">
+            <label for="{{ form.email.id_for_label }}">Email</label>
+            {{form.email}}
+        </div>
+        <div class="field">
             <label for="{{ form.bio.id_for_label }}">Bio</label>
             {{form.bio}}
         </div>

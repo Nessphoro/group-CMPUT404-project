@@ -2,8 +2,9 @@ FROM python:3
 EXPOSE 8000
 VOLUME [ "/external" ]
 WORKDIR /root/app
-ADD . /root/app
+ADD requirements.txt /root/app/requirements.txt
 RUN pip install -r requirements.txt
+ADD . /root/app
 WORKDIR /root/app/src/backend
 
 ENV PRODUCTION=true
