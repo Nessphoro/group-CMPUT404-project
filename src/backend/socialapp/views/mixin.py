@@ -67,7 +67,8 @@ class MixinIndex(object):
                 outstanding.append(self.refresh_feed(session, active_user, active_user.feed))
             for node in models.Node.objects.all():
                 outstanding.append(node.pull(session))
-            await asyncio.wait(outstanding)
+            if outstanding:
+                await asyncio.wait(outstanding)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
