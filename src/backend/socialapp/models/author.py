@@ -40,7 +40,6 @@ class Author(models.Model):
     image = models.URLField(blank=True, default=f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
     feed = models.URLField(blank=True)
 
-
     # Methods
     def __str__(self):
         return f"{self.displayName} ({self.host})"
