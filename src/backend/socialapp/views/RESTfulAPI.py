@@ -156,10 +156,45 @@ class AuthoredByPostsViewSet(ListAPIView):
 
 
 class FriendsViewSet(ListAPIView):
-    pass
+    # Returns all friends of a particular author pk
+
+    serializer_class = serializers.AuthorAltSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+
+        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
+        return Response(OrderedDict[
+            ('query': 'friends'),
+            ('author': author.id),
+            ('authors': author.friend_by.id.all())
+        ])
 
 class isFriendsViewSet(ListAPIView):
-    pass
+    # Returns if author pk and another author are friends
+    serializer_class = serializers.AuthorAltSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+
+        author1 = get_object_or_404(models.Author, id= self.kwargs.get("pk1"))
+        author2 = get_object_or_404(models.Author, id= slef.kwargs.get("pk2"))
+        are_friends = False
+        if author1 in author2.friend_by.all() and author2 in author1.friend_by.all():
+            are_friends = True
+        return Response(OrderedDict[
+            ('query': 'friends'),
+            ('authors': [author1, author2]),
+            ('friends': are_friends)
+        ])
 
 class FriendsRequestViewSet(ListAPIView):
-    pass
+    # Returns all friend requests to a particular author pk
+
+    serializer_class = serializers.AuthorAltSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+
+        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
+        return author.sent_friend_requests.all()

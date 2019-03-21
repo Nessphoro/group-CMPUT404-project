@@ -49,7 +49,7 @@ class Node(models.Model):
                     if Post.objects.filter(id=post["id"]) or post['origin'].startswith(settings.SITE_URL):
                         continue
                     
-                    postAuthor = self.getOrCreateAuthor(post["author"])
+                    postAuthor = await self.getOrCreateAuthor(session, post["author"])
                     newPost = Post( author=postAuthor, 
                                     origin=post["origin"], 
                                     source=f"{self.endpoint}/posts/{post['id']}",
@@ -59,11 +59,11 @@ class Node(models.Model):
                                     contentType=post["contentType"],
                                     published=post["published"],
                                     unlisted=post["unlisted"],
-                                    categories=post["categories"].join(","),
+                                    categories=",".join(post["categories"]),
                                     id=post["id"],
-                                    visibility=post["visiblity"]
+                                    visibility=post["visibility"]
                     )
                     newPost.save()
-            except Error as e:
+            except Exception as e:
                 print(e)
                 return

@@ -25,7 +25,7 @@ class Author(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
 
     # Relations
-    localuser = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
+    localuser = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     friends = models.ManyToManyField("Author", blank=True, related_name="friend_by")
     friend_requests = models.ManyToManyField("Author", blank=True, related_name="sent_friend_requests")
 
@@ -37,7 +37,7 @@ class Author(models.Model):
     displayName = models.CharField(max_length=150, blank=False)
     bio =  models.TextField(blank=True, default="No bio")
     host = models.URLField(blank=True, default=settings.SITE_URL)
-    image = models.URLField(blank=True)
+    image = models.URLField(blank=True, default=f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
     feed = models.URLField(blank=True)
 
     # Methods
@@ -171,7 +171,7 @@ class Author(models.Model):
                 if user.host !=settings.SITE_URL:
                     output = output.exclude(visibility='SERVERONLY')
         else:
-            output.filter(visibility="PUBLIC",unlisted=False)
+            output = output.filter(visibility="PUBLIC",unlisted=False)
         return output
 
 

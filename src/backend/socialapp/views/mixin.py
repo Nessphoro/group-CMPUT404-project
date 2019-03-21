@@ -61,10 +61,14 @@ class MixinIndex(object):
 
     async def refresh_async(self, active_user):
         async with aiohttp.ClientSession() as session:
-            outstanding = [self.refresh_feed(session, active_user, active_user.feed)]
+            
+            outstanding = []
+            if active_user:
+                outstanding.append(self.refresh_feed(session, active_user, active_user.feed))
             for node in models.Node.objects.all():
-                outstanding.append(node.pull())
-            await asyncio.wait(outstanding)
+                outstanding.append(node.pull(session))
+            if outstanding:
+                await asyncio.wait(outstanding)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,6 +82,10 @@ class MixinIndex(object):
             loop.close()
             context['Posts'] = author.get_all_posts()
         else:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(self.refresh_async(None))
+            loop.close()
             context['Posts'] = self.public_user()
         return context
 

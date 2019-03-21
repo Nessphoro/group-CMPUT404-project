@@ -29,6 +29,8 @@ if "PRODUCTION" in os.environ:
     SOCIAL_AUTH_GITHUB_KEY = '34f3467ad4c26f25b53c'
     SOCIAL_AUTH_GITHUB_SECRET = 'ff406247b5aedcfe59acecee32b7975179a0add1'
     SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SITE_URL = "https://social.hydrated.app"
 else:
     DEBUG = True
