@@ -9,11 +9,14 @@ def save_profile(backend, user, response, *args, **kwargs):
         if not Author.objects.filter(localuser=user):
             firstName = response["name"].split()[0]
             lastName = response["name"].split()[1]
+            bio = response['bio']
+            if not bio:
+                bio = "No bio"
             Author.objects.create(github=response['html_url'], 
                                   email = response["email"],
                                   firstName = firstName,
                                   lastName = lastName,
-                                  bio=response['bio'],
+                                  bio=bio,
                                   localuser=user,
                                   displayName=response['login'],
                                   image=response['avatar_url'],
