@@ -63,7 +63,7 @@ class MixinIndex(object):
         async with aiohttp.ClientSession() as session:
             outstanding = [self.refresh_feed(session, active_user, active_user.feed)]
             for node in models.Node.objects.all():
-                outstanding.append(node.pull())
+                outstanding.append(node.pull(session))
             await asyncio.wait(outstanding)
 
     def get_context_data(self, **kwargs):
