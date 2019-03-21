@@ -11,12 +11,6 @@ class AuthorAdmin(admin.ModelAdmin):
 class PostAdmin(admin.ModelAdmin):
     pass
 
-
-@admin.register(models.PostTags)
-class PostTagAdmin(admin.ModelAdmin):
-    pass
-
-
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):
     pass

@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.response import Response
+
+from collections import OrderedDict
 
 from .. import serializers
 from .. import models
@@ -13,16 +16,27 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'size'
     max_page_size = 100
 
-
-
+class PostsPagination(PageNumberPagination):
+    """ The spec wants to be clever with fields. Fine.
+    """
+    page_size = 100
+    page_size_query_param = 'size'
+    max_page_size = 200
+    def get_paginated_response(self, data):
+        return Response(OrderedDict([
+            ('query', 'posts'),
+            ('size', self.page.paginator.count),
+            ('next', self.get_next_link()),
+            ('previous', self.get_previous_link()),
+            ('posts', data)
+        ]))
 
 
 class PublicPostsViewSet(ListAPIView):
     # Returns all public posts on the server
     queryset = models.Post.objects.filter(visibility='PUBLIC',unlisted=False)
     serializer_class = serializers.PostSerializer
-    pagination_class = StandardResultsSetPagination
-
+    pagination_class = PostsPagination
 
 class PostViewSet(ListAPIView):
     # Returns a single post

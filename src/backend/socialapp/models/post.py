@@ -4,12 +4,6 @@ from django.urls import reverse
 import uuid
 
 
-class PostTags(models.Model):
-    """ TODO: Current a dummy class, presumably used to link posts to post categories.
-    """
-    tag = models.CharField(max_length=64)
-
-
 class Post(models.Model):
     """ Posts represent a blog post in the application.
 
@@ -55,7 +49,7 @@ class Post(models.Model):
     description = models.CharField(max_length = 280)
     contentType = models.CharField(max_length=64, choices=CONTENT_TYPE_OPTIONS, default = "text/markdown")
     content = models.TextField()
-    categories = models.ForeignKey(PostTags, on_delete=models.CASCADE, blank=True, null=True)
+    categories = models.CharField(max_length = 280, blank=True, default="")
     published = models.DateTimeField()
     visibility = models.CharField(max_length=64, choices=VISIBILITY_OPTIONS, default="PUBLIC") #temporary
     unlisted = models.BooleanField()

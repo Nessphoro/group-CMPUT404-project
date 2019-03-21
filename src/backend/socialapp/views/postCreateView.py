@@ -1,7 +1,6 @@
 from django.views.generic import TemplateView, ListView, DetailView, CreateView
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.sites.shortcuts import get_current_site
 from django import forms
 
 import json
@@ -46,6 +45,16 @@ class PostCreateView(MixinContext,CreateView):
         }
         return form_defaults
 
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        # Paranoid mode
+        post.author = self.request.user.author
+        post.published = datetime.now()
+        post.source = settings.SITE_URL
+        post.origin = settings.SITE_URL
+        post.save()
+        self.object = post
+        return HttpResponseRedirect(self.get_success_url())
     def get_success_url(self):
         return reverse_lazy("post-id", kwargs={'pk': self.object.id})
 
