@@ -9,6 +9,7 @@ from datetime import datetime
 from django.urls import reverse_lazy
 from .mixin import MixinContext
 from .postCreateView import PostForm
+from django.conf import settings
 
 class PostUpdateView(UserPassesTestMixin, MixinContext, UpdateView):
     template_engine = 'jinja2'
