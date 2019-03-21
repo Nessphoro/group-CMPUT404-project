@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import UserPassesTestMixin
 import json
@@ -21,8 +21,16 @@ class PostUpdateView(UserPassesTestMixin, MixinContext, UpdateView):
         kwargs["author"] = self.request.user.author
         return kwargs
 
+    def form_valid(self, form):
+        self.object = form.save()
+        # Paranoid
+        self.object.author = self.request.user.author
+        self.object.save()
+
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_success_url(self):
-        return reverse_lazy("post-id", kwargs={'pk': self.get_object().id})
+        return reverse_lazy("post-id", kwargs={'pk': self.object.id})
 
     def test_func(self):
         if not self.request.user.is_authenticated:
