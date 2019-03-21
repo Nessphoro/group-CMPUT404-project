@@ -1,25 +1,24 @@
 {% extends 'socialapp/socialapp_base.html' %}
 
 {% block content %}
-<body>
-<!-- https://stackoverflow.com/questions/7844539/how-to-csrf-token-protection-in-jinja2-template-engine -->
-<form action="" method="post">
-	<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-	<div>
-    	<input type="text" id="displayName" name="displayName" value="{{ ActiveUser.displayName }}">
-    </div>
-    <div>
-    	<input type="text" id="bio" name="bio"  value="{{ ActiveUser.bio }}">
-    </div>
-   <input type = "submit" value = "submit" />
-</form>
 
+<div class="centered eight wide column">
+    <h2>Edit Profile</h2>
+    <small>Edit your info using the form</small>
 
-    <a href="{{ url('index') }}">Home</a>
-
-
-
-
-</body>
+    <form class="ui form" action="" method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <div class="field">
+            <label for="{{ form.displayName.id_for_label }}">Display Name</label>
+            {{form.displayName}}
+        </div>
+        <div class="field">
+            <label for="{{ form.bio.id_for_label }}">Bio</label>
+            {{form.bio}}
+        </div>
+        <button class="basic green fluid ui button" type="submit">Save</button>
+    </form>
+</div>
+        
 
 {% endblock %}

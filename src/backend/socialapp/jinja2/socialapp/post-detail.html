@@ -31,14 +31,20 @@
     
     
     <!-- <b> {{ post.description }}</b> -->
-    {% if (post.contentType == "image/png;base64") or (post.contentType == "image/jpeg;base64") %}
+    {% if (post.contentType == "image/png;base64") %}
         <img class="ui fluid rounded image" src="data:image/png;base64,{{post.content}}"/>
+    {% elif (post.contentType == "image/jpeg;base64") %}
+        <img class="ui fluid rounded image" src="data:image/jpeg;base64,{{post.content}}"/>
+    {% elif post.contentType.startswith("text") %}
+        <div>
+            {{post.content|markdown|safe}}
+        </div>
+    {% else %}
+        <div>
+            <a download="{{post.description}}" href="data:application/octet-stream;charset=utf-16le;base64,{{post.content}}">Download Linked File</a>
+        </div>
     {%endif%}
-    <div>
-    {% if post.contentType.startswith("text") %}
-        {{post.content|markdown|safe}}
-    {%endif%}
-    </div>
+ 
     
     <div class="ui comments">
         <h3 class="ui dividing header">Comments</h3>
@@ -55,7 +61,7 @@
                         <span class="date">{{comment.published|naturaltime}}</span>
                     </div>
                     <div class="text">
-                        {{ comment.comment}}
+                        {{ comment.comment|markdown|safe}}
                     </div>
                     {% if user.author == comment.author %}
                         <div class="actions">

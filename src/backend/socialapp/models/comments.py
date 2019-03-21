@@ -20,7 +20,6 @@ class Comment(models.Model):
     # Choices for certain fields
     CONTENT_TYPE_OPTIONS = {
         ('text/markdown','Markdown'),
-        ('JPEG-IMAGE','Image (jpeg)'),
     }
 
     # Identifiers
@@ -32,7 +31,7 @@ class Comment(models.Model):
 
     # Data
     comment = models.TextField()
-    contentType = models.CharField(max_length=64, choices=CONTENT_TYPE_OPTIONS, default='MARKDOWN')
+    contentType = models.CharField(max_length=64, choices=CONTENT_TYPE_OPTIONS, default='text/markdown')
     published = models.DateTimeField()
 
     # Methods
