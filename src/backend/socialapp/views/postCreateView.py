@@ -46,3 +46,6 @@ class PostCreateView(MixinContext,CreateView):
         }
         return form_defaults
 
+    def get_success_url(self):
+        return reverse_lazy("post-id", kwargs={'pk': self.object.id})
+
