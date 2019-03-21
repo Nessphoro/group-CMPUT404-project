@@ -25,7 +25,7 @@ class Author(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
 
     # Relations
-    localuser = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
+    localuser = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     friends = models.ManyToManyField("Author", blank=True, related_name="friend_by")
     friend_requests = models.ManyToManyField("Author", blank=True, related_name="sent_friend_requests")
 
