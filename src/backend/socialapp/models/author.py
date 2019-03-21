@@ -37,7 +37,7 @@ class Author(models.Model):
     displayName = models.CharField(max_length=150, blank=False)
     bio =  models.TextField(blank=True, default="No bio")
     host = models.URLField(blank=True, default=settings.SITE_URL)
-    image = models.URLField(blank=True)
+    image = models.URLField(blank=True, default=f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
     feed = models.URLField(blank=True)
 
     # Methods
