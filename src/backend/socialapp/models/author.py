@@ -127,8 +127,8 @@ class Author(models.Model):
                     for fof in user.friends.all():
                         if fof.friends.filter(pk=self.id).exists()==False and friend_check == False:
                             return False
-            elif visibility=='SERVERONLY':
-                if post.origin!=settings.SITE_URL:
+            elif visibility=='SERVERONLY':  #this may need to change to user host
+                if user.host!=settings.SITE_URL:
                     return False
 
             # if ('http://'+get_current_site(request).domain) != post.origin:
@@ -148,6 +148,30 @@ class Author(models.Model):
         output |= self.get_public()
 
         return output
+
+    def get_visitor(self,user):
+
+        output = self.get_my_feed()
+        if not user.is_anonymous:
+            user = user.author
+            if not self.is_me(user):
+                output = output.filter(unlisted=False)
+                userId = user.id
+                if not self.is_friend(userId):
+                    output = output.exclude(visibility="FRIENDS")
+                if not self.is_friend(userId):
+                    output = output.exclude(visibility="FOAF")
+                for post in output.all():
+                    if post.visibility=="PRIVATE" and not post.visibleTo.filter(id=userId).exists():
+                        # raise ValueError('A very specific bad thing happened.')
+                        output = output.exclude(id=post.id)
+                if user.host !=settings.SITE_URL:
+                    output = output.exclude(visibility='SERVERONLY')
+        else:
+            output.filter(visibility="PUBLIC",unlisted=False)
+        return output
+
+
 
 
     def send_friend_request(self, target_author):
