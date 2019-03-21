@@ -22,13 +22,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '9gpl1u=h(+ise&p!a&3l=s88kv*cl9+-=-jfg0hkzpv27jevr='
 
-SOCIAL_AUTH_GITHUB_KEY = 'c55573c7ae415c79085c'
-SOCIAL_AUTH_GITHUB_SECRET = 'dd5af06757af01e21af0f8c9f51cc5bf4098c88b'
+if "PRODUCTION" in os.environ:
+    DEBUG = True
+    ALLOWED_HOSTS = ["social.hydrated.app", "localhost", "127.0.0.1"]
+    print("Starting in prod")
+    SOCIAL_AUTH_GITHUB_KEY = '34f3467ad4c26f25b53c'
+    SOCIAL_AUTH_GITHUB_SECRET = 'ff406247b5aedcfe59acecee32b7975179a0add1'
+    SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+    SITE_URL = "https://social.hydrated.app"
+else:
+    DEBUG = True
+    ALLOWED_HOSTS = []
+    SOCIAL_AUTH_GITHUB_KEY = 'c55573c7ae415c79085c'
+    SOCIAL_AUTH_GITHUB_SECRET = 'dd5af06757af01e21af0f8c9f51cc5bf4098c88b'
+    SITE_URL = "http://127.0.0.1:8000"
 # SECURITY WARNING: don't run with debug turned on in production!
 SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
-DEBUG = True
-
-ALLOWED_HOSTS = []
 LOGIN_REDIRECT_URL = '/'
 
 # Application definition
@@ -111,12 +120,20 @@ WSGI_APPLICATION = 'socialproj.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if "PRODUCTION" in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': '/external/db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 
 
@@ -176,4 +193,5 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 REST_FRAMEWORK = {
+    "DATETIME_FORMAT": 'iso-8601'
 }

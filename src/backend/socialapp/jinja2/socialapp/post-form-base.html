@@ -17,7 +17,8 @@
     <div id="ct_dropdown" class="field">
         <label>Content Type</label>
         <select class="ui dropdown">
-            <option value="MARKDOWN">Markdown</option>
+            <option value="text/markdown">Markdown</option>
+            <option value="text/plain">Text</option>
             <option value="FILE">File</option>
         </select>
     </div>
@@ -33,6 +34,10 @@
     <div id="content" class="field">
         <label for="{{ form.content.id_for_label }}">Content</label>
         {{form.content}}
+    </div>
+    <div class="field">
+        <label for="{{ form.categories.id_for_label }}">Categories</label>
+        {{form.categories}}
     </div>
     <div id="visibilityDropdown" class="field">
         <label for="{{ form.visibility.id_for_label }}">Visibility</label>

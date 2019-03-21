@@ -10,53 +10,17 @@ Profile - {{author.displayName}}
 
 {% block authorContent %}
 
-
-{% if user.is_authenticated and user.author == author %}
-<h1>Friends</h1>
-<div>
-    {% for friend in user.author.friends.all() %}
-
-        {% if author.is_friend(friend.id) %}
-            {{friend.displayName}}
-            <a href="{{ url('author-remove-friend', args=[friend.id]) }}">Remove</a>
-        {% endif %}
-
-    {% endfor %}
-</div>
-
-<h1>Following</h1>
-<div>
-    {% for friend in user.author.friends.all() %}
-
-        {% if friend.is_follower(user.author)  %}
-            {{friend.displayName}}
-            <a href="{{ url('author-remove-friend', args=[friend.id]) }}">Remove</a>
-        {% endif %}
-
-    {% endfor %}
-</div>
-
-
-<h1>Friend Requests</h1>
-<div>
-    {% for sender_author in user.author.friend_requests.all()  %}
-
-        {{sender_author.displayName}}
-
-        <a href="{{ url('author-accept-friend-request', args=[sender_author.id]) }}">Accept </a>
-        <a href="{{ url('author-decline-friend-request', args=[sender_author.id]) }}">Decline</a>
-
-    {% endfor %}
-</div>
+{% if user.is_authenticated %}
+    {% if user.author == author %}
+        <h1>Your Posts</h1>
+    {% else %}
+        <h1>Recent Activity</h1>
+    {% endif %}
+{% else %}
+    <h1>Recent Activity</h1>
 {% endif %}
-
-
-
-
-
-<h1>Recent Activity</h1>
 <div class="ui feed">
-    {% for post in author.posts_by.all() %}
+    {% for post in author.get_visitor(user) %}
         {% if post.contentType.startswith("image") %}
             {{common.imagePost(post)}}
         {% else %}

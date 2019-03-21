@@ -5,8 +5,9 @@ from .. import models as mod
 from django.db import models
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 import uuid
-
+from django.conf import settings
 
 class Author(models.Model):
     """ Authors represent a user in the social app's context, note they are distinct from users for modularity.
@@ -30,15 +31,18 @@ class Author(models.Model):
 
     # Data
     github = models.CharField(max_length=150, blank=False)
+    firstName = models.CharField(max_length=150, default="John", blank=True)
+    lastName = models.CharField(max_length=150, default="Smith", blank=True)
+    email = models.CharField(max_length=150, default="no@email.com", blank=True)
     displayName = models.CharField(max_length=150, blank=False)
-    bio =  models.TextField(blank=True)
-    host = models.URLField(blank=True)
+    bio =  models.TextField(blank=True, default="No bio")
+    host = models.URLField(blank=True, default=settings.SITE_URL)
     image = models.URLField(blank=True)
     feed = models.URLField(blank=True)
 
     # Methods
     def __str__(self):
-        return self.displayName
+        return f"{self.displayName} ({self.host})"
 
     def get_absolute_url(self):
         return reverse('author-id', args=[str(self.id)])
@@ -102,8 +106,8 @@ class Author(models.Model):
     def get_my_feed(self):
         return mod.Post.objects.filter(author=self)
 
-    def get_server(self): #todo dont hardcode
-        return mod.Post.objects.filter(visibility='SERVERONLY',unlisted=False,origin="http://127.0.0.1:8000")
+    def get_server(self): 
+        return mod.Post.objects.filter(visibility='SERVERONLY',unlisted=False,origin=settings.SITE_URL)
         # return mod.Post.objects.none()
 
     def get_public(self):
@@ -126,8 +130,8 @@ class Author(models.Model):
                     for fof in user.friends.all():
                         if fof.friends.filter(pk=self.id).exists()==False and friend_check == False:
                             return False
-            elif visibility=='SERVERONLY':
-                if post.origin!="http://127.0.0.1:8000":
+            elif visibility=='SERVERONLY':  #this may need to change to user host
+                if user.host!=settings.SITE_URL:
                     return False
 
             # if ('http://'+get_current_site(request).domain) != post.origin:
@@ -147,6 +151,30 @@ class Author(models.Model):
         output |= self.get_public()
 
         return output
+
+    def get_visitor(self,user):
+
+        output = self.get_my_feed()
+        if not user.is_anonymous:
+            user = user.author
+            if not self.is_me(user):
+                output = output.filter(unlisted=False)
+                userId = user.id
+                if not self.is_friend(userId):
+                    output = output.exclude(visibility="FRIENDS")
+                if not self.is_friend(userId):
+                    output = output.exclude(visibility="FOAF")
+                for post in output.all():
+                    if post.visibility=="PRIVATE" and not post.visibleTo.filter(id=userId).exists():
+                        # raise ValueError('A very specific bad thing happened.')
+                        output = output.exclude(id=post.id)
+                if user.host !=settings.SITE_URL:
+                    output = output.exclude(visibility='SERVERONLY')
+        else:
+            output.filter(visibility="PUBLIC",unlisted=False)
+        return output
+
+
 
 
     def send_friend_request(self, target_author):
