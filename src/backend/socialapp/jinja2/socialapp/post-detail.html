@@ -31,8 +31,10 @@
     
     
     <!-- <b> {{ post.description }}</b> -->
-    {% if (post.contentType == "image/png;base64") or (post.contentType == "image/jpeg;base64") %}
+    {% if (post.contentType == "image/png;base64") %}
         <img class="ui fluid rounded image" src="data:image/png;base64,{{post.content}}"/>
+    {% elif (post.contentType == "image/jpeg;base64") %}
+        <img class="ui fluid rounded image" src="data:image/jpeg;base64,{{post.content}}"/>
     {%endif%}
     <div>
     {% if post.contentType.startswith("text") %}
@@ -55,7 +57,7 @@
                         <span class="date">{{comment.published|naturaltime}}</span>
                     </div>
                     <div class="text">
-                        {{ comment.comment}}
+                        {{ comment.comment|markdown|safe}}
                     </div>
                     {% if user.author == comment.author %}
                         <div class="actions">

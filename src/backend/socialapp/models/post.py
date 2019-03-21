@@ -34,6 +34,7 @@ class Post(models.Model):
 
     CONTENT_TYPE_OPTIONS = {
         ('text/markdown','Markdown'),
+        ('text/plain','Markdown'),
         ('application/base64','File'),
         ('image/png;base64','PNG'),
         ('image/jpeg;base64','JPEG')
