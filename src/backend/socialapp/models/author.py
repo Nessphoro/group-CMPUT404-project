@@ -171,7 +171,7 @@ class Author(models.Model):
                 if user.host !=settings.SITE_URL:
                     output = output.exclude(visibility='SERVERONLY')
         else:
-            output.filter(visibility="PUBLIC",unlisted=False)
+            output = output.filter(visibility="PUBLIC",unlisted=False)
         return output
 
 
