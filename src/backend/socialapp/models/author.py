@@ -31,6 +31,9 @@ class Author(models.Model):
 
     # Data
     github = models.CharField(max_length=150, blank=False)
+    firstName = models.CharField(max_length=150, default="John", blank=True)
+    lastName = models.CharField(max_length=150, default="Smith", blank=True)
+    email = models.CharField(max_length=150, default="no@email.com", blank=True)
     displayName = models.CharField(max_length=150, blank=False)
     bio =  models.TextField(blank=True, default="No bio")
     host = models.URLField(blank=True, default=settings.SITE_URL)
