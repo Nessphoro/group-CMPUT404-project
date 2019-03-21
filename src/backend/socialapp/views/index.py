@@ -15,25 +15,6 @@ class Index(MixinIndex,TemplateView ):
     template_engine = 'jinja2'
     template_name = 'socialapp/index.html'
 
-    #Todo, delete if not being used??
-    def logged_user(self,active_user):
-        # post = models.Post.objects
-        self.refresh_feed(active_user, active_user.feed)
-        post = models.Post.objects.filter(visibility='PUBLIC')
-        for f in active_user.friends.all():
-            if f.friends.filter(pk=active_user.id):   
-                post = post | models.Post.objects.filter(author=f).filter(visibility='FRIENDS') # filter friend post
-                post = post | models.Post.objects.filter(author=f).filter(visibility='FOAF') # filter friend post
-            post = post | models.Post.objects.filter(author=f).filter(visibleTo=active_user)  # filter author post
-            
-            for fof in f.friends.all():
-                if fof.friends.filter(pk=f.id): # bad
-                    post = post | models.Post.objects.filter(author=fof).filter(visibility='FOAF') # filter friend post
-        post = post.filter(unlisted=False)
-        post = post | models.Post.objects.filter(author=active_user) #get all self posts
-        active_user.get_posts_of_friends()
-        return post
-
     def refresh_feed(self, active_user, url):
         req = requests.get(url)
         if req.status_code == 200:
@@ -58,7 +39,7 @@ class Index(MixinIndex,TemplateView ):
 
                     title = "about Github"
 
-                    p = models.Post(author=active_user, 
+                    post = models.Post(author=active_user, 
                                     origin=settings.SITE_URL, 
                                     source=settings.SITE_URL,
                                     title=title,
@@ -69,7 +50,13 @@ class Index(MixinIndex,TemplateView ):
                                     correlationId = itemId,
                                     unlisted=False
                                     )
-                    p.save()
+                    post.save()
+
+                    post.source = f"{settings.SITE_URL}{reverse_lazy('api-post', kwargs={'pk': post.id})}"
+                    post.origin = post.source
+
+                    post.save()
+                    
                 except Exception as e:
                     print(e)
                     

@@ -37,7 +37,7 @@
         <img class="ui fluid rounded image" src="data:image/jpeg;base64,{{post.content}}"/>
     {% elif post.contentType.startswith("text") %}
         <div>
-            {{post.content|markdown|safe}}
+            {{post.content|markdown(user)|safe}}
         </div>
     {% else %}
         <div>
@@ -61,7 +61,7 @@
                         <span class="date">{{comment.published|naturaltime}}</span>
                     </div>
                     <div class="text">
-                        {{ comment.comment|markdown|safe}}
+                        {{ comment.comment|markdown(user)|safe}}
                     </div>
                     {% if user.author == comment.author %}
                         <div class="actions">

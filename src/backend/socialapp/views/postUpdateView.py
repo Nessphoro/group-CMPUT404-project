@@ -25,6 +25,8 @@ class PostUpdateView(UserPassesTestMixin, MixinContext, UpdateView):
         self.object = form.save()
         # Paranoid
         self.object.author = self.request.user.author
+        self.object.source = f"{settings.SITE_URL}{reverse_lazy('api-post', kwargs={'pk': self.object.id})}"
+        self.object.origin = self.object.source
         self.object.save()
 
         return HttpResponseRedirect(self.get_success_url())
