@@ -27,7 +27,7 @@
                     {% endif%}
 
                     {% if user.author == author %}
-                        <a style="margin-top: 1em;" class="blue basic fluid ui button">
+                        <a href="{{ url('author-update', args=[author.id]) }}" style="margin-top: 1em;" class="blue basic fluid ui button">
                             Edit Profile
                         </a>
                         {% if user.author.friend_requests.all() | count > 0 %}
