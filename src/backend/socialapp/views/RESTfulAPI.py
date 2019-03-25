@@ -138,6 +138,17 @@ class PostViewSet(ListAPIView):
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
+        post = models.Comment.objects.all().filter(post=post) 
+        print(post)
+        data = json.loads(request.body)
+        factory = APIRequestFactory()
+        request = factory.get(data['url'])
+        serializer_context = {
+            'request': Request(request),
+        }
+
+        test = serializers.CommentSerializer(list(post), context=serializer_context,many=True) 
+        return JsonResponse(test.data, safe=False)
         try:
             data = json.loads(request.body)
             
