@@ -1,13 +1,25 @@
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse,HttpResponseNotFound
 from rest_framework.generics import ListAPIView, RetrieveAPIView,ListCreateAPIView
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
+from rest_framework.request import Request
+from rest_framework.test import APIRequestFactory
 
 from collections import OrderedDict
 
 from .. import serializers
 from .. import models
 from rest_framework.pagination import PageNumberPagination
+from urllib.parse import urlparse
+
+import json
+import os.path
+import uuid
+
+
+# https://stackoverflow.com/questions/9626535/get-protocol-host-name-from-url
 
 class StandardResultsSetPagination(PageNumberPagination):
     """ Defines the pagination for a modelViewSet
@@ -108,19 +120,84 @@ class PostViewSet(ListAPIView):
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        # TODO: Check Author Has Permissions To See The Post
-        # TODO: Check if Hindle actually wants this as a list of one item?
-        # for i in models.Post:
-        #     print(i)
-        # print("access")
-        # print(self.kwargs.get("pk"))
-        print(self.kwargs.get("pk"))
-        post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
-        return [post]
+        pk = self.kwargs.get("pk")
+        post = get_object_or_404(models.Post, id=pk)
+        try:
+            if post.id == 'PUBLIC':
+                return [post]
+            #todo change the formating of this
+            else:
+                return [post] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        except:
+            return [post] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+
     def post(self, request, *args, **kwargs):
+        #todo need to change the error messages
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
-        print(serializers.PostSerializer(post).data)   #'json', []
-        return [post]
+        try:
+            data = json.loads(request.body)
+            
+            permission = False
+            if data["query"] =="getPost":
+                author = data["author"]
+                author_url = data["url"]
+                path = urlparse(author_url).path
+                author_id = None
+                host = urlparse(author_url).netloc
+                github = author["github"]
+                displayName = author["displayName"]
+                if path:
+                    author_id = path.split('/')[-1]
+                # print(author_id)
+            else:
+                return HttpResponseNotFound('<h1>query not getPost</h1>')
+            remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
+            # print(remoteAuthor.id)
+            # print(uuid.UUID(author_id))
+            # print(data["friends"])
+
+            for i in data["friends"]:
+                host = urlparse(i).netloc
+                author_id = None
+                path = urlparse(i).path
+                if path:
+                    author_id = path.split('/')[-1]
+
+                if models.Author.objects.filter(pk=author_id).exists():
+                    user.friends.get(pk=author_id)
+                    remoteAuthor.friends.add(fake_friend)
+
+            if remoteAuthor.post_permission(post):
+                factory = APIRequestFactory()
+                request = factory.get(data['url'])
+                serializer_context = {
+                    'request': Request(request),
+                }
+
+                test = serializers.PostSerializer(post, context=serializer_context) #, context=request
+                return JsonResponse(test.data)
+            else:
+                return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        except:
+            return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+            # uuid.UUID(author_id).hex
+            # print(author_id)
+            # fake_friend = models.Author(id=author_id,github=github,displayName=displayName,host=host)
+            # print(fake_friend.id)
+            
+
+        # for i in data["friends"]:
+        #     host = urlparse(i).netloc
+        #     author_id = None
+        #     path = urlparse(i).path
+        #     if path:
+        #         author_id = path.split('/')[-1]
+        #     # uuid.UUID(author_id).hex
+        #     print(author_id)
+        #     fake_friend = models.Author(id=author_id,github=github,displayName=displayName,host=host)
+        #     print(fake_friend.id)
+        #     remoteAuthor.friends.add(fake_friend)
+        return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
 
 
