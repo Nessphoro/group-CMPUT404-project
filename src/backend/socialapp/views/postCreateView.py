@@ -42,7 +42,8 @@ class PostCreateView(UserPassesTestMixin, MixinContext,CreateView):
             "source": settings.SITE_URL,
             "origin": settings.SITE_URL,
             "published": str(datetime.now()),
-            "author": self.request.user.author
+            "author": self.request.user.author,
+            "visibleTo": []
         }
         return form_defaults
 
