@@ -125,11 +125,11 @@ class PostViewSet(ListAPIView):
         try:
             if post.id == 'PUBLIC':
                 return [post]
-            #todo change the formating of this
+            #todo  dont make this a cheap hack
             else:
-                return [post] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+                return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
         except:
-            return [post] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+            return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
