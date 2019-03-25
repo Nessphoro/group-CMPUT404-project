@@ -48,12 +48,10 @@ class PostCreateView(UserPassesTestMixin, MixinContext,CreateView):
         return form_defaults
 
     def form_valid(self, form):
-        post = form.save(commit=False)
+        post = form.save(commit=True)
         # Paranoid mode
         post.author = self.request.user.author
         post.published = datetime.now()
-        
-        post.save()
 
         post.source = f"{settings.SITE_URL}{reverse_lazy('api-post', kwargs={'pk': post.id})}"
         post.origin = post.source

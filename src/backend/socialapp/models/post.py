@@ -40,7 +40,7 @@ class Post(models.Model):
 
     # Relations
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="posts_by")
-    visibleTo = models.ManyToManyField(Author, related_name="visibleTo", blank=True,null=True) #temporary
+    visibleTo = models.ManyToManyField(Author, related_name="visibleTo", blank=True) #temporary
 
     # Data
     title = models.CharField(max_length=150)
