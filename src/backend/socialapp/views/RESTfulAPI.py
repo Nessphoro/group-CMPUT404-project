@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView,ListCreateAPIView
 from rest_framework.response import Response
 
 from collections import OrderedDict
@@ -96,6 +96,12 @@ class PublicPostsViewSet(ListAPIView):
     serializer_class = serializers.PostSerializer
     pagination_class = PostsPagination
 
+    # def get_queryset(self):
+    #     post = get_object_or_404(models.Post, id=self.kwargs.get("pk"))
+    #     for i in self.request.GET:
+    #         print(i)
+    #     return [post]
+
 class PostViewSet(ListAPIView):
     # Returns a single post
     serializer_class = serializers.PostSerializer
@@ -104,8 +110,19 @@ class PostViewSet(ListAPIView):
     def get_queryset(self):
         # TODO: Check Author Has Permissions To See The Post
         # TODO: Check if Hindle actually wants this as a list of one item?
+        # for i in models.Post:
+        #     print(i)
+        # print("access")
+        # print(self.kwargs.get("pk"))
+        print(self.kwargs.get("pk"))
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
         return [post]
+    def post(self, request, *args, **kwargs):
+        post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
+        print(serializers.PostSerializer(post).data)   #'json', []
+        return [post]
+
+
 
 class PostCommentsViewSet(ListAPIView):
     # Returns a list of the comments attached to the post
@@ -114,7 +131,6 @@ class PostCommentsViewSet(ListAPIView):
 
     def get_queryset(self):
         post = get_object_or_404(models.Post, id=self.kwargs.get("pk"))
-
         return post.comments.all()
 
     # TODO: Bind this same url to take comments via POST and create them server side
