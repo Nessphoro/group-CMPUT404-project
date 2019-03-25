@@ -122,8 +122,12 @@ class PostViewSet(ListAPIView):
     def get_queryset(self):
         pk = self.kwargs.get("pk")
         post = get_object_or_404(models.Post, id=pk)
+        print(post.get_absolute_url())
+        print(post.visibility)
+        # print(post.id)
+        # print(post)
         try:
-            if post.id == 'PUBLIC':
+            if post.visibility == 'PUBLIC':
                 return [post]
             #todo  dont make this a cheap hack
             else:
@@ -180,23 +184,6 @@ class PostViewSet(ListAPIView):
                 return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
         except:
             return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
-            # uuid.UUID(author_id).hex
-            # print(author_id)
-            # fake_friend = models.Author(id=author_id,github=github,displayName=displayName,host=host)
-            # print(fake_friend.id)
-            
-
-        # for i in data["friends"]:
-        #     host = urlparse(i).netloc
-        #     author_id = None
-        #     path = urlparse(i).path
-        #     if path:
-        #         author_id = path.split('/')[-1]
-        #     # uuid.UUID(author_id).hex
-        #     print(author_id)
-        #     fake_friend = models.Author(id=author_id,github=github,displayName=displayName,host=host)
-        #     print(fake_friend.id)
-        #     remoteAuthor.friends.add(fake_friend)
         return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
 
@@ -209,6 +196,22 @@ class PostCommentsViewSet(ListAPIView):
     def get_queryset(self):
         post = get_object_or_404(models.Post, id=self.kwargs.get("pk"))
         return post.comments.all()
+
+    def post(self, request, *args, **kwargs):
+        #todo need to change the error messages
+        print(self.kwargs.get("pk"))
+        post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
+        post = models.Comment.objects.all().filter(post=post) 
+        print(post)
+        data = json.loads(request.body)
+        factory = APIRequestFactory()
+        request = factory.get(data['url'])
+        serializer_context = {
+            'request': Request(request),
+        }
+
+        test = serializers.CommentSerializer(list(post), context=serializer_context,many=True) 
+        return JsonResponse(test.data, safe=False)
 
     # TODO: Bind this same url to take comments via POST and create them server side
 

@@ -50,7 +50,9 @@ github_1 = "https://github.com/jejewittt"
 #url_1 is the author url
 p = request_p(url_2,id_1,host_1,name_1,url_1,github_1,post_id_1)
 print(p.content)
-g = request_g(url=url_1)
-print(g)
-g_2 = request_g(url=url_2)
-print(g_2)
+# g = request_g(url=url_1)
+# print(g)
+# g_2 = request_g(url=url_2)
+# print(g_2)
+# g_3 = request_g(url="http://127.0.0.1:8000/api/posts")
+# print(g_3)
