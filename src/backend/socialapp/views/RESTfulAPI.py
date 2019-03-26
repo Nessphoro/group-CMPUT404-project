@@ -217,8 +217,7 @@ class AuthorViewSet(ListAPIView):
 
 
 
-
-class AuthorFeedViewSet(ListAPIView):
+class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
     # Returns the logged in author's feed of posts
     serializer_class = serializers.PostSerializer
     pagination_class = StandardResultsSetPagination
@@ -228,7 +227,7 @@ class AuthorFeedViewSet(ListAPIView):
         return author.get_all_posts()
 
 
-class AuthoredByPostsViewSet(ListAPIView):
+class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
     # Returns all posts by a particular author denoted by author pk
     # Results may differ depending on authentication
 
@@ -239,6 +238,30 @@ class AuthoredByPostsViewSet(ListAPIView):
 
         author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
         return author.posts_by.all()
+
+    def post(self, request, *args, **kwargs):
+        #todo need to change the error messages
+
+        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
+        data = json.loads(request.body)
+
+        try:
+            remoteAuthor = self.createAuthor(data, "posts")
+        except Exception as e:
+            return self.has_pemission(data, author,None)
+
+        return self.has_pemission(data, author,remoteAuthor)
+
+    def has_pemission(self,data, author,remoteAuthor):
+        postSet = author.get_visitor(remoteAuthor)
+        factory = APIRequestFactory()
+        request = factory.get(data['url'])
+        serializer_context = {
+            'request': Request(request),
+        }
+        page = self.paginate_queryset(postSet)
+        test = serializers.PostSerializer(list(page), context=serializer_context,many=True) 
+        return JsonResponse(test.data, safe=False)
 
 
 class FriendsViewSet(ListAPIView):

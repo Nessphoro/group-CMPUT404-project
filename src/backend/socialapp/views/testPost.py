@@ -49,12 +49,26 @@ github_1 = "https://github.com/jejewittt"
 url_3 = "http://127.0.0.1:8000/api/posts/af10a47f-4afe-4fc9-bd38-8794ecde3db6/comments?page=1&size=1"
 qtype_1 = "getPost"
 qtype_2 = "comments"
+qtype_4 = 'posts'
+url_4 = 'http://127.0.0.1:8000/api/author/eee13126-4dc2-4c0e-9e86-ffaa3e3fbac6/posts/'
 #url_2 is the post url
 #url_1 is the author url
+
+# tests PostViewSet
 # p = request_p(url_2,id_1,host_1,name_1,url_1,github_1,post_id_1,qtype_1)
 # print(p.content)
-p_2 = request_p(url_3,id_1,host_1,name_1,url_1,github_1,post_id_1,qtype_2)
-print(p_2.content)
+
+# tests PostCommentsViewSet
+# p_2 = request_p(url_3,id_1,host_1,name_1,url_1,github_1,post_id_1,qtype_2)
+# print(p_2.content)
+
+# AuthoredByPostsViewSet
+p_4 = request_p(url_4,id_1,host_1,name_1,url_1,github_1,post_id_1,qtype_4)
+print(p_4.content)
+
+
+
+# get testing
 # g = request_g(url=url_1)
 # print(g)
 # g_2 = request_g(url=url_2)

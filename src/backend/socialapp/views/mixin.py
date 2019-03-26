@@ -112,7 +112,10 @@ class MixinCreateAuthor(object):
             displayName = author["displayName"]
             if path:
                 author_id = path.split('/')[-1]
-            remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
+            # may need to readd this assumtion, or pull data from serve before checking this
+            # remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
+            if models.Author.objects.filter(pk=author_id).exists():
+                remoteAuthor = models.Author.objects.get(pk=author_id)
             for i in data["friends"]:
                 host = urlparse(i).netloc
                 author_id = None
@@ -121,7 +124,7 @@ class MixinCreateAuthor(object):
                     author_id = path.split('/')[-1]
 
                 if models.Author.objects.filter(pk=author_id).exists():
-                    user.friends.get(pk=author_id)
+                    fake_friend = models.Author.objects.get(pk=author_id)
                     remoteAuthor.friends.add(fake_friend)
             return remoteAuthor
         return None
