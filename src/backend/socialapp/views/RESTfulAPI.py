@@ -139,11 +139,59 @@ class PostViewSet(ListAPIView):
         #todo need to change the error messages
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
 
-        try:
-            data = json.loads(request.body)
+        data = json.loads(request.body)
+        # try:
+        #     data = json.loads(request.body)
             
-            permission = False
-            if data["query"] =="getPost":
+        #     permission = False
+        #     if data["query"] =="getPost":
+        #         author = data["author"]
+        #         author_url = data["url"]
+        #         path = urlparse(author_url).path
+        #         author_id = None
+        #         host = urlparse(author_url).netloc
+        #         github = author["github"]
+        #         displayName = author["displayName"]
+        #         if path:
+        #             author_id = path.split('/')[-1]
+        #         # print(author_id)
+        #     else:
+        #         return HttpResponseNotFound('<h1>query not getPost</h1>')
+        #     remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
+        #     # print(remoteAuthor.id)
+        #     # print(uuid.UUID(author_id))
+        #     # print(data["friends"])
+
+        #     for i in data["friends"]:
+        #         host = urlparse(i).netloc
+        #         author_id = None
+        #         path = urlparse(i).path
+        #         if path:
+        #             author_id = path.split('/')[-1]
+
+        #         if models.Author.objects.filter(pk=author_id).exists():
+        #             user.friends.get(pk=author_id)
+        #             remoteAuthor.friends.add(fake_friend)
+
+        #     if remoteAuthor.post_permission(post):
+        #         factory = APIRequestFactory()
+        #         request = factory.get(data['url'])
+        #         serializer_context = {
+        #             'request': Request(request),
+        #         }
+
+        #         test = serializers.PostSerializer(post, context=serializer_context) #, context=request
+        #         return JsonResponse(test.data)
+        #     else:
+        #         return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        # except:
+        #     return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        # return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        return self.has_pemission(data, post)
+
+    def has_pemission(self,data,post):
+
+        if data["query"] =="getPost":
                 author = data["author"]
                 author_url = data["url"]
                 path = urlparse(author_url).path
@@ -153,41 +201,37 @@ class PostViewSet(ListAPIView):
                 displayName = author["displayName"]
                 if path:
                     author_id = path.split('/')[-1]
-                # print(author_id)
-            else:
-                return HttpResponseNotFound('<h1>query not getPost</h1>')
-            remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
-            # print(remoteAuthor.id)
-            # print(uuid.UUID(author_id))
-            # print(data["friends"])
+                remoteAuthor = self.buildAuth(author_id,host,github,displayName)
+                remoteAuthor = self.addFriends(data,remoteAuthor)
+                if remoteAuthor.post_permission(post):
+                    factory = APIRequestFactory()
+                    request = factory.get(data['url'])
+                    serializer_context = {
+                        'request': Request(request),
+                    }
 
-            for i in data["friends"]:
-                host = urlparse(i).netloc
-                author_id = None
-                path = urlparse(i).path
-                if path:
-                    author_id = path.split('/')[-1]
-
-                if models.Author.objects.filter(pk=author_id).exists():
-                    user.friends.get(pk=author_id)
-                    remoteAuthor.friends.add(fake_friend)
-
-            if remoteAuthor.post_permission(post):
-                factory = APIRequestFactory()
-                request = factory.get(data['url'])
-                serializer_context = {
-                    'request': Request(request),
-                }
-
-                test = serializers.PostSerializer(post, context=serializer_context) #, context=request
-                return JsonResponse(test.data)
-            else:
-                return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
-        except:
-            return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+                    test = serializers.PostSerializer(post, context=serializer_context) #, context=request
+                    return JsonResponse(test.data)
+                else:
+                    return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
         return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
+    def buildAuth(self, author_id,host,github,displayName):
+        return models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
 
+    def addFriends(self,data, author):
+        remoteAuthor = author
+        for i in data["friends"]:
+            host = urlparse(i).netloc
+            author_id = None
+            path = urlparse(i).path
+            if path:
+                author_id = path.split('/')[-1]
+
+            if models.Author.objects.filter(pk=author_id).exists():
+                user.friends.get(pk=author_id)
+                remoteAuthor.friends.add(fake_friend)
+        return remoteAuthor
 
 class PostCommentsViewSet(ListAPIView):
     # Returns a list of the comments attached to the post
@@ -207,6 +251,8 @@ class PostCommentsViewSet(ListAPIView):
         post = models.Comment.objects.all().filter(post=post) 
         print(post)
         data = json.loads(request.body)
+
+
         factory = APIRequestFactory()
         request = factory.get(data['url'])
         serializer_context = {

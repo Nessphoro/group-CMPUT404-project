@@ -50,10 +50,10 @@ url_3 = "http://127.0.0.1:8000/api/posts/af10a47f-4afe-4fc9-bd38-8794ecde3db6/co
 
 #url_2 is the post url
 #url_1 is the author url
-# p = request_p(url_2,id_1,host_1,name_1,url_1,github_1,post_id_1)
-# print(p.content)
-p_2 = request_p(url_3,id_1,host_1,name_1,url_1,github_1,post_id_1)
-print(p_2.content)
+p = request_p(url_2,id_1,host_1,name_1,url_1,github_1,post_id_1)
+print(p.content)
+# p_2 = request_p(url_3,id_1,host_1,name_1,url_1,github_1,post_id_1)
+# print(p_2.content)
 # g = request_g(url=url_1)
 # print(g)
 # g_2 = request_g(url=url_2)
