@@ -20,13 +20,23 @@ Profile - {{author.displayName}}
     <h1>Recent Activity</h1>
 {% endif %}
 <div class="ui feed">
-    {% for post in author.get_visitor(user) %}
-        {% if post.contentType.startswith("image") %}
-            {{common.imagePost(post)}}
-        {% else %}
-            {{common.generalPost(post)}}
-        {% endif %}
-    {% endfor %}
+    {% if user.is_authenticated %}
+        {% for post in author.get_visitor(user.author) %}
+            {% if post.contentType.startswith("image") %}
+                {{common.imagePost(post)}}
+            {% else %}
+                {{common.generalPost(post)}}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% for post in author.get_visitor(None) %}
+            {% if post.contentType.startswith("image") %}
+                {{common.imagePost(post)}}
+            {% else %}
+                {{common.generalPost(post)}}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 </div>
 
 {% endblock %}

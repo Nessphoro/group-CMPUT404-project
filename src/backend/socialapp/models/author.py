@@ -153,10 +153,9 @@ class Author(models.Model):
         return output
 
     def get_visitor(self,user):
-
+        print(user)
         output = self.get_my_feed()
-        if not user.is_anonymous:
-            user = user.author
+        if user:           #if not user.is_anonymous:
             if not self.is_me(user):
                 output = output.filter(unlisted=False)
                 userId = user.id
