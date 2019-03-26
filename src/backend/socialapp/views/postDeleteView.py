@@ -23,4 +23,7 @@ class PostDeleteView(UserPassesTestMixin, MixinContext, DeleteView):
         if not self.request.user.is_authenticated:
             return False
 
+        if self.request.user.author.is_local_unverified_user():
+            return False
+
         return self.get_object().author == self.request.user.author

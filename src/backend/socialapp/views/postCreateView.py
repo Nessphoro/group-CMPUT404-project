@@ -65,4 +65,11 @@ class PostCreateView(UserPassesTestMixin, MixinContext,CreateView):
         return reverse_lazy("post-id", kwargs={'pk': self.object.id})
 
     def test_func(self):
-        return self.request.user.is_authenticated
+
+        if not self.request.user.is_authenticated:
+            return False
+
+        if self.request.user.author.is_local_unverified_user():
+            return False
+
+        return True

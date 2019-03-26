@@ -40,6 +40,10 @@ class Author(models.Model):
     image = models.URLField(blank=True, default=f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
     feed = models.URLField(blank=True)
 
+    isVerified = models.BooleanField(default=settings.AUTHORS_DEFAULT_VERIFICATION)
+
+
+
     # Methods
     def __str__(self):
         return f"{self.displayName} ({self.host})"
@@ -215,4 +219,14 @@ class Author(models.Model):
 
     def is_following(self, other_author):
         return (other_author in self.friends.all()) and (self not in other_author.friends.all())
+
+
+    def is_foreign_author(self):
+        return not (str(self.host) == settings.SITE_URL)
+
+    def is_local_unverified_user(self):
+        return (self.host == settings.SITE_URL) and not self.isVerified
+
+    def is_local_verified_user(self):
+        return (self.host == settings.SITE_URL) and self.isVerified
 
