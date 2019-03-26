@@ -138,17 +138,7 @@ class PostViewSet(ListAPIView):
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
-        post = models.Comment.objects.all().filter(post=post) 
-        print(post)
-        data = json.loads(request.body)
-        factory = APIRequestFactory()
-        request = factory.get(data['url'])
-        serializer_context = {
-            'request': Request(request),
-        }
 
-        test = serializers.CommentSerializer(list(post), context=serializer_context,many=True) 
-        return JsonResponse(test.data, safe=False)
         try:
             data = json.loads(request.body)
             
@@ -210,7 +200,9 @@ class PostCommentsViewSet(ListAPIView):
 
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
-        print(self.kwargs.get("pk"))
+        # this is probably not working becuse the kwarg is wrong
+        # print("ye")
+        # print(self.kwargs.get("pk"))
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
         post = models.Comment.objects.all().filter(post=post) 
         print(post)
@@ -220,8 +212,9 @@ class PostCommentsViewSet(ListAPIView):
         serializer_context = {
             'request': Request(request),
         }
+        page = self.paginate_queryset(post)
+        test = serializers.CommentSerializer(list(page), context=serializer_context,many=True) 
 
-        test = serializers.CommentSerializer(list(post), context=serializer_context,many=True) 
         return JsonResponse(test.data, safe=False)
 
     # TODO: Bind this same url to take comments via POST and create them server side

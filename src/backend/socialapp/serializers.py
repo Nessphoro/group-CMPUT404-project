@@ -42,12 +42,12 @@ class AuthorAltSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(many=False, read_only=True)
     # This is to deal with more indiosyncarcies of the spec
-    # count = serializers.SerializerMethodField()
+    count = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
     next = serializers.SerializerMethodField()
 
-    # def get_count(self, obj):
-    #     return len(obj.comment)
+    def get_count(self, obj):
+        return len(obj.comment)
     
     def get_size(self, obj):
         return 20
@@ -58,7 +58,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         ordering = ["-published"]
-        fields = ['author', 'comment', 'contentType', 'published', 'id', 'size', 'next']
+        fields = ['author', 'comment', 'contentType', 'published', 'id', 'size', 'next','count']
 
 
 class PostSerializer(serializers.ModelSerializer):
