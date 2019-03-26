@@ -14,7 +14,7 @@
 
         <span class="right">
             {% if user.is_authenticated %}
-                {% if user.author == post.author%}
+                {% if user.author == post.author and not user.author.is_local_unverified_user() %}
                     <a class="demphasize" href="{{ url('post-update', args=[post.id]) }}"> Edit Post</a>   |
                     <a class="demphasize" href="{{ url('post-delete', args=[post.id]) }}"> Delete Post</a>
                 {% endif %}
@@ -63,7 +63,7 @@
                     <div class="text">
                         {{ comment.comment|markdown(user)|safe}}
                     </div>
-                    {% if user.author == comment.author %}
+                    {% if user.author == comment.author and not user.author.is_local_unverified_user() %}
                         <div class="actions">
                             <a class="reply" href="{{ url('comment-update', args=[comment.id]) }}">Edit</a> |
                             <a class="reply" href="{{ url('comment-delete', args=[comment.id]) }}">Delete</a>
@@ -74,7 +74,7 @@
     
         {% endfor %}
 
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and not user.author.is_local_unverified_user() %}
             <a style="margin-top: 1em;" class="ui basic primary button" href="{{ url('comment-create', args=[post.id]) }}"> Add comment</a>
         {% endif %}
     </div>
