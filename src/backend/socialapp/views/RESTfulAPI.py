@@ -18,6 +18,7 @@ import json
 import os.path
 import uuid
 
+from .mixin import MixinCreateAuthor
 
 # https://stackoverflow.com/questions/9626535/get-protocol-host-name-from-url
 
@@ -114,7 +115,7 @@ class PublicPostsViewSet(ListAPIView):
     #         print(i)
     #     return [post]
 
-class PostViewSet(ListAPIView):
+class PostViewSet(MixinCreateAuthor, ListAPIView):
     # Returns a single post
     serializer_class = serializers.PostSerializer
     pagination_class = StandardResultsSetPagination
@@ -138,102 +139,32 @@ class PostViewSet(ListAPIView):
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
-
         data = json.loads(request.body)
-        # try:
-        #     data = json.loads(request.body)
-            
-        #     permission = False
-        #     if data["query"] =="getPost":
-        #         author = data["author"]
-        #         author_url = data["url"]
-        #         path = urlparse(author_url).path
-        #         author_id = None
-        #         host = urlparse(author_url).netloc
-        #         github = author["github"]
-        #         displayName = author["displayName"]
-        #         if path:
-        #             author_id = path.split('/')[-1]
-        #         # print(author_id)
-        #     else:
-        #         return HttpResponseNotFound('<h1>query not getPost</h1>')
-        #     remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
-        #     # print(remoteAuthor.id)
-        #     # print(uuid.UUID(author_id))
-        #     # print(data["friends"])
+        try:
+            remoteAuthor = self.createAuthor(data, "getPost")
+        except Exception as e:
+            return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
+        return self.has_pemission(data,post,remoteAuthor)
 
-        #     for i in data["friends"]:
-        #         host = urlparse(i).netloc
-        #         author_id = None
-        #         path = urlparse(i).path
-        #         if path:
-        #             author_id = path.split('/')[-1]
-
-        #         if models.Author.objects.filter(pk=author_id).exists():
-        #             user.friends.get(pk=author_id)
-        #             remoteAuthor.friends.add(fake_friend)
-
-        #     if remoteAuthor.post_permission(post):
-        #         factory = APIRequestFactory()
-        #         request = factory.get(data['url'])
-        #         serializer_context = {
-        #             'request': Request(request),
-        #         }
-
-        #         test = serializers.PostSerializer(post, context=serializer_context) #, context=request
-        #         return JsonResponse(test.data)
-        #     else:
-        #         return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
-        # except:
-        #     return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
-        # return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
-        return self.has_pemission(data, post)
-
-    def has_pemission(self,data,post):
-
-        if data["query"] =="getPost":
-                author = data["author"]
-                author_url = data["url"]
-                path = urlparse(author_url).path
-                author_id = None
-                host = urlparse(author_url).netloc
-                github = author["github"]
-                displayName = author["displayName"]
-                if path:
-                    author_id = path.split('/')[-1]
-                remoteAuthor = self.buildAuth(author_id,host,github,displayName)
-                remoteAuthor = self.addFriends(data,remoteAuthor)
-                if remoteAuthor.post_permission(post):
-                    factory = APIRequestFactory()
-                    request = factory.get(data['url'])
-                    serializer_context = {
-                        'request': Request(request),
-                    }
-
-                    test = serializers.PostSerializer(post, context=serializer_context) #, context=request
-                    return JsonResponse(test.data)
-                else:
-                    return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+    def has_pemission(self,data, post,remoteAuthor):
+        
+        if remoteAuthor.post_permission(post):
+            factory = APIRequestFactory()
+            request = factory.get(data['url'])
+            serializer_context = {
+                'request': Request(request),
+            }
+            test = serializers.PostSerializer(post, context=serializer_context) #, context=request
+            return JsonResponse(test.data)
+        else:
+            return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
         return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
-    def buildAuth(self, author_id,host,github,displayName):
-        return models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
 
-    def addFriends(self,data, author):
-        remoteAuthor = author
-        for i in data["friends"]:
-            host = urlparse(i).netloc
-            author_id = None
-            path = urlparse(i).path
-            if path:
-                author_id = path.split('/')[-1]
 
-            if models.Author.objects.filter(pk=author_id).exists():
-                user.friends.get(pk=author_id)
-                remoteAuthor.friends.add(fake_friend)
-        return remoteAuthor
 
-class PostCommentsViewSet(ListAPIView):
+
+class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
     # Returns a list of the comments attached to the post
     serializer_class = serializers.CommentSerializer
     pagination_class = StandardResultsSetPagination
@@ -244,26 +175,35 @@ class PostCommentsViewSet(ListAPIView):
 
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
-        # this is probably not working becuse the kwarg is wrong
-        # print("ye")
-        # print(self.kwargs.get("pk"))
+
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
-        post = models.Comment.objects.all().filter(post=post) 
-        print(post)
+        comments = models.Comment.objects.all().filter(post=post) 
         data = json.loads(request.body)
 
+        try:
+            remoteAuthor = self.createAuthor(data, "comments")
+        except Exception as e:
+            return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
 
-        factory = APIRequestFactory()
-        request = factory.get(data['url'])
-        serializer_context = {
-            'request': Request(request),
-        }
-        page = self.paginate_queryset(post)
-        test = serializers.CommentSerializer(list(page), context=serializer_context,many=True) 
+        return self.has_pemission(data, post,remoteAuthor, comments)
 
-        return JsonResponse(test.data, safe=False)
+    def has_pemission(self,data, post,remoteAuthor, comments):
+        
+        if remoteAuthor.post_permission(post):
 
-    # TODO: Bind this same url to take comments via POST and create them server side
+            factory = APIRequestFactory()
+            request = factory.get(data['url'])
+            serializer_context = {
+                'request': Request(request),
+            }
+            page = self.paginate_queryset(comments)
+            test = serializers.CommentSerializer(list(page), context=serializer_context,many=True) 
+            return JsonResponse(test.data, safe=False)
+        else:
+            return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+
+# TODO: Bind this same url to take comments via POST and create them server side
 
 class AuthorViewSet(ListAPIView):
     # Returns a single author

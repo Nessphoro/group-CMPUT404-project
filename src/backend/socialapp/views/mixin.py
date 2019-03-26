@@ -3,6 +3,9 @@ import aiohttp
 import asyncio
 from django.conf import settings
 from django.urls import reverse_lazy
+from urllib.parse import urlparse
+import uuid
+
 
 class MixinContext(object):
     def get_context_data(self, **kwargs):
@@ -94,3 +97,31 @@ class MixinIndex(object):
 class DenyAcess(object):
 	def deny(self):
 		pass
+
+
+
+class MixinCreateAuthor(object):
+    def createAuthor(self,data,requestType):
+        if data["query"] ==requestType:
+            author = data["author"]
+            author_url = author["url"]
+            path = urlparse(author_url).path
+            author_id = None
+            host = urlparse(author_url).netloc
+            github = author["github"]
+            displayName = author["displayName"]
+            if path:
+                author_id = path.split('/')[-1]
+            remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
+            for i in data["friends"]:
+                host = urlparse(i).netloc
+                author_id = None
+                path = urlparse(i).path
+                if path:
+                    author_id = path.split('/')[-1]
+
+                if models.Author.objects.filter(pk=author_id).exists():
+                    user.friends.get(pk=author_id)
+                    remoteAuthor.friends.add(fake_friend)
+            return remoteAuthor
+        return None
