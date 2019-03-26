@@ -1,13 +1,26 @@
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from django.http import JsonResponse,HttpResponseNotFound
+from rest_framework.generics import ListAPIView, RetrieveAPIView,ListCreateAPIView
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
+from rest_framework.request import Request
+from rest_framework.test import APIRequestFactory
 
 from collections import OrderedDict
 
 from .. import serializers
 from .. import models
 from rest_framework.pagination import PageNumberPagination
+from urllib.parse import urlparse
+
+import json
+import os.path
+import uuid
+
+from .mixin import MixinCreateAuthor
+
+# https://stackoverflow.com/questions/9626535/get-protocol-host-name-from-url
 
 class StandardResultsSetPagination(PageNumberPagination):
     """ Defines the pagination for a modelViewSet
@@ -96,28 +109,101 @@ class PublicPostsViewSet(ListAPIView):
     serializer_class = serializers.PostSerializer
     pagination_class = PostsPagination
 
-class PostViewSet(ListAPIView):
+    # def get_queryset(self):
+    #     post = get_object_or_404(models.Post, id=self.kwargs.get("pk"))
+    #     for i in self.request.GET:
+    #         print(i)
+    #     return [post]
+
+class PostViewSet(MixinCreateAuthor, ListAPIView):
     # Returns a single post
     serializer_class = serializers.PostSerializer
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        # TODO: Check Author Has Permissions To See The Post
-        # TODO: Check if Hindle actually wants this as a list of one item?
-        post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
-        return [post]
+        pk = self.kwargs.get("pk")
+        post = get_object_or_404(models.Post, id=pk)
+        print(post.get_absolute_url())
+        print(post.visibility)
+        # print(post.id)
+        # print(post)
+        try:
+            if post.visibility == 'PUBLIC':
+                return [post]
+            #todo  dont make this a cheap hack
+            else:
+                return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        except:
+            return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
-class PostCommentsViewSet(ListAPIView):
+    def post(self, request, *args, **kwargs):
+        #todo need to change the error messages
+        post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
+        data = json.loads(request.body)
+        try:
+            remoteAuthor = self.createAuthor(data, "getPost")
+        except Exception as e:
+            return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
+        return self.has_pemission(data,post,remoteAuthor)
+
+    def has_pemission(self,data, post,remoteAuthor):
+        
+        if remoteAuthor.post_permission(post):
+            factory = APIRequestFactory()
+            request = factory.get(data['url'])
+            serializer_context = {
+                'request': Request(request),
+            }
+            test = serializers.PostSerializer(post, context=serializer_context) #, context=request
+            return JsonResponse(test.data)
+        else:
+            return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+
+
+
+
+
+class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
     # Returns a list of the comments attached to the post
     serializer_class = serializers.CommentSerializer
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         post = get_object_or_404(models.Post, id=self.kwargs.get("pk"))
-
         return post.comments.all()
 
-    # TODO: Bind this same url to take comments via POST and create them server side
+    def post(self, request, *args, **kwargs):
+        #todo need to change the error messages
+
+        post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
+        comments = models.Comment.objects.all().filter(post=post) 
+        data = json.loads(request.body)
+
+        try:
+            remoteAuthor = self.createAuthor(data, "comments")
+        except Exception as e:
+            return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
+
+        return self.has_pemission(data, post,remoteAuthor, comments)
+
+    def has_pemission(self,data, post,remoteAuthor, comments):
+        
+        if remoteAuthor.post_permission(post):
+
+            factory = APIRequestFactory()
+            request = factory.get(data['url'])
+            serializer_context = {
+                'request': Request(request),
+            }
+            page = self.paginate_queryset(comments)
+            test = serializers.CommentSerializer(list(page), context=serializer_context,many=True) 
+            return JsonResponse(test.data, safe=False)
+        else:
+            return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+
+# TODO: Bind this same url to take comments via POST and create them server side
 
 class AuthorViewSet(ListAPIView):
     # Returns a single author
@@ -131,8 +217,7 @@ class AuthorViewSet(ListAPIView):
 
 
 
-
-class AuthorFeedViewSet(ListAPIView):
+class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
     # Returns the logged in author's feed of posts
     serializer_class = serializers.PostSerializer
     pagination_class = StandardResultsSetPagination
@@ -142,7 +227,7 @@ class AuthorFeedViewSet(ListAPIView):
         return author.get_all_posts()
 
 
-class AuthoredByPostsViewSet(ListAPIView):
+class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
     # Returns all posts by a particular author denoted by author pk
     # Results may differ depending on authentication
 
@@ -153,6 +238,30 @@ class AuthoredByPostsViewSet(ListAPIView):
 
         author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
         return author.posts_by.all()
+
+    def post(self, request, *args, **kwargs):
+        #todo need to change the error messages
+
+        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
+        data = json.loads(request.body)
+
+        try:
+            remoteAuthor = self.createAuthor(data, "posts")
+        except Exception as e:
+            return self.has_pemission(data, author,None)
+
+        return self.has_pemission(data, author,remoteAuthor)
+
+    def has_pemission(self,data, author,remoteAuthor):
+        postSet = author.get_visitor(remoteAuthor)
+        factory = APIRequestFactory()
+        request = factory.get(data['url'])
+        serializer_context = {
+            'request': Request(request),
+        }
+        page = self.paginate_queryset(postSet)
+        test = serializers.PostSerializer(list(page), context=serializer_context,many=True) 
+        return JsonResponse(test.data, safe=False)
 
 
 class FriendsViewSet(ListAPIView):

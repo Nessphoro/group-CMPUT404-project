@@ -10,8 +10,9 @@ import pytz
 from datetime import datetime
 from django.urls import reverse_lazy
 from .mixin import MixinContext
+from django.contrib.auth.mixins import UserPassesTestMixin
 
-class CommentCreateView(MixinContext,CreateView):
+class CommentCreateView(UserPassesTestMixin, MixinContext,CreateView):
     template_engine = 'jinja2'
     template_name = 'socialapp/comment-create.html'
 
@@ -32,3 +33,12 @@ class CommentCreateView(MixinContext,CreateView):
 
     def get_success_url(self):
         return reverse_lazy("post-id", kwargs={'pk': self.kwargs["post_pk"]})
+
+    def test_func(self):
+        if not self.request.user.is_authenticated:
+            return False
+
+        if self.request.user.author.is_local_unverified_user():
+            return False
+
+        return True

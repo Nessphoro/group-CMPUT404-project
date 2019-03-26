@@ -57,6 +57,12 @@
                 {% endif %}
         </div>
         <div class="twelve wide column">
+            {% if user.is_authenticated and user.author == author and user.author.is_local_unverified_user() %}
+            <div class="ui yellow message">
+                You appear to be an unverified author, an administrator will verify your account shortly.
+            </div>
+            {% endif %}
+
             {% block authorContent %} {% endblock %}
         </div>
     </div>

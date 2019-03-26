@@ -29,8 +29,8 @@ class AuthorSerializer(serializers.ModelSerializer):
 class AuthorAltSerializer(serializers.ModelSerializer):
     id = serializers.HyperlinkedIdentityField(view_name="api-author")
     url = serializers.HyperlinkedIdentityField(view_name="api-author")
-    friends = AuthorSerializer(many=True, read_only=True)
-    friend_requests = AuthorSerializer(many=True, read_only=True)
+    # friends = AuthorSerializer(many=True, read_only=True)
+    # friend_requests = AuthorSerializer(many=True, read_only=True)
 
     class Meta:
         model = Author
@@ -41,10 +41,24 @@ class AuthorAltSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(many=False, read_only=True)
+    # This is to deal with more indiosyncarcies of the spec
+    count = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
+    next = serializers.SerializerMethodField()
+
+    def get_count(self, obj):
+        return len(obj.comment)
+    
+    def get_size(self, obj):
+        return 20
+
+    def get_next(self, obj):
+        return f"{settings.SITE_URL}{reverse('api-post-comments', kwargs={'pk': obj.id})}"
+
     class Meta:
         model = Comment
         ordering = ["-published"]
-        fields = ['author', 'comment', 'contentType', 'published', 'id']
+        fields = ['author', 'comment', 'contentType', 'published', 'id', 'size', 'next','count']
 
 
 class PostSerializer(serializers.ModelSerializer):
