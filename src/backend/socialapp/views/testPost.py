@@ -80,6 +80,10 @@ concat = base64.b64encode(concat.encode("utf-8"))
 
 
 
+p_4 = request_p('http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friendrequest',id_1,host_1,name_1,url_1,github_1,post_id_1,"friendrequest")
+print(p_4.content)
+
+
 # get testing
 # g = request_g(url=url_1)
 # print(g)
@@ -98,5 +102,5 @@ concat = base64.b64encode(concat.encode("utf-8"))
 # g_2 = request_g(url="http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friends/c3277495-b9d1-4325-a266-b211dea9e744", auth=concat)
 # print(g_2)
 
-g_2 = request_g(url="http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friends", auth=concat)
-print(g_2)
+# g_2 = request_g(url="http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friends", auth=concat)
+# print(g_2)

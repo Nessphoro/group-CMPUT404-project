@@ -7,7 +7,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
 from django.contrib.auth.models import User
-
+from django.http import HttpResponse
 from collections import OrderedDict
 
 from .. import serializers
@@ -378,13 +378,36 @@ class isFriendsViewSet(ListAPIView):
         return JsonResponse(data, safe=False)
 
 
-class FriendsRequestViewSet(ListAPIView):
-    # Returns all friend requests to a particular author pk
+class FriendsRequestViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
+    # sends a friend request to user
 
     serializer_class = serializers.AuthorAltSerializer
     pagination_class = StandardResultsSetPagination
 
-    def get_queryset(self):
+    # def get_queryset(self):
 
+    #     author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
+    #     return author.sent_friend_requests.all()
+
+    # this is untested
+    def post(self, request, *args, **kwargs):
+        #todo need to change the error messages
         author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-        return author.sent_friend_requests.all()
+
+        data = json.loads(request.body)
+        try:
+            remoteAuthor = self.createAuthor(data, "friendrequest")
+        except Exception as e:
+            return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
+
+        #todo request
+        print(remoteAuthor)
+        try: 
+            if remoteAuthor:
+                author.friend_requests.add(remoteAuthor)
+            else:
+                return HttpResponseNotFound(f'<h1> none type error probABLY</h1>')
+        except Exception as e:
+            return HttpResponseNotFound(f'<h1>2: {e}</h1>')
+        return HttpResponse('')
+

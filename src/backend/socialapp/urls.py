@@ -46,7 +46,7 @@ urlpatterns = [
     # Friends
     path('api/author/<uuid:pk>/friends', views.FriendsViewSet.as_view(), name='api-list-friends'),
     path('api/author/<uuid:pk1>/friends/<uuid:pk2>', views.isFriendsViewSet.as_view(), name='api-is-friends'),
-    path('api/author/<uuid:pk>/friendrequest/', views.FriendsRequestViewSet.as_view(), name='api-friend-request'),
+    path('api/author/<uuid:pk>/friendrequest', views.FriendsRequestViewSet.as_view(), name='api-friend-request'),
 
     # Oauth - For Github Login, done by separate app
     url(r'^oauth/', include('social_django.urls' , namespace='social')),  # <--
