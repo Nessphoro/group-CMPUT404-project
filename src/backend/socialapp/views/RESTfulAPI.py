@@ -210,7 +210,7 @@ class AuthorViewSet(RetrieveAPIView):
 class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
     # Returns the logged in author's feed of posts
     serializer_class = serializers.PostSerializer
-    pagination_class = StandardResultsSetPagination
+    pagination_class = PostsPagination
 
     def get_queryset(self):
         user = self.request.META.get("HTTP_X_USER")
