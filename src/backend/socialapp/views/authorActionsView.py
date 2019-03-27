@@ -86,10 +86,8 @@ class AuthorActionsView(RedirectView):
             "accept": "application/json",
             'Content-Type': 'application/json',
         }
-        base = friend.host
-        if base[-1] != '/':
-            base = base+'/'
-        r=requests.post(base+"friendrequest",
+        node = friend.get_node()
+        r=requests.post(node.endpoint+"/friendrequest",
             data=json.dumps(data),
             headers=headers)
         #should have error handling here

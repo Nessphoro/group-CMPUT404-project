@@ -105,7 +105,7 @@ class Node(models.Model):
                         oldPost.description = post["description"]
                         oldPost.save()
                         return
-                    author = self.getOrCreateAuthor(session, post["author"])
+                    author = await self.getOrCreateAuthor(session, post["author"])
                     newPost = Post(author=author, 
                                 origin=post["origin"], 
                                 source=f"{self.endpoint}/posts/{post['id']}",
@@ -121,14 +121,14 @@ class Node(models.Model):
                     )
                     newPost.save()
 
-    async def refreshRemovePostComments(self, post: Post, session: aiohttp.ClientSession):
+    async def refreshRemoteComments(self, post: Post, session: aiohttp.ClientSession):
         async with session.get(f"{self.endpoint}/posts/{post.id}/comments") as r:
             data = await r.json()
             for comment in data["comments"]:
                 if Comment.objects.filter(id=comment["id"]):
                     continue
                 
-                author = self.getOrCreateAuthor(session, comment["author"])
+                author = await self.getOrCreateAuthor(session, comment["author"])
                 newComment = Comment(
                     id=comment["id"],
                     author=author,

@@ -8,7 +8,8 @@ from datetime import datetime
 from django.urls import reverse_lazy
 from .mixin import MixinContext
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-
+import aiohttp
+import asyncio
 
 
 # @method_decorator(user_passes_test, name='dispatch')

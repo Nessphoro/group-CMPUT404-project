@@ -3,6 +3,8 @@ from django.db import models
 from .. import models as mod
 from django.urls import reverse
 import uuid
+from urllib.parse import urlparse
+
 
 
 class Post(models.Model):
@@ -62,10 +64,14 @@ class Post(models.Model):
     def __str__(self):
         return str(self.title)
 
+    @property
+    def host(self):
+        proto, host = urlparse(self.source)[0:2]
+        return f"{proto}://{host}"
 
     def get_node(self):
         for node in mod.Node.objects.all():
             print(node.host)
             print(self.source)
-            if node.host == self.source:
+            if node.host == self.host:
                 return node
