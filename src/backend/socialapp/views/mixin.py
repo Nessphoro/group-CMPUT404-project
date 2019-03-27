@@ -119,13 +119,14 @@ class MixinCreateAuthor(object):
             author_id = path.split('/')[-1]
         # may need to readd this assumtion, or pull data from serve before checking this
         # remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
-        node = generic_find_node(author_url)
-        if not node:
-            raise Exception("Node not found")
+        
 
         if models.Author.objects.filter(pk=author_id).exists():
             remoteAuthor = models.Author.objects.get(pk=author_id)
         else:
+            node = generic_find_node(author_url)
+            if not node:
+                raise Exception("Node not found")
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             remoteAuthor = loop.run_until_complete(fetchUser(url, node))
