@@ -24,7 +24,7 @@ class Node(models.Model):
 
 
     async def getOrCreateAuthor(self, session, author):
-        authorId = author["id"].replace(f"{self.endpoint}/author/", "")
+        authorId = author["id"].split("/")[-1]
         authors = Author.objects.filter(id=authorId)
         if authors:
             return authors[0]
@@ -40,8 +40,20 @@ class Node(models.Model):
 
         return newAuthor
 
-    async def pull(self, session: aiohttp.ClientSession):
-        async with session.get(f"{self.endpoint}/posts/") as response:
+    def getUserHeader(self, author):
+        headers = {}
+        if author:
+            headers["X-User"] = f"{settings.SITE_URL}{reverse('api-author', kwargs={'pk': obj.id})}"
+        return headers
+    
+    def getUserEndpoint(self, author):
+        if author:
+            return f"{self.endpoint}/author/posts"
+        else:
+            return f"{self.endpoint}/posts"
+
+    async def pull(self, author, session: aiohttp.ClientSession):
+        async with session.get(self.getUserEndpoint(author), headers=self.getUserHeader(author)) as response:
             try:
                 data = await response.json()
 
