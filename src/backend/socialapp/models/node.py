@@ -36,7 +36,7 @@ class Node(models.Model):
             id=authorId,
             host=author["host"],
             displayName=author["displayName"],
-            github=author["github"]
+            github=author.get("github", "")
         )
 
         newAuthor.save()
