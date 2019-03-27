@@ -345,7 +345,7 @@ class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
         test = serializers.PostSerializer(list(page), context=serializer_context,many=True) 
         return JsonResponse(test.data, safe=False)
 
-
+#this probably needs less credentials
 class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
     # Returns all friends of a particular author pk
 

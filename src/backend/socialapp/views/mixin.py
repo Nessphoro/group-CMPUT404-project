@@ -140,9 +140,16 @@ class MixinCheckServer(object):
         username = decoded[0]
         password = decoded[-1]
 
-        if User.objects.filter(username=username).exists():
-            user = User.objects.get(username=username)
-            if user.check_password(password):
+        if models.Node.objects.filter(endpoint=username).exists():
+            node = models.Node.objects.get(endpoint=username)
+            if node.password == password:
                 return True
             else:
                 return False
+
+        # if User.objects.filter(username=username).exists():
+        #     user = User.objects.get(username=username)
+        #     if user.check_password(password):
+        #         return True
+        #     else:
+        #         return False
