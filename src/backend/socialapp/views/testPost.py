@@ -34,14 +34,14 @@ def request_p(urlTo,authID,host,name,url,github, postId, qtype):
 	return data
 
 
-def request_g(url, auth=None):
+def request_g(url, auth=None, head=None):
 	# print(url)
 	if not auth:
 		r=requests.get(url)
 		data = r.json()
 	if auth:
 		print(f'Basic {auth.decode("utf-8")}')
-		r=requests.get(url, headers={'Authorization': f'Basic {auth.decode("utf-8")}'})
+		r=requests.get(url, headers={head: f'{auth.decode("utf-8")}'})
 		data = r.json()
 		
 	return data
@@ -62,6 +62,8 @@ pwd = "Pass!123"
 name = "server"
 concat = f"{name}:{pwd}"
 concat = base64.b64encode(concat.encode("utf-8"))
+concat =f'Basic {concat}'
+
 
 #url_2 is the post url
 #url_1 is the author url
@@ -78,11 +80,11 @@ concat = base64.b64encode(concat.encode("utf-8"))
 # p_4 = request_p(url_4,id_1,host_1,name_1,url_1,github_1,post_id_1,qtype_4)
 # print(p_4.content)
 
+# p_4 = request_p('http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friendrequest',id_1,host_1,name_1,url_1,github_1,post_id_1,"friendrequest")
+# print(p_4.content)
 
 
-p_4 = request_p('http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friendrequest',id_1,host_1,name_1,url_1,github_1,post_id_1,"friendrequest")
-print(p_4.content)
-
+# http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812
 
 # get testing
 # g = request_g(url=url_1)
@@ -102,5 +104,12 @@ print(p_4.content)
 # g_2 = request_g(url="http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friends/c3277495-b9d1-4325-a266-b211dea9e744", auth=concat)
 # print(g_2)
 
-# g_2 = request_g(url="http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friends", auth=concat)
+# g_2 = request_g(url="http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friends", auth=concat , head="Authorization")   
 # print(g_2)
+
+concat = 'http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812'
+concat = base64.b64encode(concat.encode("utf-8"))
+g_2 = request_g(url="http://127.0.0.1:8000/api/author/posts", auth=concat, head="X-USER")
+print(g_2)
+
+

@@ -39,7 +39,7 @@ urlpatterns = [
     path('api/posts/<uuid:pk>', views.PostViewSet.as_view(), name='api-post'),
     path('api/posts/<uuid:pk>/comments', views.PostCommentsViewSet.as_view(), name='api-post-comments'),
 
-    path('api/author/posts/', login_required(views.AuthorFeedViewSet.as_view()), name='api-author-feed'),
+    path('api/author/posts', views.AuthorFeedViewSet.as_view(), name='api-author-feed'),
     path('api/author/<uuid:pk>', views.AuthorViewSet.as_view(), name='api-author'),
     path('api/author/<uuid:pk>/posts/', views.AuthoredByPostsViewSet.as_view(), name='api-author-posts'),
 

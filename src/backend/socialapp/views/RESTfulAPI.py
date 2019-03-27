@@ -133,7 +133,7 @@ class PublicPostsViewSet(MixinCheckServer, ListAPIView):
     def get_queryset(self):
         #todo check X-user
         server = self.request.META.get("HTTP_AUTHORIZATION") 
-        user = self.request.META.get("X-User")
+        user = self.request.META.get("HTTP_X-USER")
         if not server and not user:
             return models.Post.objects.filter(visibility='PUBLIC',unlisted=False)
         if self.checkserver(server):
@@ -263,16 +263,34 @@ class AuthorViewSet(ListAPIView):
         return [author]
 
 
-
+#get with user credentials
 class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
     # Returns the logged in author's feed of posts
     serializer_class = serializers.PostSerializer
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        author = self.request.user.author
-        return author.get_all_posts()
+        user = self.request.META.get("HTTP_X_USER")
+        # for i in self.request.META:
+        #     print(i)
+        print(user)
+        url = self.check_author(user)
+        # author.get_all_posts()
 
+        author_id = None
+        path = urlparse(url).path
+        if path:
+            author_id = path.split('/')[-1]
+
+        if models.Author.objects.filter(pk=author_id).exists():
+            author = models.Author.objects.get(pk=author_id)
+        else:
+            print("something went wrong")
+        return author.get_my_feed()
+
+    def check_author(self, user):
+        url = decoded = base64.b64decode(user).decode("utf-8")
+        return url
 
 class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
     # Returns all posts by a particular author denoted by author pk
