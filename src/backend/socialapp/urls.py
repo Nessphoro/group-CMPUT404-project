@@ -22,6 +22,7 @@ urlpatterns = [
     path('Author/send-request/<uuid:target_pk>', views.AuthorActionsView.as_view(), {'action': 'send-friend-request'}, name='author-send-friend-request'),
     path('Author/accept-request/<uuid:target_pk>', views.AuthorActionsView.as_view(), {'action': 'accept-friend-request'}, name='author-accept-friend-request'),
     path('Author/decline-request/<uuid:target_pk>', views.AuthorActionsView.as_view(), {'action': 'decline-friend-request'}, name='author-decline-friend-request'),
+    path('Author/forein-post/<uuid:target_pk>', views.AuthorActionsView.as_view(), {'action': 'forein_post'}, name='author-send-forein_post'),
 
     # Posts
     path('Post/<uuid:pk>/', views.PostDetailView.as_view(), name='post-id'),
@@ -46,8 +47,9 @@ urlpatterns = [
     # Friends
     path('api/author/<uuid:pk>/friends', views.FriendsViewSet.as_view(), name='api-list-friends'),
     path('api/author/<uuid:pk1>/friends/<uuid:pk2>', views.isFriendsViewSet.as_view(), name='api-is-friends'),
-    path('api/author/<uuid:pk>/friendrequest', views.FriendsRequestViewSet.as_view(), name='api-friend-request'),
-
+    # path('api/author/<uuid:pk>/friendrequest', views.FriendsRequestViewSet.as_view(), name='api-friend-request'),
+    path('friendrequest', views.FriendsRequestViewSet.as_view(), name='api-friend-request'),
+    
     # Oauth - For Github Login, done by separate app
     url(r'^oauth/', include('social_django.urls' , namespace='social')),  # <--
 

@@ -25,9 +25,17 @@
                                 Accept Request
                             </a>
                         {% elif user.author not in author.friend_requests.all()  %}
+                            <!-- rechange -->
+                            {% if user.author.host != author.host %}
+                            <a href="{{ url('author-send-forein_post', args=[author.id])}}"   class="primary basic fluid ui button">
+                                Send Friend Request
+                            </a>
+                            {% else %}
                             <a href="{{ url('author-send-friend-request', args=[author.id])}}"   class="primary basic fluid ui button">
                                 Send Friend Request
                             </a>
+                            {% endif %}
+
                         {% else %}
                         {% endif %}
                     {% endif%}

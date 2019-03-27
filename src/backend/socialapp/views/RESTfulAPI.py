@@ -333,22 +333,39 @@ class FriendsRequestViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
     # this is untested
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
-        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-
+        # author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
+        print("yeyey")
         data = json.loads(request.body)
+        print(data['author'])
         try:
-            remoteAuthor = self.createAuthor(data, "friendrequest")
+            author = self.createAuthor(data, "friendrequest")
+        except Exception as e:
+            print(e)
+            return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
+        if 'author' in data:
+            del data["author"]
+        else:
+            return HttpResponseNotFound("err")
+        print('access')
+        if 'friend':
+            data['author'] = data.pop('friend')
+        else:
+            return HttpResponseNotFound("err")
+        try:
+            friend = self.createAuthor(data, "friendrequest")
         except Exception as e:
             return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
 
         #todo request
-        print(remoteAuthor)
+        # print(author)
         try: 
-            if remoteAuthor:
-                author.friend_requests.add(remoteAuthor)
+            if author and friend:
+                friend.friend_requests.add(author)
             else:
+
                 return HttpResponseNotFound(f'<h1> none type error probABLY</h1>')
         except Exception as e:
+            print(e)
             return HttpResponseNotFound(f'<h1>2: {e}</h1>')
         return HttpResponse('')
 
