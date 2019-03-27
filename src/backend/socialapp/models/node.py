@@ -6,6 +6,7 @@ from .author import Author
 from .post import Post
 from .comments import Comment
 from django.conf import settings
+import traceback
 from urllib.parse import urlparse
 
 class Node(models.Model):
@@ -182,4 +183,5 @@ class Node(models.Model):
                     newPost.save()
             except Exception as e:
                 print(e)
+                traceback.print_exc()
                 return
