@@ -39,9 +39,9 @@ def request_g(url, auth=None, head=None):
 	if not auth:
 		r=requests.get(url)
 		data = r.json()
-	if auth:
-		print(f'Basic {auth.decode("utf-8")}')
-		r=requests.get(url, headers={head: f'{auth.decode("utf-8")}'})
+	if head:
+		print(f'{auth}')
+		r=requests.get(url, headers={head: f'{auth}'})
 		data = r.json()
 		
 	return data
@@ -59,10 +59,10 @@ qtype_2 = "comments"
 qtype_4 = 'posts'
 url_4 = 'http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/posts/'
 pwd = "Pass!123"
-name = "server"
-concat = f"{name}:{pwd}"
+name = "http://server.com"
+concat = f"{name}${pwd}"
 concat = base64.b64encode(concat.encode("utf-8"))
-concat =f'Basic {concat}'
+concat =f'Basic {concat.decode("utf-8")}'
 
 
 #url_2 is the post url
@@ -94,8 +94,8 @@ concat =f'Basic {concat}'
 
 # g_3 = request_g(url="http://127.0.0.1:8000/api/posts")
 # print(g_3)
-# g_3 = request_g(url="http://127.0.0.1:8000/api/posts", auth=concat)
-# print(g_3)
+g_3 = request_g(url="http://127.0.0.1:8000/api/posts", auth=concat,  head="Authorization")
+print(g_3)
 
 
 # g_2 = request_g(url="http://127.0.0.1:8000/api/posts/16dc9c58-5daf-434d-b430-fb4fdaa0f4c4", auth=concat)
@@ -107,9 +107,9 @@ concat =f'Basic {concat}'
 # g_2 = request_g(url="http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friends", auth=concat , head="Authorization")   
 # print(g_2)
 
-concat = 'http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812'
-concat = base64.b64encode(concat.encode("utf-8"))
-g_2 = request_g(url="http://127.0.0.1:8000/api/author/posts", auth=concat, head="X-USER")
-print(g_2)
+# concat = 'http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812'
+# concat = base64.b64encode(concat.encode("utf-8"))
+# g_2 = request_g(url="http://127.0.0.1:8000/api/author/posts", auth=concat, head="X-USER")
+# print(g_2)
 
 
