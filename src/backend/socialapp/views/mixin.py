@@ -102,6 +102,9 @@ class DenyAcess(object):
 		pass
 
 
+async def fetchUser(url, node):
+    async with aiohttp.ClientSession() as session:
+        return await node.fetchRemoteAuthor(url, session)
 
 class MixinCreateAuthor(object):
     def createAuthor(self,data,requestType):
@@ -117,8 +120,18 @@ class MixinCreateAuthor(object):
                 author_id = path.split('/')[-1]
             # may need to readd this assumtion, or pull data from serve before checking this
             # remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
+            node = generic_find_node(author_url)
+            if not node:
+                raise Exception("Node not found")
+
             if models.Author.objects.filter(pk=author_id).exists():
                 remoteAuthor = models.Author.objects.get(pk=author_id)
+            else:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                remoteAuthor = loop.run_until_complete(fetchUser(url, node))
+                loop.close()
+
             # for i in data["friends"]:
             #     host = urlparse(i).netloc
             #     author_id = None
@@ -142,13 +155,13 @@ class MixinCheckServer(object):
             username = decoded[0]
             password = decoded[-1]
 
-            if models.Node.objects.filter(endpoint=username).exists():
-                node = models.Node.objects.get(endpoint=username)
+            node = generic_find_node(username)
+            if node:
                 if node.password == password:
                     return True
                 else:
                     return False
-
+            return False
             # if User.objects.filter(username=username).exists():
             #     user = User.objects.get(username=username)
             #     if user.check_password(password):
@@ -157,3 +170,13 @@ class MixinCheckServer(object):
             #         return False
         else:
             return True
+
+
+def generic_find_node(url) -> models.Node:
+    proto, host = urlparse(url)[0:2]
+    host = f"{proto}://{host}"
+    for node in mod.Node.objects.all():
+            print(node.host)
+            print(self.host)
+            if node.host == self.host:
+                return node

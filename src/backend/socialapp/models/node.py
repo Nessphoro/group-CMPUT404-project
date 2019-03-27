@@ -25,7 +25,7 @@ class Node(models.Model):
         return f"{proto}://{host}"
 
 
-    async def getOrCreateAuthor(self, session, author):
+    async def getOrCreateAuthor(session, author):
         authorId = author["id"].split("/")[-1]
         authors = Author.objects.filter(id=authorId)
         if authors:
@@ -54,6 +54,23 @@ class Node(models.Model):
         else:
             return f"{self.endpoint}/posts"
 
+    async def fetchRemoteAuthor(url, session: aiohttp.ClientSession):
+        async with session.get(url) as r:
+            data = await r.json()
+            author = await Node.getOrCreateAuthor(session, data)
+            author.firstName = data.get("firstName", "John")
+            author.lastName = data.get("lastName", "Smith")
+            author.email = data.get("email", "no@email.com")
+            author.bio = data.get("bio", "No Bio")
+            for a in data["friends"]:
+                friend = Node.getOrCreateAuthor(a)
+                if friend not in author.friends:
+                    author.friends.add(friend)
+                if author not in friend.friends:
+                    friend.friends.add(author)
+            author.save()
+            return author
+
     async def refreshRemoteAuthor(self, author: Author, session: aiohttp.ClientSession):
         async with session.get(f"{self.endpoint}/author/{author.id}") as r:
             data = await r.json()
@@ -63,7 +80,7 @@ class Node(models.Model):
             author.email = data.get("email", "no@email.com")
             author.bio = data.get("bio", "No Bio")
             for a in data["friends"]:
-                friend = self.getOrCreateAuthor(a)
+                friend = Node.getOrCreateAuthor(a)
                 if friend not in author.friends:
                     author.friends.add(friend)
                 if author not in friend.friends:
@@ -105,7 +122,7 @@ class Node(models.Model):
                         oldPost.description = post["description"]
                         oldPost.save()
                         return
-                    author = await self.getOrCreateAuthor(session, post["author"])
+                    author = await Node.getOrCreateAuthor(session, post["author"])
                     newPost = Post(author=author, 
                                 origin=post["origin"], 
                                 source=f"{self.endpoint}/posts/{post['id']}",
@@ -128,7 +145,7 @@ class Node(models.Model):
                 if Comment.objects.filter(id=comment["id"]):
                     continue
                 
-                author = await self.getOrCreateAuthor(session, comment["author"])
+                author = await Node.getOrCreateAuthor(session, comment["author"])
                 newComment = Comment(
                     id=comment["id"],
                     author=author,
@@ -148,7 +165,7 @@ class Node(models.Model):
                     if Post.objects.filter(id=post["id"]) or post['origin'].startswith(settings.SITE_URL):
                         continue
                     
-                    postAuthor = await self.getOrCreateAuthor(session, post["author"])
+                    postAuthor = await Node.getOrCreateAuthor(session, post["author"])
                     newPost = Post( author=postAuthor, 
                                     origin=post["origin"], 
                                     source=f"{self.endpoint}/posts/{post['id']}",
