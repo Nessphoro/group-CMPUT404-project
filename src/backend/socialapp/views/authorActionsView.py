@@ -1,8 +1,9 @@
 from django.urls import reverse_lazy
 from django.shortcuts import  get_object_or_404
 from django.views.generic import RedirectView
-
-
+import requests 
+import json
+import uuid
 from ..models import Author
 
 
@@ -25,6 +26,14 @@ class AuthorActionsView(RedirectView):
 
         if action == "decline-friend-request":
             self.decline_friend_request(target_pk)
+        if action == "forein_post":
+            print("access")
+            for i in kwargs:
+                print(i)
+            if Author.objects.filter(id = target_pk).exists():
+                friend = Author.objects.get(id = target_pk)
+                self.forein_post(friend)
+
 
         return reverse_lazy('index')
 
@@ -53,6 +62,34 @@ class AuthorActionsView(RedirectView):
 
         target.decline_friend_request(sender)
 
-
-
-
+    def forein_post(self, friend):
+        # /friendrequest
+        user = self.request.user.author
+        data = {
+            "query":"friendrequest",
+            "author":{ 
+                "id":user.host+str(user.id),
+                "host":user.host,
+                "displayName":user.displayName,
+                "url":user.host+str(user.id),
+                "github": user.github,
+            },
+            "friend":{ 
+                "id":friend.host+str(friend.id),
+                "host":friend.host,
+                "displayName":friend.displayName,
+                "url":friend.host+str(friend.id),
+                "github": friend.github,
+            },
+        }
+        headers = {
+            "accept": "application/json",
+            'Content-Type': 'application/json',
+        }
+        base = friend.host
+        if base[-1] != '/':
+            base = base+'/'
+        r=requests.post(base+"friendrequest",
+            data=json.dumps(data),
+            headers=headers)
+        #should have error handling here

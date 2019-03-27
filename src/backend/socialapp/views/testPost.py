@@ -45,21 +45,22 @@ def request_g(url, auth=None, head=None):
 		data = r.json()
 		
 	return data
+# 10cdf97e-6ce2-4d87-871c-887a146cffb9
 
 post_id_1 = "eee13126-4dc2-4c0e-9e86-ffaa3e3fbac6"
-id_1 = "http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812"
+id_1 = "http://127.0.0.1:8000/api/author/800612ed-07d6-41b8-bd5c-2ec19fded4c4"
 host_1 = "http://127.0.0.1:8000"
 name_1 = "jejewittt"
-url_1 = "http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812"
+url_1 = "http://127.0.0.1:8000/api/author/800612ed-07d6-41b8-bd5c-2ec19fded4c4"
 url_2 = "http://127.0.0.1:8000/api/posts/63fdc4ee-8bd4-4c6e-98af-878889c5fa13"
 github_1 = "https://github.com/jejewittt"
 url_3 = "http://127.0.0.1:8000/api/posts/9bcb740b-e0d6-42ca-b2c5-b2584e27668d/comments"
 qtype_1 = "getPost"
 qtype_2 = "comments"
 qtype_4 = 'posts'
-url_4 = 'http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/posts/'
+url_4 = 'http://127.0.0.1:8000/api/author/800612ed-07d6-41b8-bd5c-2ec19fded4c4/posts/'
 pwd = "Pass!123"
-name = "http://servver.com"
+name = "http://server.com"
 concat = f"{name}${pwd}"
 concat = base64.b64encode(concat.encode("utf-8"))
 concat =f'Basic {concat.decode("utf-8")}'
@@ -94,8 +95,8 @@ concat =f'Basic {concat.decode("utf-8")}'
 
 # g_3 = request_g(url="http://127.0.0.1:8000/api/posts")
 # print(g_3)
-g_3 = request_g(url="http://127.0.0.1:8000/api/posts", auth=concat,  head="Authorization")
-print(g_3)
+# g_3 = request_g(url="http://127.0.0.1:8000/api/posts", auth=concat,  head="Authorization")
+# print(g_3)
 
 
 # g_2 = request_g(url="http://127.0.0.1:8000/api/posts/16dc9c58-5daf-434d-b430-fb4fdaa0f4c4", auth=concat)
@@ -113,3 +114,33 @@ print(g_3)
 # print(g_2)
 
 
+
+
+data = {
+    "query":"friendrequest",
+    "author":{ 
+        "id":"http://127.0.0.1:5454/author/10cdf97e-6ce2-4d87-871c-887a146cffb9",
+        "host":"http://127.0.0.1:5454/",
+        "displayName":"me",
+        "url":"http://127.0.0.1:5454/author/10cdf97e-6ce2-4d87-871c-887a146cffb9",
+        "github": "eh",
+    },
+    "friend":{ 
+		"id":"http://127.0.0.1:5454/author/800612ed-07d6-41b8-bd5c-2ec19fded4c4",
+        "host":"http://127.0.0.1:5454/",
+        "displayName":"user1",
+        "url":"http://127.0.0.1:5454/author/800612ed-07d6-41b8-bd5c-2ec19fded4c4",
+        "github": "eh",
+    },
+}
+headers = {
+    "accept": "application/json",
+    'Content-Type': 'application/json',
+    # "HTTP_HOST": "127.0.0.1"
+}
+url = 'http://127.0.0.1:8000/friendrequest'
+r=requests.post(url,
+    data=json.dumps(data),
+    headers=headers)
+data = r#.json()
+print(data.json())
