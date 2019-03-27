@@ -71,7 +71,7 @@ class MixinIndex(object):
             if active_user:
                 outstanding.append(self.refresh_feed(session, active_user, active_user.feed))
             for node in models.Node.objects.all():
-                outstanding.append(node.pull(session, active_user))
+                outstanding.append(node.pull(active_user, session))
             if outstanding:
                 await asyncio.wait(outstanding)
 

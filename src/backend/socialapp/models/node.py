@@ -6,6 +6,7 @@ from .author import Author
 from .post import Post
 from .comments import Comment
 from django.conf import settings
+from urllib.parse import urlparse
 
 class Node(models.Model):
     class Meta:
@@ -20,7 +21,8 @@ class Node(models.Model):
     
     @property
     def host(self):
-        return endpoint.partition("/")[0]
+        proto, host = urlparse(self.endpoint)[0:2]
+        return f"{proto}://{host}"
 
 
     async def getOrCreateAuthor(self, session, author):
@@ -54,18 +56,18 @@ class Node(models.Model):
 
     async def refreshRemoteAuthor(self, author: Author, session: aiohttp.ClientSession):
         async with session.get(f"{self.endpoint}/author/{author.id}") as r:
-            data = await response.json()
+            data = await r.json()
 
-            author.firstName = author.get("firstName", "John")
-            author.lastName = author.get("lastName", "Smith")
-            author.email = author.get("email", "no@email.com")
-            author.bio = author.get("bio", "No Bio")
+            author.firstName = data.get("firstName", "John")
+            author.lastName = data.get("lastName", "Smith")
+            author.email = data.get("email", "no@email.com")
+            author.bio = data.get("bio", "No Bio")
             author.save()
 
     async def refreshRemoteAuthorPosts(self, author: Author, session: aiohttp.ClientSession):
         async with session.get(f"{self.endpoint}/author/{author.id}/posts") as r:
-            data = await response.json()
-
+            data = await r.json()
+            import pdb; pdb.set_trace()
             for post in data["posts"]:
                     if Post.objects.filter(id=post["id"]) or post['origin'].startswith(settings.SITE_URL):
                         continue

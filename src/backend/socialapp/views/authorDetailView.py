@@ -18,13 +18,11 @@ class AuthorDetailView(MixinContext,DetailView):
             await asyncio.wait(outstanding)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if context['ActiveUser']:
-            author = context['ActiveUser']
-            if author.is_foreign_author():
-                node = author.get_node()
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-                loop.run_until_complete(self.refresh_async(author, node))
-                loop.close()
+        context = super(MixinContext, self).get_context_data(**kwargs)
+        author = self.get_object()
+        node = author.get_node()
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(self.refresh_async(author, node))
+        loop.close()
         return context
