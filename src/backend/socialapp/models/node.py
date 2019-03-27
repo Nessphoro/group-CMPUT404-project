@@ -45,7 +45,7 @@ class Node(models.Model):
     def getUserHeader(self, author):
         headers = {}
         if author:
-            headers["X-User"] = f"{settings.SITE_URL}{reverse('api-author', kwargs={'pk': obj.id})}"
+            headers["X-User"] = f"{settings.SITE_URL}{reverse('api-author', kwargs={'pk': author.id})}"
         return headers
     
     def getUserEndpoint(self, author):
@@ -90,6 +90,54 @@ class Node(models.Model):
                                 visibility=post["visibility"]
                     )
                     newPost.save()
+
+
+    async def refreshRemotePost(self, post: Post, session: aiohttp.ClientSession):
+        async with session.get(f"{self.endpoint}/posts/{post.id}") as r:
+            data = await r.json()
+            for post in data["posts"]:
+                    if post['origin'].startswith(settings.SITE_URL):
+                        return
+                    if Post.objects.filter(id=post["id"]):
+                        oldPost = Post.objects.filter(id=post["id"])[0]
+                        oldPost.content = post["content"]
+                        oldPost.title = post["title"]
+                        oldPost.description = post["description"]
+                        oldPost.save()
+                        return
+                    author = self.getOrCreateAuthor(session, post["author"])
+                    newPost = Post(author=author, 
+                                origin=post["origin"], 
+                                source=f"{self.endpoint}/posts/{post['id']}",
+                                title=post["title"],
+                                description=post["description"],
+                                content=post["content"],
+                                contentType=post["contentType"],
+                                published=post["published"],
+                                unlisted=post["unlisted"],
+                                categories=",".join(post["categories"]),
+                                id=post["id"],
+                                visibility=post["visibility"]
+                    )
+                    newPost.save()
+
+    async def refreshRemovePostComments(self, post: Post, session: aiohttp.ClientSession):
+        async with session.get(f"{self.endpoint}/posts/{post.id}/comments") as r:
+            data = await r.json()
+            for comment in data["comments"]:
+                if Comment.objects.filter(id=comment["id"]):
+                    continue
+                
+                author = self.getOrCreateAuthor(session, comment["author"])
+                newComment = Comment(
+                    id=comment["id"],
+                    author=author,
+                    post=post,
+                    comment=comment["comment"],
+                    contentType=comment["contentType"],
+                    published=comment["published"]
+                )
+                newComment.save()
 
     async def pull(self, author, session: aiohttp.ClientSession):
         async with session.get(self.getUserEndpoint(author), headers=self.getUserHeader(author)) as response:

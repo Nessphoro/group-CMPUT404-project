@@ -74,7 +74,7 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
     """
 
     serializer_class = serializers.PostSerializer
-    pagination_class = StandardResultsSetPagination
+    pagination_class = PostsPagination
 
     def get_queryset(self):
         post = get_object_or_404(models.Post, id = self.kwargs.get("pk"))
@@ -228,8 +228,7 @@ class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
         return author.get_my_feed()
 
     def check_author(self, user):
-        url = decoded = base64.b64decode(user).decode("utf-8")
-        return url
+        return user
 
 class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
     # Returns all posts by a particular author denoted by author pk

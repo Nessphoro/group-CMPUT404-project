@@ -17,6 +17,24 @@ class PostDetailView(MixinContext,UserPassesTestMixin,DetailView):
     template_name = 'socialapp/post-detail.html'
     model = models.Post
 
+    async def refresh_async(self, post: models.Post, node: models.Node):
+        async with aiohttp.ClientSession() as session:
+            outstanding = []
+            outstanding.append(node.refreshRemotePost(post, session))
+            outstanding.append(node.refreshRemoteComments(post, session))
+            await asyncio.wait(outstanding)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.get_object()
+        node = post.get_node()
+        if node:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(self.refresh_async(post, node))
+            loop.close()
+        return context
+
     def test_func(self):
         active = None
         post = self.get_object()

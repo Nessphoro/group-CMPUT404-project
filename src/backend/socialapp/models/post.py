@@ -61,3 +61,10 @@ class Post(models.Model):
     def __str__(self):
         return str(self.title)
 
+
+    def get_node(self):
+        for node in mod.Node.objects.all():
+            print(node.host)
+            print(self.source)
+            if node.host == self.source:
+                return node
