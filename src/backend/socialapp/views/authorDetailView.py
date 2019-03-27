@@ -21,8 +21,9 @@ class AuthorDetailView(MixinContext,DetailView):
         context = super(MixinContext, self).get_context_data(**kwargs)
         author = self.get_object()
         node = author.get_node()
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.refresh_async(author, node))
-        loop.close()
+        if node:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(self.refresh_async(author, node))
+            loop.close()
         return context

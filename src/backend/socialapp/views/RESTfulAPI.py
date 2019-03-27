@@ -178,15 +178,10 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
 
 # TODO: Bind this same url to take comments via POST and create them server side
 
-class AuthorViewSet(ListAPIView):
+class AuthorViewSet(RetrieveAPIView):
     # Returns a single author
     serializer_class = serializers.AuthorAltSerializer
-    pagination_class = StandardResultsSetPagination
-
-    def get_queryset(self):
-        # TODO: Check if Hindle actually wants this as a list of one item?
-        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-        return [author]
+    queryset = models.Author.objects
 
 
 #get with user credentials
