@@ -5,6 +5,8 @@ from django.conf import settings
 from django.urls import reverse_lazy
 from urllib.parse import urlparse
 import uuid
+import base64
+from django.contrib.auth.models import User
 
 
 class MixinContext(object):
@@ -128,3 +130,19 @@ class MixinCreateAuthor(object):
                     remoteAuthor.friends.add(fake_friend)
             return remoteAuthor
         return None
+
+class MixinCheckServer(object):
+    def checkserver(self, server):
+        server = server.split(' ')
+        basic = server[0]
+        auth = server[-1]
+        decoded = base64.b64decode(auth).decode("utf-8").split(':')
+        username = decoded[0]
+        password = decoded[-1]
+
+        if User.objects.filter(username=username).exists():
+            user = User.objects.get(username=username)
+            if user.check_password(password):
+                return True
+            else:
+                return False

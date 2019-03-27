@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import requests 
 import json
+import base64
 
 def request_p(urlTo,authID,host,name,url,github, postId, qtype):
 	# print(url)
@@ -33,24 +34,35 @@ def request_p(urlTo,authID,host,name,url,github, postId, qtype):
 	return data
 
 
-def request_g(url):
+def request_g(url, auth=None):
 	# print(url)
-	r=requests.get(url)
-	data = r.json()
+	if not auth:
+		r=requests.get(url)
+		data = r.json()
+	if auth:
+		print(f'Basic {auth.decode("utf-8")}')
+		r=requests.get(url, headers={'Authorization': f'Basic {auth.decode("utf-8")}'})
+		data = r.json()
+		
 	return data
 
 post_id_1 = "eee13126-4dc2-4c0e-9e86-ffaa3e3fbac6"
-id_1 = "http://127.0.0.1:8000/api/author/eee13126-4dc2-4c0e-9e86-ffaa3e3fbac6"
+id_1 = "http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812"
 host_1 = "http://127.0.0.1:8000"
 name_1 = "jejewittt"
-url_1 = "http://127.0.0.1:8000/api/author/eee13126-4dc2-4c0e-9e86-ffaa3e3fbac6"
-url_2 = "http://127.0.0.1:8000/api/posts/af10a47f-4afe-4fc9-bd38-8794ecde3db6"
+url_1 = "http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812"
+url_2 = "http://127.0.0.1:8000/api/posts/63fdc4ee-8bd4-4c6e-98af-878889c5fa13"
 github_1 = "https://github.com/jejewittt"
-url_3 = "http://127.0.0.1:8000/api/posts/af10a47f-4afe-4fc9-bd38-8794ecde3db6/comments?page=1&size=1"
+url_3 = "http://127.0.0.1:8000/api/posts/9bcb740b-e0d6-42ca-b2c5-b2584e27668d/comments"
 qtype_1 = "getPost"
 qtype_2 = "comments"
 qtype_4 = 'posts'
-url_4 = 'http://127.0.0.1:8000/api/author/eee13126-4dc2-4c0e-9e86-ffaa3e3fbac6/posts/'
+url_4 = 'http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/posts/'
+pwd = "Pass!123"
+name = "server"
+concat = f"{name}:{pwd}"
+concat = base64.b64encode(concat.encode("utf-8"))
+
 #url_2 is the post url
 #url_1 is the author url
 
@@ -63,8 +75,8 @@ url_4 = 'http://127.0.0.1:8000/api/author/eee13126-4dc2-4c0e-9e86-ffaa3e3fbac6/p
 # print(p_2.content)
 
 # AuthoredByPostsViewSet
-p_4 = request_p(url_4,id_1,host_1,name_1,url_1,github_1,post_id_1,qtype_4)
-print(p_4.content)
+# p_4 = request_p(url_4,id_1,host_1,name_1,url_1,github_1,post_id_1,qtype_4)
+# print(p_4.content)
 
 
 
@@ -73,5 +85,8 @@ print(p_4.content)
 # print(g)
 # g_2 = request_g(url=url_2)
 # print(g_2)
-# g_3 = request_g(url="http://127.0.0.1:8000/api/posts")
-# print(g_3)
+
+g_3 = request_g(url="http://127.0.0.1:8000/api/posts")
+print(g_3)
+g_3 = request_g(url="http://127.0.0.1:8000/api/posts", auth=concat)
+print(g_3)

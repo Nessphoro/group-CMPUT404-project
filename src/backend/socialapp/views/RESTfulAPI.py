@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
+from django.contrib.auth.models import User
 
 from collections import OrderedDict
 
@@ -17,8 +18,9 @@ from urllib.parse import urlparse
 import json
 import os.path
 import uuid
+import base64
 
-from .mixin import MixinCreateAuthor
+from .mixin import MixinCreateAuthor, MixinCheckServer
 
 # https://stackoverflow.com/questions/9626535/get-protocol-host-name-from-url
 
@@ -72,7 +74,7 @@ class PostsPagination(PageNumberPagination):
         """
 
 
-class PublicPostsViewSet(ListAPIView):
+class PublicPostsViewSet(MixinCheckServer, ListAPIView):
     """
     Returns all the publicly visible posts in the format:
     {
@@ -124,15 +126,22 @@ class PublicPostsViewSet(ListAPIView):
         ]
     }
     """
-    queryset = models.Post.objects.filter(visibility='PUBLIC',unlisted=False)
+    queryset = None
     serializer_class = serializers.PostSerializer
     pagination_class = PostsPagination
 
-    # def get_queryset(self):
-    #     post = get_object_or_404(models.Post, id=self.kwargs.get("pk"))
-    #     for i in self.request.GET:
-    #         print(i)
-    #     return [post]
+    def get_queryset(self):
+        #todo check X-user
+        server = self.request.META.get("HTTP_AUTHORIZATION") 
+        user = self.request.META.get("X-User")
+        if not server and not user:
+            return models.Post.objects.filter(visibility='PUBLIC',unlisted=False)
+        if self.checkserver(server):
+            return models.Post.objects.all()
+        else:
+            return models.Post.objects.filter(visibility='PUBLIC',unlisted=False)
+
+
 
 class PostViewSet(MixinCreateAuthor, ListAPIView):
     # Returns a single post
