@@ -281,6 +281,23 @@ class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
     serializer_class = serializers.PostSerializer
     pagination_class = StandardResultsSetPagination
 
+    ##untested
+    def get_queryset(self):
+        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
+        server = self.request.META.get("HTTP_AUTHORIZATION") 
+        if server and self.checkserver(server):
+            return author.posts_by.all()
+
+        try:
+            if post.visibility == 'PUBLIC':
+                return author.posts_by.filter(visibility='PUBLIC')
+            #todo  dont make this a cheap hack
+            else:
+                return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        except:
+            return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+
+
     def get_queryset(self):
 
         author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
@@ -336,33 +353,26 @@ class FriendsViewSet(ListAPIView):
         return Response(resp)
         """
 
+#should this be this class?
 class isFriendsViewSet(ListAPIView):
     # Returns if author pk and another author are friends
     serializer_class = serializers.AuthorAltSerializer
     pagination_class = StandardResultsSetPagination
 
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
 
         author1 = get_object_or_404(models.Author, id= self.kwargs.get("pk1"))
         author2 = get_object_or_404(models.Author, id= self.kwargs.get("pk2"))
         are_friends = False
-        if author1 in author2.friend_by.all() and author2 in author1.friend_by.all():
+        if author1.is_friend(author2.id) and author2.is_friend(author1.id):
             are_friends = True
-        return Response(OrderedDict[
-            ('query', 'friends'),
-            ('authors', [author1, author2]),
-            ('friends', are_friends)
-        ])
 
-        """
-        resp = {
-            "query": "friends",
-            "authors": [author1, author2],
-            "friends": are_friends
-        }
+        data = {   "query":"friends",
+                    "authors":[author1.host+author1.get_absolute_url(), author2.host+author2.get_absolute_url()],
+                    "friends":are_friends,
+                }
+        return JsonResponse(data, safe=False)
 
-        return Response(resp)
-        """
 
 class FriendsRequestViewSet(ListAPIView):
     # Returns all friend requests to a particular author pk
