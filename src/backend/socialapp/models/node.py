@@ -62,6 +62,12 @@ class Node(models.Model):
             author.lastName = data.get("lastName", "Smith")
             author.email = data.get("email", "no@email.com")
             author.bio = data.get("bio", "No Bio")
+            for a in data["friends"]:
+                friend = self.getOrCreateAuthor(a)
+                if friend not in author.friends:
+                    author.friends.add(friend)
+                if author not in friend.friends:
+                    friend.friends.add(author)
             author.save()
 
     async def refreshRemoteAuthorPosts(self, author: Author, session: aiohttp.ClientSession):

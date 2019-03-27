@@ -119,13 +119,35 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
 
         return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
+class CommentsPagination(PageNumberPagination):
+    """ The spec wants to be clever with fields. Fine.
+    """
+    page_size = 100
+    page_size_query_param = 'size'
+    max_page_size = 200
+    def get_paginated_response(self, data):
+        """ Normalize fields
+        """
+        kvs = [
+            ('query', 'comments'),
+            ('count', self.page.paginator.count),
+            ('size', self.page_size)
+        ]
+
+        if self.get_next_link():
+            kvs.append(('next', self.get_next_link()))
+        if self.get_previous_link():
+            kvs.append(('previous', self.get_previous_link()))
+        kvs.append(('comments', data))
+            
+        return Response(OrderedDict(kvs))
 
 class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
     """ Returns a list of the comments attached to the post as per the pk specified in the url.
     """
 
     serializer_class = serializers.CommentSerializer
-    pagination_class = StandardResultsSetPagination
+    pagination_class = CommentsPagination
 
     # untested****
     def get_queryset(self):
