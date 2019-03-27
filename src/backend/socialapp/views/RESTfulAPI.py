@@ -143,7 +143,7 @@ class PublicPostsViewSet(MixinCheckServer, ListAPIView):
 
 
 
-class PostViewSet(MixinCreateAuthor, ListAPIView):
+class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
     # Returns a single post
     serializer_class = serializers.PostSerializer
     pagination_class = StandardResultsSetPagination
@@ -155,11 +155,16 @@ class PostViewSet(MixinCreateAuthor, ListAPIView):
         print(post.visibility)
         # print(post.id)
         # print(post)
+        server = self.request.META.get("HTTP_AUTHORIZATION") 
+        if server and self.checkserver(server):
+            return [post]
+
         try:
             if post.visibility == 'PUBLIC':
                 return [post]
             #todo  dont make this a cheap hack
             else:
+
                 return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
         except:
             return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
@@ -197,9 +202,23 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
     serializer_class = serializers.CommentSerializer
     pagination_class = StandardResultsSetPagination
 
+    # untested****
     def get_queryset(self):
-        post = get_object_or_404(models.Post, id=self.kwargs.get("pk"))
-        return post.comments.all()
+        pk = self.kwargs.get("pk")
+        post = get_object_or_404(models.Post, id=pk)
+        server = self.request.META.get("HTTP_AUTHORIZATION") 
+        if server and self.checkserver(server):
+            return post.comments.all()
+
+        try:
+            if post.visibility == 'PUBLIC':
+                return post.comments.all()
+            #todo  dont make this a cheap hack
+            else:
+
+                return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+        except:
+            return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages

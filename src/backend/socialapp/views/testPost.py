@@ -86,7 +86,11 @@ concat = base64.b64encode(concat.encode("utf-8"))
 # g_2 = request_g(url=url_2)
 # print(g_2)
 
-g_3 = request_g(url="http://127.0.0.1:8000/api/posts")
-print(g_3)
-g_3 = request_g(url="http://127.0.0.1:8000/api/posts", auth=concat)
-print(g_3)
+# g_3 = request_g(url="http://127.0.0.1:8000/api/posts")
+# print(g_3)
+# g_3 = request_g(url="http://127.0.0.1:8000/api/posts", auth=concat)
+# print(g_3)
+
+
+g_2 = request_g(url="http://127.0.0.1:8000/api/posts/16dc9c58-5daf-434d-b430-fb4fdaa0f4c4", auth=concat)
+print(g_2)
