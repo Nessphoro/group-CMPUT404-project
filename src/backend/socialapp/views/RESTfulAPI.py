@@ -224,7 +224,7 @@ class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
         if models.Author.objects.filter(pk=author_id).exists():
             author = models.Author.objects.get(pk=author_id)
         else:
-            print("something went wrong")
+            return models.Post.objects.filter(visibility='PUBLIC',unlisted=False) 
         return author.get_my_feed()
 
     def check_author(self, user):
