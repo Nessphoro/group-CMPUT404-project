@@ -1,12 +1,9 @@
-from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse,HttpResponseNotFound
 from rest_framework.generics import ListAPIView, RetrieveAPIView,ListCreateAPIView
 from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
 from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from collections import OrderedDict
 
@@ -16,14 +13,11 @@ from rest_framework.pagination import PageNumberPagination
 from urllib.parse import urlparse
 
 import json
-import os.path
-import uuid
 import base64
 
 from .mixin import MixinCreateAuthor, MixinCheckServer
 
 # https://stackoverflow.com/questions/9626535/get-protocol-host-name-from-url
-
 class StandardResultsSetPagination(PageNumberPagination):
     """ Defines the pagination for a modelViewSet
     """
@@ -53,83 +47,15 @@ class PostsPagination(PageNumberPagination):
         kvs.append(('posts', data))
             
         return Response(OrderedDict(kvs))
-        """
-        kvs = { 
-            "query": "posts", 
-            "count": self.page.paginator.count, 
-            "size": self.page_size
-            }
-
-        mod = json.loads(kvs)
-
-        if self.get_next_link():
-            mod.append(('next', self.get_next_link()))
-        if self.get_previous_link():
-            mod.append(('previous', self.get_previous_link()))
-        mod.append(('posts', data))
-
-        kvs = json.dumps(mod)
-
-        return Response(kvs)
-        """
-
 
 class PublicPostsViewSet(MixinCheckServer, ListAPIView):
+    """ Returns a list of all public posts on the server, alternatively if the request came from a node this endpoint will return all posts on the server.
     """
-    Returns all the publicly visible posts in the format:
-    {
-        "query": "posts",
-        "count": 1023,
-        "size": 50,
-        "next": "http://service/author/posts?page=5",
-        "previous": "http://service/author/posts?page=3",
-        "posts":[
-            {
-                "title":"A post title about a post about web dev",
-                "source":"http://lastplaceigotthisfrom.com/posts/yyyyy",
-                "origin":"http://whereitcamefrom.com/posts/zzzzz",
-                "description":"This post discusses stuff -- brief",
-                "contentType":"text/plain",
-                "content":"Þā wæs on burgum Bēowulf Scyldinga, lēof lēod-cyning, longe þrāge folcum gefrǣge (fæder ellor hwearf, aldor of earde), oð þæt him eft onwōc hēah Healfdene; hēold þenden lifde, gamol and gūð-rēow, glæde Scyldingas. Þǣm fēower bearn forð-gerīmed in worold wōcun, weoroda rǣswan, Heorogār and Hrōðgār and Hālga til; hȳrde ic, þat Elan cwēn Ongenþēowes wæs Heaðoscilfinges heals-gebedde. Þā wæs Hrōðgāre here-spēd gyfen, wīges weorð-mynd, þæt him his wine-māgas georne hȳrdon, oð þæt sēo geogoð gewēox, mago-driht micel. Him on mōd bearn, þæt heal-reced hātan wolde, medo-ærn micel men gewyrcean, þone yldo bearn ǣfre gefrūnon, and þǣr on innan eall gedǣlan geongum and ealdum, swylc him god sealde, būton folc-scare and feorum gumena. Þā ic wīde gefrægn weorc gebannan manigre mǣgðe geond þisne middan-geard, folc-stede frætwan. Him on fyrste gelomp ǣdre mid yldum, þæt hit wearð eal gearo, heal-ærna mǣst; scōp him Heort naman, sē þe his wordes geweald wīde hæfde. Hē bēot ne ālēh, bēagas dǣlde, sinc æt symle. Sele hlīfade hēah and horn-gēap: heaðo-wylma bād, lāðan līges; ne wæs hit lenge þā gēn þæt se ecg-hete āðum-swerian 85 æfter wæl-nīðe wæcnan scolde. Þā se ellen-gǣst earfoðlīce þrāge geþolode, sē þe in þȳstrum bād, þæt hē dōgora gehwām drēam gehȳrde hlūdne in healle; þǣr wæs hearpan swēg, swutol sang scopes. Sægde sē þe cūðe frum-sceaft fīra feorran reccan",
-                "author":{
-                    "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-                    "host":"http://127.0.0.1:5454/",
-                    "displayName":"Lara Croft",
-                    "url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-                    "github": "http://github.com/laracroft"
-                },
-                "categories":["web","tutorial"],
-                "count": 1023,
-                "size": 50,
-                "next": "http://service/posts/{post_id}/comments",
-                "comments":[
-                    {
-                        "author":{
-                            "id":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
-                            "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
-                            "host":"http://127.0.0.1:5454/",
-                            "displayName":"Greg Johnson",
-                            "github": "http://github.com/gjohnson"
-                        },
-                        "comment":"Sick Olde English",
-                        "contentType":"text/markdown",
-                        "published":"2015-03-09T13:07:04+00:00",
-                        "id":"de305d54-75b4-431b-adb2-eb6b9e546013"
-                    }
-                ]
-                "published":"2015-03-09T13:07:04+00:00",
-                "id":"de305d54-75b4-431b-adb2-eb6b9e546013",
-                "visibility":"PUBLIC",
-                "visibleTo":[],
-                "unlisted":false
-            }
-        ]
-    }
-    """
-    queryset = None
+
     serializer_class = serializers.PostSerializer
     pagination_class = PostsPagination
 
+    queryset = None
     def get_queryset(self):
         #todo check X-user
         server = self.request.META.get("HTTP_AUTHORIZATION") 
@@ -144,17 +70,15 @@ class PublicPostsViewSet(MixinCheckServer, ListAPIView):
 
 
 class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
-    # Returns a single post
+    """  Returns a single post in list form (as requested), per a post id specified in the url.
+    """
+
     serializer_class = serializers.PostSerializer
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        pk = self.kwargs.get("pk")
-        post = get_object_or_404(models.Post, id=pk)
-        print(post.get_absolute_url())
-        print(post.visibility)
-        # print(post.id)
-        # print(post)
+        post = get_object_or_404(models.Post, id = self.kwargs.get("pk"))
+
         server = self.request.META.get("HTTP_AUTHORIZATION") 
         if server and self.checkserver(server):
             return [post]
@@ -163,9 +87,10 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
             if post.visibility == 'PUBLIC':
                 return [post]
             #todo  dont make this a cheap hack
-            else:
 
+            else:
                 return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+
         except:
             return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
@@ -191,14 +116,14 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
             return JsonResponse(test.data)
         else:
             return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+
         return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
 
-
-
-
 class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
-    # Returns a list of the comments attached to the post
+    """ Returns a list of the comments attached to the post as per the pk specified in the url.
+    """
+
     serializer_class = serializers.CommentSerializer
     pagination_class = StandardResultsSetPagination
 
@@ -206,7 +131,8 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
     def get_queryset(self):
         pk = self.kwargs.get("pk")
         post = get_object_or_404(models.Post, id=pk)
-        server = self.request.META.get("HTTP_AUTHORIZATION") 
+
+        server = self.request.META.get("HTTP_AUTHORIZATION")
         if server and self.checkserver(server):
             return post.comments.all()
 
@@ -224,7 +150,7 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
         #todo need to change the error messages
 
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
-        comments = models.Comment.objects.all().filter(post=post) 
+        comments = models.Comment.objects.all().filter(post=post)
         data = json.loads(request.body)
 
         try:
@@ -235,7 +161,7 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
         return self.has_pemission(data, post,remoteAuthor, comments)
 
     def has_pemission(self,data, post,remoteAuthor, comments):
-        
+
         if remoteAuthor.post_permission(post):
 
             factory = APIRequestFactory()
@@ -244,7 +170,7 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
                 'request': Request(request),
             }
             page = self.paginate_queryset(comments)
-            test = serializers.CommentSerializer(list(page), context=serializer_context,many=True) 
+            test = serializers.CommentSerializer(list(page), context=serializer_context,many=True)
             return JsonResponse(test.data, safe=False)
         else:
             return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
@@ -271,11 +197,7 @@ class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
 
     def get_queryset(self):
         user = self.request.META.get("HTTP_X_USER")
-        # for i in self.request.META:
-        #     print(i)
-        print(user)
         url = self.check_author(user)
-        # author.get_all_posts()
 
         author_id = None
         path = urlparse(url).path
@@ -362,6 +284,7 @@ class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
                         'authors': friends,
                     }
             return JsonResponse(data, safe=False)
+
         return JsonResponse({}, safe=False)
 
     # is this good enough? 

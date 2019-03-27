@@ -133,28 +133,30 @@ class MixinCreateAuthor(object):
 
 class MixinCheckServer(object):
     def checkserver(self, server):
+        if settings.LIMIT_NODE_TO_NODE_CONNECTIONS:
+            server = server.split(' ')
+            basic = server[0]
+            auth = server[-1]
+            decoded = base64.b64decode(auth).decode("utf-8").split('$')
+            username = decoded[0]
+            password = decoded[-1]
 
-        server = server.split(' ')
-        basic = server[0]
-        auth = server[-1]
-        decoded = base64.b64decode(auth).decode("utf-8").split('$')
-        username = decoded[0]
-        password = decoded[-1]
+            print(username)
+            print(password)
+            if models.Node.objects.filter(endpoint=username).exists():
+                node = models.Node.objects.get(endpoint=username)
+                if node.password == password:
+                    print('ye')
+                    return True
+                else:
+                    print('no')
+                    return False
 
-        print(username)
-        print(password)
-        if models.Node.objects.filter(endpoint=username).exists():
-            node = models.Node.objects.get(endpoint=username)
-            if node.password == password:
-                print('ye')
-                return True
-            else:
-                print('no')
-                return False
-
-        # if User.objects.filter(username=username).exists():
-        #     user = User.objects.get(username=username)
-        #     if user.check_password(password):
-        #         return True
-        #     else:
-        #         return False
+            # if User.objects.filter(username=username).exists():
+            #     user = User.objects.get(username=username)
+            #     if user.check_password(password):
+            #         return True
+            #     else:
+            #         return False
+        else:
+            return True

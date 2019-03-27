@@ -32,7 +32,8 @@ if "PRODUCTION" in os.environ:
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SITE_URL = "https://social.hydrated.app"
-    AUTHORS_DEFAULT_VERIFICATION = True
+    AUTHORS_DEFAULT_VERIFICATION = True # Controls if authors are verified by default
+    LIMIT_NODE_TO_NODE_CONNECTIONS = False # Controls if the API requires HTTP Basic Auth
 else:
     DEBUG = True
     ALLOWED_HOSTS = ["127.0.0.1",'testserver'] # testserver is for the testPost.py
@@ -40,6 +41,8 @@ else:
     SOCIAL_AUTH_GITHUB_SECRET = 'e03982182807e00ad9b3c469865b1635b9a85c4d'
     SITE_URL = "http://127.0.0.1:8000"
     AUTHORS_DEFAULT_VERIFICATION = True
+    LIMIT_NODE_TO_NODE_CONNECTIONS = False
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
