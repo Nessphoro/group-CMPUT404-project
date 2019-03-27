@@ -1,5 +1,6 @@
 from .author import Author
 from django.db import models
+from .. import models as mod
 from django.urls import reverse
 import uuid
 
