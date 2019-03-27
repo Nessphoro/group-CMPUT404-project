@@ -36,7 +36,7 @@ urlpatterns = [
     path('Comment/<uuid:pk>/delete', views.CommentDeleteView.as_view(), name='comment-delete'),
 
     # API - Should be done via the router
-    path('api/posts/', views.PublicPostsViewSet.as_view(), name='api-posts'),
+    path('api/posts', views.PublicPostsViewSet.as_view(), name='api-posts'),
     path('api/posts/<uuid:pk>', views.PostViewSet.as_view(), name='api-post'),
     path('api/posts/<uuid:pk>/comments', views.PostCommentsViewSet.as_view(), name='api-post-comments'),
 

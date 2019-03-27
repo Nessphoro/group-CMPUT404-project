@@ -176,27 +176,32 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
         data = json.loads(request.body)
 
         try:
-            remoteAuthor = self.createAuthor(data, "comments")
+            remoteAuthor = self.createAuthor(data["comment"], "addComments")
+            if remoteAuthor.post_permission(post):
+                c = models.Comment(
+                    id=data["comment"]["id"],
+                    author=remoteAuthor,
+                    post = post,
+                    comment=data["comment"]["comment"],
+                    contentType=data["comment"]["contentType"],
+                    published=data["comment"]["published"]
+                )
+                c.save()
+                return JsonResponse({
+                    "query": "addComment",
+                    "success": True,
+                    "message": "Comment Added"
+                })
+            else:
+                return JsonResponse({
+                    "query": "addComment",
+                    "success": False,
+                    "message": "Comment not allowed"
+                })
         except Exception as e:
             return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
 
         return self.has_pemission(data, post,remoteAuthor, comments)
-
-    def has_pemission(self,data, post,remoteAuthor, comments):
-
-        if remoteAuthor.post_permission(post):
-
-            factory = APIRequestFactory()
-            request = factory.get(data['url'])
-            serializer_context = {
-                'request': Request(request),
-            }
-            page = self.paginate_queryset(comments)
-            test = serializers.CommentSerializer(list(page), context=serializer_context,many=True)
-            return JsonResponse(test.data, safe=False)
-        else:
-            return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
-        return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
 # TODO: Bind this same url to take comments via POST and create them server side
 

@@ -108,42 +108,29 @@ async def fetchUser(url, node):
 
 class MixinCreateAuthor(object):
     def createAuthor(self,data,requestType):
-        if data["query"] ==requestType:
-            author = data["author"]
-            author_url = author["url"]
-            path = urlparse(author_url).path
-            author_id = None
-            host = urlparse(author_url).netloc
-            github = author["github"]
-            displayName = author["displayName"]
-            if path:
-                author_id = path.split('/')[-1]
-            # may need to readd this assumtion, or pull data from serve before checking this
-            # remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
-            node = generic_find_node(author_url)
-            if not node:
-                raise Exception("Node not found")
+        author = data["author"]
+        author_url = author["url"]
+        path = urlparse(author_url).path
+        author_id = None
+        host = urlparse(author_url).netloc
+        github = author["github"]
+        displayName = author["displayName"]
+        if path:
+            author_id = path.split('/')[-1]
+        # may need to readd this assumtion, or pull data from serve before checking this
+        # remoteAuthor = models.Author(id=uuid.UUID(author_id),github=github,displayName=displayName,host=host)
+        node = generic_find_node(author_url)
+        if not node:
+            raise Exception("Node not found")
 
-            if models.Author.objects.filter(pk=author_id).exists():
-                remoteAuthor = models.Author.objects.get(pk=author_id)
-            else:
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-                remoteAuthor = loop.run_until_complete(fetchUser(url, node))
-                loop.close()
-
-            # for i in data["friends"]:
-            #     host = urlparse(i).netloc
-            #     author_id = None
-            #     path = urlparse(i).path
-            #     if path:
-            #         author_id = path.split('/')[-1]
-
-            #     if models.Author.objects.filter(pk=author_id).exists():
-            #         fake_friend = models.Author.objects.get(pk=author_id)
-            #         remoteAuthor.friends.add(fake_friend)
-            return remoteAuthor
-        return None
+        if models.Author.objects.filter(pk=author_id).exists():
+            remoteAuthor = models.Author.objects.get(pk=author_id)
+        else:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            remoteAuthor = loop.run_until_complete(fetchUser(url, node))
+            loop.close()
+        return remoteAuthor
 
 class MixinCheckServer(object):
     def checkserver(self, server):
