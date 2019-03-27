@@ -298,6 +298,16 @@ class FriendsViewSet(ListAPIView):
             ('authors', author.friend_by.id.all())
         ])
 
+        """
+        resp = {
+            "query": "friends",
+            "author": author.id,
+            "authors": author.friend_by.id.all()
+        }
+
+        return Response(resp)
+        """
+
 class isFriendsViewSet(ListAPIView):
     # Returns if author pk and another author are friends
     serializer_class = serializers.AuthorAltSerializer
