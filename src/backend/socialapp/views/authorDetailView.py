@@ -18,7 +18,7 @@ class AuthorDetailView(MixinContext,DetailView):
             await asyncio.wait(outstanding)
 
     def get_context_data(self, **kwargs):
-        context = super(MixinContext, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         author = self.get_object()
         node = author.get_node()
         if node:
