@@ -328,30 +328,35 @@ class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
         return JsonResponse(test.data, safe=False)
 
 
-class FriendsViewSet(ListAPIView):
+class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
     # Returns all friends of a particular author pk
 
     serializer_class = serializers.AuthorAltSerializer
     pagination_class = StandardResultsSetPagination
 
-    def get_queryset(self):
-
+    def get(self, request, *args, **kwargs):
         author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-        return Response(OrderedDict[
-            ('query', 'friends'),
-            ('author', author.id),
-            ('authors', author.friend_by.id.all())
-        ])
+        test = self.request.META.get("HTTP_AUTHORIZATION") 
+        if test and self.checkserver(test):
+            friends = [ i.host+i.get_absolute_url() for i in author.friend_by.all()]
+            data = {   "query":"friends",
+                        'author': author.id,
+                        'authors': friends,
+                    }
+            return JsonResponse(data, safe=False)
+        return JsonResponse({}, safe=False)
 
-        """
-        resp = {
-            "query": "friends",
-            "author": author.id,
-            "authors": author.friend_by.id.all()
-        }
+    # is this good enough? 
+    def post(self, request, *args, **kwargs):
+        #todo need to change the error messages
+        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
+        friends = [ i.host+i.get_absolute_url() for i in author.friend_by.all()]
+        data = {   "query":"friends",
+                    'author': author.id,
+                    'authors': friends,
+                }
+        return JsonResponse(data, safe=False)
 
-        return Response(resp)
-        """
 
 #should this be this class?
 class isFriendsViewSet(ListAPIView):
@@ -360,7 +365,6 @@ class isFriendsViewSet(ListAPIView):
     pagination_class = StandardResultsSetPagination
 
     def get(self, request, *args, **kwargs):
-
         author1 = get_object_or_404(models.Author, id= self.kwargs.get("pk1"))
         author2 = get_object_or_404(models.Author, id= self.kwargs.get("pk2"))
         are_friends = False
