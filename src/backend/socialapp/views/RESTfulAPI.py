@@ -51,6 +51,25 @@ class PostsPagination(PageNumberPagination):
         kvs.append(('posts', data))
             
         return Response(OrderedDict(kvs))
+        """
+        kvs = { 
+            "query": "posts", 
+            "count": self.page.paginator.count, 
+            "size": self.page_size
+            }
+
+        mod = json.loads(kvs)
+
+        if self.get_next_link():
+            mod.append(('next', self.get_next_link()))
+        if self.get_previous_link():
+            mod.append(('previous', self.get_previous_link()))
+        mod.append(('posts', data))
+
+        kvs = json.dumps(mod)
+
+        return Response(kvs)
+        """
 
 
 class PublicPostsViewSet(ListAPIView):
