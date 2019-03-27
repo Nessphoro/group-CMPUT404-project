@@ -133,16 +133,19 @@ class MixinCreateAuthor(object):
 
 class MixinCheckServer(object):
     def checkserver(self, server):
-        server = server.split(' ')
-        basic = server[0]
-        auth = server[-1]
-        decoded = base64.b64decode(auth).decode("utf-8").split(':')
-        username = decoded[0]
-        password = decoded[-1]
+        if settings.LIMIT_NODE_TO_NODE_CONNECTIONS:
+            server = server.split(' ')
+            basic = server[0]
+            auth = server[-1]
+            decoded = base64.b64decode(auth).decode("utf-8").split(':')
+            username = decoded[0]
+            password = decoded[-1]
 
-        if User.objects.filter(username=username).exists():
-            user = User.objects.get(username=username)
-            if user.check_password(password):
-                return True
-            else:
-                return False
+            if User.objects.filter(username=username).exists():
+                user = User.objects.get(username=username)
+                if user.check_password(password):
+                    return True
+                else:
+                    return False
+        else:
+            return True
