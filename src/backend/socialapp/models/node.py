@@ -52,6 +52,38 @@ class Node(models.Model):
         else:
             return f"{self.endpoint}/posts"
 
+    async def refreshRemoteAuthor(self, author: Author, session: aiohttp.ClientSession):
+        async with session.get(f"{self.endpoint}/author/{author.id}") as r:
+            data = await response.json()
+
+            author.firstName = author.get("firstName", "John")
+            author.lastName = author.get("lastName", "Smith")
+            author.email = author.get("email", "no@email.com")
+            author.bio = author.get("bio", "No Bio")
+            author.save()
+
+    async def refreshRemoteAuthorPosts(self, author: Author, session: aiohttp.ClientSession):
+        async with session.get(f"{self.endpoint}/author/{author.id}/posts") as r:
+            data = await response.json()
+
+            for post in data["posts"]:
+                    if Post.objects.filter(id=post["id"]) or post['origin'].startswith(settings.SITE_URL):
+                        continue
+                    newPost = Post(author=author, 
+                                origin=post["origin"], 
+                                source=f"{self.endpoint}/posts/{post['id']}",
+                                title=post["title"],
+                                description=post["description"],
+                                content=post["content"],
+                                contentType=post["contentType"],
+                                published=post["published"],
+                                unlisted=post["unlisted"],
+                                categories=",".join(post["categories"]),
+                                id=post["id"],
+                                visibility=post["visibility"]
+                    )
+                    newPost.save()
+
     async def pull(self, author, session: aiohttp.ClientSession):
         async with session.get(self.getUserEndpoint(author), headers=self.getUserHeader(author)) as response:
             try:

@@ -219,6 +219,10 @@ class Author(models.Model):
     def is_following(self, other_author):
         return (other_author in self.friends.all()) and (self not in other_author.friends.all())
 
+    def get_node(self):
+        for node in mod.Node.objects.all():
+            if node.host == self.host:
+                return node
 
     def is_foreign_author(self):
         return not (str(self.host) == settings.SITE_URL)
