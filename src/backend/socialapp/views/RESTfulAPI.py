@@ -280,7 +280,7 @@ class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
         if test and self.checkserver(test):
             friends = [ i.host+i.get_absolute_url() for i in author.friend_by.all()]
             data = {   "query":"friends",
-                        'author': author.id,
+                        # 'author': author.id,
                         'authors': friends,
                     }
             return JsonResponse(data, safe=False)
@@ -290,12 +290,27 @@ class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
     # is this good enough? 
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
+        print("access")
         author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-        friends = [ i.host+i.get_absolute_url() for i in author.friend_by.all()]
+        data = json.loads(request.body)
+
+        # friends = [ i.host+i.get_absolute_url() for i in author.friend_by.all()]
+        friends = []
+        if 'friends' in data:
+            for i in data["friends"]:
+                    host = urlparse(i).netloc
+                    author_id = None
+                    path = urlparse(i).path
+                    if path:
+                        author_id = path.split('/')[-1]
+                        if author.is_friend(author_id):
+                            friends.append(author_id)
+
         data = {   "query":"friends",
-                    'author': author.id,
+                    # 'author': author.id,
                     'authors': friends,
                 }
+
         return JsonResponse(data, safe=False)
 
 
