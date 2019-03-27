@@ -77,8 +77,7 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        pk = self.kwargs.get("pk")
-        post = get_object_or_404(models.Post, id=pk)
+        post = get_object_or_404(models.Post, id = self.kwargs.get("pk"))
 
         server = self.request.META.get("HTTP_AUTHORIZATION") 
         if server and self.checkserver(server):
@@ -88,9 +87,10 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
             if post.visibility == 'PUBLIC':
                 return [post]
             #todo  dont make this a cheap hack
-            else:
 
+            else:
                 return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+
         except:
             return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
@@ -116,6 +116,7 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
             return JsonResponse(test.data)
         else:
             return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+
         return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
 
@@ -196,11 +197,7 @@ class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
 
     def get_queryset(self):
         user = self.request.META.get("HTTP_X_USER")
-        # for i in self.request.META:
-        #     print(i)
-        print(user)
         url = self.check_author(user)
-        # author.get_all_posts()
 
         author_id = None
         path = urlparse(url).path
