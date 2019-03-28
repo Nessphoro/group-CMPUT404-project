@@ -55,7 +55,7 @@ class Node(models.Model):
         else:
             return f"{self.endpoint}/posts"
 
-    async def fetchRemoteAuthor(url, session: aiohttp.ClientSession):
+    async def fetchRemoteAuthor(self, url, session: aiohttp.ClientSession):
         async with session.get(url) as r:
             data = await r.json()
             author = await Node.getOrCreateAuthor(session, data)
