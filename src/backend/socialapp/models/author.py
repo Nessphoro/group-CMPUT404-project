@@ -226,6 +226,14 @@ class Author(models.Model):
             if node.host == self.host:
                 return node
 
+    def compute_full_id(self):
+        node = self.get_node()
+
+        if node:
+            return f"{node.endpoint}/author/{self.id}"
+        else:
+            return reverse("api-author", kwargs={'pk': self.id})
+
     def is_foreign_author(self):
         return not (str(self.host) == settings.SITE_URL)
 
