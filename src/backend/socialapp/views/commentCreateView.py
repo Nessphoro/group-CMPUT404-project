@@ -50,7 +50,7 @@ class CommentCreateView(UserPassesTestMixin, MixinContext,CreateView):
             requests.post(f"{node.endpoint}/posts/{comment.post.id}/comments", json={
                 "query": "addComment",
                 "post": comment.post.source,
-                "comment": CommentSerializer(comment).data
+                "comment": CommentSerializer(comment, context=serializer_context).data
             })
 
         return HttpResponseRedirect(self.get_success_url())

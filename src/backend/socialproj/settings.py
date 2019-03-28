@@ -24,7 +24,7 @@ SECRET_KEY = '9gpl1u=h(+ise&p!a&3l=s88kv*cl9+-=-jfg0hkzpv27jevr='
 
 if "PRODUCTION" in os.environ:
     DEBUG = True
-    ALLOWED_HOSTS = [socket.getfqdn(), "localhost", "127.0.0.1"]
+    ALLOWED_HOSTS = [socket.getfqdn(), "localhost", "127.0.0.1", 'testserver']
     print("Starting in prod")
     if "test" in socket.getfqdn():
         SOCIAL_AUTH_GITHUB_KEY = 'd4ab4da497a74368e983'
