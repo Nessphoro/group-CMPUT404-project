@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 import json
 import base64
 
+import traceback
 from .mixin import MixinCreateAuthor, MixinCheckServer
 
 # https://stackoverflow.com/questions/9626535/get-protocol-host-name-from-url
@@ -201,6 +202,7 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
                 })
         except Exception as e:
             print(e)
+            traceback.print_exc()
             return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
 
         return self.has_pemission(data, post,remoteAuthor, comments)
