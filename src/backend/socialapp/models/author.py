@@ -232,8 +232,8 @@ class Author(models.Model):
         if node:
             return f"{node.endpoint}/author/{self.id}"
         else:
-            return f"{settiings.SITE_URL}{reverse("api-author", kwargs={'pk': self.id})}"
-            
+            return f'{settiings.SITE_URL}{reverse("api-author", kwargs={'pk': self.id})}'
+
 
     def is_foreign_author(self):
         return not (str(self.host) == settings.SITE_URL)
