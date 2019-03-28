@@ -68,17 +68,17 @@ class AuthorActionsView(RedirectView):
         data = {
             "query":"friendrequest",
             "author":{ 
-                "id":user.host+str(user.id),
+                "id":user.compute_full_id(),
                 "host":user.host,
                 "displayName":user.displayName,
-                "url":user.host+str(user.id),
+                "url":user.compute_full_id(),
                 "github": user.github,
             },
             "friend":{ 
-                "id":friend.host+str(friend.id),
+                "id":friend.compute_full_id(),
                 "host":friend.host,
                 "displayName":friend.displayName,
-                "url":friend.host+str(friend.id),
+                "url":friend.compute_full_id(),
                 "github": friend.github,
             },
         }
@@ -90,4 +90,5 @@ class AuthorActionsView(RedirectView):
         r=requests.post(node.endpoint+"/friendrequest",
             data=json.dumps(data),
             headers=headers)
+        print(r)
         #should have error handling here
