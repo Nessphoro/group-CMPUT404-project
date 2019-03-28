@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-
+import socket
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,14 +24,18 @@ SECRET_KEY = '9gpl1u=h(+ise&p!a&3l=s88kv*cl9+-=-jfg0hkzpv27jevr='
 
 if "PRODUCTION" in os.environ:
     DEBUG = True
-    ALLOWED_HOSTS = ["social.hydrated.app", "localhost", "127.0.0.1"]
+    ALLOWED_HOSTS = [socket.getfqdn(), "localhost", "127.0.0.1"]
     print("Starting in prod")
-    SOCIAL_AUTH_GITHUB_KEY = '34f3467ad4c26f25b53c'
-    SOCIAL_AUTH_GITHUB_SECRET = 'ff406247b5aedcfe59acecee32b7975179a0add1'
+    if "test" in socket.getfqdn():
+        SOCIAL_AUTH_GITHUB_KEY = 'd4ab4da497a74368e983'
+        SOCIAL_AUTH_GITHUB_SECRET = '04688004c72c9ee0c4ff75e1ec0772be6e3b00ea'
+    else:
+        SOCIAL_AUTH_GITHUB_KEY = '34f3467ad4c26f25b53c'
+        SOCIAL_AUTH_GITHUB_SECRET = 'ff406247b5aedcfe59acecee32b7975179a0add1'
     SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SITE_URL = "https://social.hydrated.app"
+    SITE_URL = f"https://{socket.getfqdn()}"
     AUTHORS_DEFAULT_VERIFICATION = True # Controls if authors are verified by default
     LIMIT_NODE_TO_NODE_CONNECTIONS = False # Controls if the API requires HTTP Basic Auth
 else:
