@@ -63,8 +63,9 @@ class Node(models.Model):
             author.lastName = data.get("lastName", "Smith")
             author.email = data.get("email", "no@email.com")
             author.bio = data.get("bio", "No Bio")
+            author.save()
             for a in data["friends"]:
-                friend = Node.getOrCreateAuthor(session, a)
+                friend = await Node.getOrCreateAuthor(session, a)
                 if friend not in author.friends.all():
                     author.friends.add(friend)
                 if author not in friend.friends.all():
@@ -81,7 +82,7 @@ class Node(models.Model):
             author.email = data.get("email", "no@email.com")
             author.bio = data.get("bio", "No Bio")
             for a in data["friends"]:
-                friend = Node.getOrCreateAuthor(session, a)
+                friend = await Node.getOrCreateAuthor(session, a)
                 if friend not in author.friends.all():
                     author.friends.add(friend)
                 if author not in friend.friends.all():
