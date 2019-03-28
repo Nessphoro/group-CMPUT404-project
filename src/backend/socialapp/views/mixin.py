@@ -129,7 +129,7 @@ class MixinCreateAuthor(object):
                 raise Exception("Node not found")
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            remoteAuthor = loop.run_until_complete(fetchUser(url, node))
+            remoteAuthor = loop.run_until_complete(fetchUser(author_url, node))
             loop.close()
         return remoteAuthor
 
