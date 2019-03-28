@@ -46,7 +46,7 @@
     {%endif%}
  
     
-    <div class="ui comments">
+    <div id="comments" class="ui comments">
         <h3 class="ui dividing header">Comments</h3>
     
         {% for comment in post.comments.all() %}
@@ -81,4 +81,12 @@
 </article>
 
 
+{% endblock %}
+
+{% block script %}
+    <script>
+        setInterval(() => {
+            $("#comments").load("{{ url('post-id', args=[post.id]) }} #comments")
+        }, 10000);
+    </script>
 {% endblock %}

@@ -55,7 +55,7 @@ class Node(models.Model):
         else:
             return f"{self.endpoint}/posts"
 
-    async def fetchRemoteAuthor(url, session: aiohttp.ClientSession):
+    async def fetchRemoteAuthor(self, url, session: aiohttp.ClientSession):
         async with session.get(url) as r:
             data = await r.json()
             author = await Node.getOrCreateAuthor(session, data)
@@ -64,7 +64,7 @@ class Node(models.Model):
             author.email = data.get("email", "no@email.com")
             author.bio = data.get("bio", "No Bio")
             for a in data["friends"]:
-                friend = Node.getOrCreateAuthor(a)
+                friend = Node.getOrCreateAuthor(session, a)
                 if friend not in author.friends:
                     author.friends.add(friend)
                 if author not in friend.friends:
@@ -81,7 +81,7 @@ class Node(models.Model):
             author.email = data.get("email", "no@email.com")
             author.bio = data.get("bio", "No Bio")
             for a in data["friends"]:
-                friend = Node.getOrCreateAuthor(a)
+                friend = Node.getOrCreateAuthor(session, a)
                 if friend not in author.friends:
                     author.friends.add(friend)
                 if author not in friend.friends:
@@ -182,6 +182,6 @@ class Node(models.Model):
                     )
                     newPost.save()
             except Exception as e:
-                print(e)
+                print(f"Error in {self.endpoint}")
                 traceback.print_exc()
                 return
