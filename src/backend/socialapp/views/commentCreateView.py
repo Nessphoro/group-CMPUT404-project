@@ -1,16 +1,21 @@
 from django.views.generic import TemplateView, ListView, DetailView, CreateView
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.sites.shortcuts import get_current_site
-
+from rest_framework.request import Request
+from rest_framework.test import APIRequestFactory
 
 import json
 from .. import models
 import pytz
 from datetime import datetime
+from django.conf import settings
 from django.urls import reverse_lazy
 from .mixin import MixinContext
 from django.contrib.auth.mixins import UserPassesTestMixin
+import requests
+from ..serializers import CommentSerializer
 
 class CommentCreateView(UserPassesTestMixin, MixinContext,CreateView):
     template_engine = 'jinja2'
@@ -30,6 +35,25 @@ class CommentCreateView(UserPassesTestMixin, MixinContext,CreateView):
             form_defaults["post"] = self.kwargs["post_pk"]
 
         return form_defaults
+
+    def form_valid(self, form):
+        comment = form.save(commit=True)
+        node = comment.post.get_node()
+        if node:
+
+            factory = APIRequestFactory()
+            request = factory.get(settings.SITE_URL)
+            serializer_context = {
+                'request': Request(request),
+            }
+
+            requests.post(f"{node.endpoint}/posts/{comment.post.id}/comments", json={
+                "query": "addComment",
+                "post": comment.post.source,
+                "comment": CommentSerializer(comment).data
+            })
+
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse_lazy("post-id", kwargs={'pk': self.kwargs["post_pk"]})

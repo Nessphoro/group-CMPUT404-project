@@ -60,6 +60,8 @@ class PostCreateView(UserPassesTestMixin, MixinContext,CreateView):
 
         self.object = post
         return HttpResponseRedirect(self.get_success_url())
+
+        
     def get_success_url(self):
         return reverse_lazy("post-id", kwargs={'pk': self.object.id})
 
