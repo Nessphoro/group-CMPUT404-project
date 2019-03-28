@@ -41,10 +41,10 @@ class CommentCreateView(UserPassesTestMixin, MixinContext,CreateView):
         node = comment.post.get_node()
         if node:
 
-            factory = APIRequestFactory()
-            request = factory.get(settings.SITE_URL)
+            # factory = APIRequestFactory()
+            # request = factory.get(settings.SITE_URL)
             serializer_context = {
-                'request': Request(request),
+                'request': Request(self.request),
             }
 
             requests.post(f"{node.endpoint}/posts/{comment.post.id}/comments", json={
