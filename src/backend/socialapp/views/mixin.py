@@ -163,8 +163,8 @@ class MixinCheckServer(object):
 def generic_find_node(url) -> models.Node:
     proto, host = urlparse(url)[0:2]
     host = f"{proto}://{host}"
-    for node in mod.Node.objects.all():
+    for node in models.Node.objects.all():
             print(node.host)
-            print(self.host)
-            if node.host == self.host:
+            print(host)
+            if node.host == host:
                 return node

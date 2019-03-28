@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 import json
 import base64
 
+import traceback
 from .mixin import MixinCreateAuthor, MixinCheckServer
 
 # https://stackoverflow.com/questions/9626535/get-protocol-host-name-from-url
@@ -172,9 +173,10 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
         #todo need to change the error messages
 
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
+        print(post)
         comments = models.Comment.objects.all().filter(post=post)
         data = json.loads(request.body)
-
+        print(data)
         try:
             remoteAuthor = self.createAuthor(data["comment"], "addComments")
             if remoteAuthor.post_permission(post):
@@ -199,6 +201,8 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
                     "message": "Comment not allowed"
                 })
         except Exception as e:
+            print(e)
+            traceback.print_exc()
             return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
 
         return self.has_pemission(data, post,remoteAuthor, comments)
