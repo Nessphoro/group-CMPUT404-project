@@ -182,6 +182,6 @@ class Node(models.Model):
                     )
                     newPost.save()
             except Exception as e:
-                print(e)
+                print(f"Error in {self.endpoint}")
                 traceback.print_exc()
                 return
