@@ -80,6 +80,7 @@ class Node(models.Model):
             author.firstName = data.get("firstName", "John")
             author.lastName = data.get("lastName", "Smith")
             author.email = data.get("email", "no@email.com")
+            author.image = data.get("image", f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
             author.bio = data.get("bio", "No Bio")
             for a in data["friends"]:
                 friend = await Node.getOrCreateAuthor(session, a)
