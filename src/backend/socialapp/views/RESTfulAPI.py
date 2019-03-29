@@ -162,6 +162,7 @@ class PostCommentsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
         user = self.request.META.get("HTTP_X_USER")
         if user:
             author = self.createAuthor({"url": user}, "posts")
+            print(f"X-User: {author}")
         else:
             author = None
 
@@ -366,12 +367,6 @@ class FriendsRequestViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
 
     # this is untested
     def post(self, request, *args, **kwargs):
-        #todo need to change the error messages
-        # author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-        
-
-        #todo request
-        # print(author)
         try: 
             print("yeyey")
             data = json.loads(request.body)
