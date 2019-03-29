@@ -34,17 +34,18 @@ class PostDetailView(MixinContext,UserPassesTestMixin,DetailView):
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             loop.run_until_complete(self.refresh_async(author, post, node))
-            post.refresh_from_db()
             loop.close()
         return context
 
     def test_func(self):
-        active = None
+        #active = None
         post = self.get_object()
         visibility  = post.visibility
         if self.request.user.is_authenticated:
             Auth = self.request.user.author
             return Auth.post_permission(post)
+        else:
+            return False
         if visibility != 'PUBLIC':
             return False
 

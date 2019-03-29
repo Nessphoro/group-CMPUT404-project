@@ -5,6 +5,7 @@ import requests
 import json
 import uuid
 from ..models import Author
+from django.db import transaction
 
 
 
@@ -96,33 +97,36 @@ class AuthorActionsView(RedirectView):
     def forein_post(self, friend):
         # /friendrequest
         user = self.request.user.author
+        with transaction.atomic():
+            user.send_friend_request(friend)
 
-        user.send_friend_request(friend)
+            data = {
+                "query":"friendrequest",
+                "author":{ 
+                    "id":user.compute_full_id(),
+                    "host":user.host,
+                    "displayName":user.displayName,
+                    "url":user.compute_full_id(),
+                    "github": user.github,
+                },
+                "friend":{ 
+                    "id":friend.compute_full_id(),
+                    "host":friend.host,
+                    "displayName":friend.displayName,
+                    "url":friend.compute_full_id(),
+                    "github": friend.github,
+                },
+            }
+            headers = {
+                "accept": "application/json",
+                'Content-Type': 'application/json',
+            }
+            node = friend.get_node()
+            r=requests.post(node.endpoint+"/friendrequest",
+                data=json.dumps(data),
+                headers=headers)
 
-        data = {
-            "query":"friendrequest",
-            "author":{ 
-                "id":user.compute_full_id(),
-                "host":user.host,
-                "displayName":user.displayName,
-                "url":user.compute_full_id(),
-                "github": user.github,
-            },
-            "friend":{ 
-                "id":friend.compute_full_id(),
-                "host":friend.host,
-                "displayName":friend.displayName,
-                "url":friend.compute_full_id(),
-                "github": friend.github,
-            },
-        }
-        headers = {
-            "accept": "application/json",
-            'Content-Type': 'application/json',
-        }
-        node = friend.get_node()
-        r=requests.post(node.endpoint+"/friendrequest",
-            data=json.dumps(data),
-            headers=headers)
-        print(r)
+            print(r)
+            print(r.text)
+            r.raise_for_status()
         #should have error handling here

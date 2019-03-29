@@ -79,7 +79,9 @@ class Node(models.Model):
             # import pdb; pdb.set_trace()
             author.firstName = data.get("firstName", "John")
             author.lastName = data.get("lastName", "Smith")
+            author.displayName = data.get("displayName", "User")
             author.email = data.get("email", "no@email.com")
+            author.image = data.get("image", f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
             author.bio = data.get("bio", "No Bio")
             for a in data["friends"]:
                 friend = await Node.getOrCreateAuthor(session, a)
@@ -89,8 +91,8 @@ class Node(models.Model):
                     friend.friends.add(author)
             author.save()
 
-    async def refreshRemoteAuthorPosts(self, author: Author, session: aiohttp.ClientSession):
-        async with session.get(f"{self.endpoint}/author/{author.id}/posts") as r:
+    async def refreshRemoteAuthorPosts(self, requestor: Author, author: Author, session: aiohttp.ClientSession):
+        async with session.get(f"{self.endpoint}/author/{author.id}/posts", headers=self.getUserHeader(requestor)) as r:
             data = await r.json()
             for post in data["posts"]:
                     if Post.objects.filter(id=post["id"]) or post['origin'].startswith(settings.SITE_URL):

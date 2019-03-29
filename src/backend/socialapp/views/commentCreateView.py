@@ -16,6 +16,7 @@ from .mixin import MixinContext
 from django.contrib.auth.mixins import UserPassesTestMixin
 import requests
 from ..serializers import CommentSerializer
+from django.db import transaction
 
 class CommentCreateView(UserPassesTestMixin, MixinContext,CreateView):
     template_engine = 'jinja2'
@@ -37,22 +38,28 @@ class CommentCreateView(UserPassesTestMixin, MixinContext,CreateView):
         return form_defaults
 
     def form_valid(self, form):
-        comment = form.save(commit=True)
-        node = comment.post.get_node()
-        if node:
+        try:
+            with transaction.atomic():
+                comment = form.save(commit=True)
+                node = comment.post.get_node()
+                if node:
 
-            # factory = APIRequestFactory()
-            # request = factory.get(settings.SITE_URL)
-            serializer_context = {
-                'request': Request(self.request),
-            }
+                    # factory = APIRequestFactory()
+                    # request = factory.get(settings.SITE_URL)
+                    serializer_context = {
+                        'request': Request(self.request),
+                    }
 
-            requests.post(f"{node.endpoint}/posts/{comment.post.id}/comments", json={
-                "query": "addComment",
-                "post": comment.post.source,
-                "comment": CommentSerializer(comment, context=serializer_context).data
-            })
+                    r = requests.post(f"{node.endpoint}/posts/{comment.post.id}/comments", json={
+                        "query": "addComment",
+                        "post": comment.post.source,
+                        "comment": CommentSerializer(comment, context=serializer_context).data
+                    })
+                    print(r.text)
+                    r.raise_for_status()
 
+        except:
+            pass
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
