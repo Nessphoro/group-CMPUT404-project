@@ -34,7 +34,7 @@ class AuthorAltSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Author
-        fields = ['id', 'url', 'host', 'displayName', 'github', 'bio', 'friends']
+        fields = ['id', 'url', 'host', 'displayName', 'github', 'bio', 'firstName', 'lastName', 'email', 'image', 'friends']
 
 
 
