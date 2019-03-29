@@ -139,13 +139,14 @@ class MixinCheckServer(object):
             auth = server[-1]
             username, _, password = base64.b64decode(auth).decode("utf-8").rpartition(':')
             print(username)
-            print(password)
+            print(f"{password}:{len(password)}")
             node = generic_find_node(username)
 
 
             if node:
+                print("Found node")
                 print(node)
-                print(node.password)
+                print(f"{node.password}:{len(node.password)}")
                 if node.password == password:
                     return True
                 else:
