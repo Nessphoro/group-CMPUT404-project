@@ -130,7 +130,7 @@ class CommentsPagination(PageNumberPagination):
             
         return Response(OrderedDict(kvs))
 
-class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
+class PostCommentsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
     """ 
     get:
     Returns a list of the comments attached to the post as per the pk specified in the url.
@@ -211,7 +211,7 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
 
 # TODO: Bind this same url to take comments via POST and create them server side
 
-class AuthorViewSet(RetrieveAPIView):
+class AuthorViewSet(MixinCheckServer, RetrieveAPIView):
     """
     Returns a single author.
     """
@@ -225,7 +225,7 @@ class AuthorViewSet(RetrieveAPIView):
         
 
 #get with user credentials
-class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
+class AuthorFeedViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
     """
     Returns the logged in author's feed of posts.
 
@@ -247,7 +247,7 @@ class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
     def check_author(self, user):
         return user
 
-class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
+class AuthoredByPostsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
     """
     Returns all posts by a particular author denoted by author pk.
     Results may differ depending on authentication.
@@ -322,7 +322,7 @@ class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
 
 
 #should this be this class?
-class isFriendsViewSet(ListAPIView):
+class isFriendsViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
     """
     Returns if author pk and another author are friends.
     """
