@@ -223,18 +223,9 @@ class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
 
     def get_queryset(self):
         user = self.request.META.get("HTTP_X_USER")
-        url = self.check_author(user)
-
-        author_id = None
-        path = urlparse(url).path
-        if path:
-            author_id = path.split('/')[-1]
-
-        if models.Author.objects.filter(pk=author_id).exists():
-            author = models.Author.objects.get(pk=author_id)
-        else:
-            return models.Post.objects.filter(visibility='PUBLIC',unlisted=False) 
-        return author.get_my_feed()
+        author = self.check_author(user)
+        print(f"X-User: {author}")
+        return author.get_all_posts()
 
     def check_author(self, user):
         return user
@@ -385,7 +376,7 @@ class FriendsRequestViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
             author = self.createAuthor(data["author"], "friendrequest")
             friend = self.createAuthor(data["friend"], "friendrequest")
             if author and friend:
-                if friend in author.friends.all():
+                if author in friend.friend_requests.all():
                     friend.accept_friend_request(author)
                 else:
                     author.send_friend_request(friend)

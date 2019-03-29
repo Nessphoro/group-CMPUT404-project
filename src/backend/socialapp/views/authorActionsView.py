@@ -97,7 +97,7 @@ class AuthorActionsView(RedirectView):
         # /friendrequest
         user = self.request.user.author
 
-        user.friends.add(friend)
+        user.send_friend_request(friend)
 
         data = {
             "query":"friendrequest",
