@@ -53,8 +53,39 @@ class AuthorActionsView(RedirectView):
     def accept_friend_request(self, sender_pk):
         sender  = get_object_or_404(Author, id=sender_pk)
         target  = self.request.user.author
+        node = sender.get_node()
 
         target.accept_friend_request(sender)
+
+        if not node:
+            return
+
+        print("accepting remote request")
+        data = {
+            "query":"friendrequest",
+            "author":{ 
+                "id":target.compute_full_id(),
+                "host":target.host,
+                "displayName":target.displayName,
+                "url":target.compute_full_id(),
+                "github": target.github,
+            },
+            "friend":{ 
+                "id":sender.compute_full_id(),
+                "host":sender.host,
+                "displayName":sender.displayName,
+                "url":sender.compute_full_id(),
+                "github": sender.github,
+            },
+        }
+        headers = {
+            "accept": "application/json",
+            'Content-Type': 'application/json',
+        }
+        r=requests.post(node.endpoint+"/friendrequest",
+            data=json.dumps(data),
+            headers=headers)
+        print(r)
 
     def decline_friend_request(self, sender_pk):
         sender  = get_object_or_404(Author, id=sender_pk)
@@ -65,6 +96,9 @@ class AuthorActionsView(RedirectView):
     def forein_post(self, friend):
         # /friendrequest
         user = self.request.user.author
+
+        user.friends.add(friend)
+
         data = {
             "query":"friendrequest",
             "author":{ 

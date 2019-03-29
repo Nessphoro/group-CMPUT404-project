@@ -23,7 +23,7 @@ Profile - {{author.displayName}}
                 </div>
                 <div class="content">
                     <div class="summary">
-                        <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}}</a>
+                        <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}} ({{friend.host}})</a>
                     </div>
                     <div class="meta">
                         <a href="{{ url('author-remove-friend', args=[friend.id]) }}">
@@ -48,7 +48,7 @@ Profile - {{author.displayName}}
                 </div>
                 <div class="content">
                     <div class="summary">
-                        <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}}</a>
+                        <a href="{{ url('author-id', args=[friend.id]) }}" class="user">{{friend.displayName}} ({{friend.host}})</a>
                     </div>
                     <div class="meta">
                         <a href="{{ url('author-remove-friend', args=[friend.id]) }}">
@@ -73,7 +73,7 @@ Profile - {{author.displayName}}
             </div>
             <div class="content">
                 <div class="summary">
-                    <a href="{{ url('author-id', args=[sender_author.id]) }}" class="user">{{sender_author.displayName}}</a>
+                    <a href="{{ url('author-id', args=[sender_author.id]) }}" class="user">{{sender_author.displayName}} ({{sender_author.host}})</a>
                 </div>
                 <div class="meta">
                     <a href="{{ url('author-accept-friend-request', args=[sender_author.id]) }}">
