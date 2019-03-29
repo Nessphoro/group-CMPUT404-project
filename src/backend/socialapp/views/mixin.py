@@ -135,9 +135,7 @@ class MixinCheckServer(object):
             server = server.split(' ')
             basic = server[0]
             auth = server[-1]
-            decoded = base64.b64decode(auth).decode("utf-8").split('$')
-            username = decoded[0]
-            password = decoded[-1]
+            username, _, password = base64.b64decode(auth).decode("utf-8").rpartition(':')
 
             node = generic_find_node(username)
             if node:
