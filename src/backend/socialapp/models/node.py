@@ -111,8 +111,8 @@ class Node(models.Model):
                     newPost.save()
 
 
-    async def refreshRemotePost(self, post: Post, session: aiohttp.ClientSession):
-        async with session.get(f"{self.endpoint}/posts/{post.id}") as r:
+    async def refreshRemotePost(self, author: Author, post: Post, session: aiohttp.ClientSession):
+        async with session.get(f"{self.endpoint}/posts/{post.id}", headers=self.getUserHeader(author)) as r:
             data = await r.json()
             for post in data["posts"]:
                     if post['origin'].startswith(settings.SITE_URL):
@@ -140,8 +140,8 @@ class Node(models.Model):
                     )
                     newPost.save()
 
-    async def refreshRemoteComments(self, post: Post, session: aiohttp.ClientSession):
-        async with session.get(f"{self.endpoint}/posts/{post.id}/comments") as r:
+    async def refreshRemoteComments(self, author: Author, post: Post, session: aiohttp.ClientSession):
+        async with session.get(f"{self.endpoint}/posts/{post.id}/comments", headers=self.getUserHeader(author)) as r:
             data = await r.json()
             for comment in data["comments"]:
                 if Comment.objects.filter(id=comment["id"]):

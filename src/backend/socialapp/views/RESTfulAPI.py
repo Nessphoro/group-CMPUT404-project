@@ -156,18 +156,27 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
         post = get_object_or_404(models.Post, id=pk)
 
         server = self.request.META.get("HTTP_AUTHORIZATION")
-        if server and self.checkserver(server):
-            return post.comments.all()
+        if not self.checkserver(server):
+            return []
+
+        user = self.request.META.get("HTTP_X_USER")
+        if user:
+            author = self.createAuthor({"url": user}, "posts")
+        else:
+            author = None
 
         try:
             if post.visibility == 'PUBLIC':
                 return post.comments.all()
-            #todo  dont make this a cheap hack
+            if not author:
+                return []
+            if author.post_permission(author):
+                return post.comments.all()
             else:
 
-                return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+                return [] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
         except:
-            return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+            return [] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
