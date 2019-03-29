@@ -229,8 +229,6 @@ class Author(models.Model):
 
     def get_node(self):
         for node in mod.Node.objects.all():
-            print(node.host)
-            print(self.normalizedHost)
             if node.host == self.normalizedHost:
                 return node
 
