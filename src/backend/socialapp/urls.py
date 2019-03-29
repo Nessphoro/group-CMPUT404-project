@@ -6,6 +6,7 @@ from django.urls import path
 from django.contrib.auth.decorators import login_required
 from rest_framework import routers
 from django.conf.urls import url, include
+from rest_framework.documentation import include_docs_urls
 from . import views
 
 
@@ -36,6 +37,7 @@ urlpatterns = [
     path('Comment/<uuid:pk>/delete', views.CommentDeleteView.as_view(), name='comment-delete'),
 
     # API - Should be done via the router
+    path('api/docs', include_docs_urls(title='API Documentation', public=True)),
     path('api/posts', views.PublicPostsViewSet.as_view(), name='api-posts'),
     path('api/posts/<uuid:pk>', views.PostViewSet.as_view(), name='api-post'),
     path('api/posts/<uuid:pk>/comments', views.PostCommentsViewSet.as_view(), name='api-post-comments'),
