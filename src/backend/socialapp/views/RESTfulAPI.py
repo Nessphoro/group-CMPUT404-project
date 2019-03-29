@@ -258,7 +258,7 @@ class AuthoredByPostsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
         visitor = self.createAuthor({"url": user}, "posts") if user else None
         print(f"X-User: {visitor}")
 
-        return author.get_visitor(user)
+        return author.get_visitor(visitor)
         # try:
         #     if post.visibility == 'PUBLIC':
         #         return author.posts_by.filter(visibility='PUBLIC')
