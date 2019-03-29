@@ -79,6 +79,7 @@ class Node(models.Model):
             # import pdb; pdb.set_trace()
             author.firstName = data.get("firstName", "John")
             author.lastName = data.get("lastName", "Smith")
+            author.displayName = data.get("displayName", "User")
             author.email = data.get("email", "no@email.com")
             author.image = data.get("image", f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
             author.bio = data.get("bio", "No Bio")
