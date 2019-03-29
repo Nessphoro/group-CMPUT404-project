@@ -121,7 +121,7 @@ class AuthorActionsView(RedirectView):
             headers = {
                 "accept": "application/json",
                 'Content-Type': 'application/json',
-                **node.getUserHeader(target)
+                **node.getUserHeader(user)
             }
             
             r=requests.post(node.endpoint+"/friendrequest",
