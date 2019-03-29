@@ -74,8 +74,7 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
     get:
     Returns a single post in list form (as requested), per a post id specified in the url.
 
-    post:
-    Returns a single post from a remote Author.
+    Please include the header for X-User in the form http:/service/author/id
     """
 
     serializer_class = serializers.PostSerializer
@@ -227,6 +226,8 @@ class AuthorViewSet(RetrieveAPIView):
 class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
     """
     Returns the logged in author's feed of posts.
+
+    Please include the header for X-User in the form http:/service/author/id
     """
     serializer_class = serializers.PostSerializer
     pagination_class = PostsPagination
@@ -352,12 +353,6 @@ class FriendsRequestViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
     serializer_class = serializers.AuthorAltSerializer
     pagination_class = StandardResultsSetPagination
 
-    # def get_queryset(self):
-
-    #     author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-    #     return author.sent_friend_requests.all()
-
-    # this is untested
     def post(self, request, *args, **kwargs):
         server = self.request.META.get("HTTP_AUTHORIZATION") 
         if not self.checkserver(server):
