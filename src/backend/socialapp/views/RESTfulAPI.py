@@ -385,7 +385,7 @@ class FriendsRequestViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
             author = self.createAuthor(data["author"], "friendrequest")
             friend = self.createAuthor(data["friend"], "friendrequest")
             if author and friend:
-                if author in friend.friends.all():
+                if friend in author.friends.all():
                     friend.accept_friend_request(author)
                 else:
                     author.send_friend_request(friend)
