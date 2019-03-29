@@ -79,21 +79,28 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
 
     def get_queryset(self):
         post = get_object_or_404(models.Post, id = self.kwargs.get("pk"))
+        server = self.request.META.get("HTTP_AUTHORIZATION")
+        if not self.checkserver(server):
+            return []
 
-        server = self.request.META.get("HTTP_AUTHORIZATION") 
-        if server and self.checkserver(server):
-            return [post]
+        user = self.request.META.get("HTTP_X_USER")
+        if user:
+            author = self.createAuthor({"url": user}, "posts")
+            print(f"X-User: {author}")
+        else:
+            author = None
 
         try:
             if post.visibility == 'PUBLIC':
                 return [post]
-            #todo  dont make this a cheap hack
-
-            else:
-                return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+            if not author:
+                return []
+            if author.post_permission(post):
+                return [post]
 
         except:
-            return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
+            traceback.print_exc()
+            return []
 
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
