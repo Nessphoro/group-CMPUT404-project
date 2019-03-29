@@ -133,7 +133,7 @@ class MixinCheckServer(object):
     def checkserver(self, server):
         if settings.LIMIT_NODE_TO_NODE_CONNECTIONS:
             if not server:
-                raise Exception("Not Authorization HEader")
+                raise Exception("No Authorization Header")
             server = server.split(' ')
             basic = server[0]
             auth = server[-1]

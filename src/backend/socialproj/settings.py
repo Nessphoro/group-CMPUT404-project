@@ -37,7 +37,7 @@ if "PRODUCTION" in os.environ:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SITE_URL = f"https://{socket.getfqdn()}"
     AUTHORS_DEFAULT_VERIFICATION = True # Controls if authors are verified by default
-    LIMIT_NODE_TO_NODE_CONNECTIONS = True # Controls if the API requires HTTP Basic Auth
+    LIMIT_NODE_TO_NODE_CONNECTIONS = False # Controls if the API requires HTTP Basic Auth
 else:
     DEBUG = True
     ALLOWED_HOSTS = ["127.0.0.1",'testserver'] # testserver is for the testPost.py
