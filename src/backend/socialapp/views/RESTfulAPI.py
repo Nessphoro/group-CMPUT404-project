@@ -306,7 +306,7 @@ class isFriendsViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
             return []
 
         author1 = get_object_or_404(models.Author, id= self.kwargs.get("pk1"))
-        author2 = self.createAuthor({"url": unquote(self.kwargs.get("pk2")) }, "friendrequest")
+        author2 = self.createAuthor({"url": self.kwargs.get("pk2") }, "friendrequest")
         are_friends = False
         if author1.is_friend(author2.id) and author2.is_friend(author1.id):
             are_friends = True
