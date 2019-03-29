@@ -10,7 +10,7 @@ from collections import OrderedDict
 from .. import serializers
 from .. import models
 from rest_framework.pagination import PageNumberPagination
-from urllib.parse import urlparse
+from urllib.parse import urlparse, unquote
 
 import json
 import base64
@@ -60,13 +60,10 @@ class PublicPostsViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
     def get_queryset(self):
         #todo check X-user
         server = self.request.META.get("HTTP_AUTHORIZATION") 
-        user = self.request.META.get("HTTP_X-USER")
-        if not server and not user:
-            return models.Post.objects.filter(visibility='PUBLIC',unlisted=False)
         if self.checkserver(server):
-            return models.Post.objects.all()
-        else:
             return models.Post.objects.filter(visibility='PUBLIC',unlisted=False)
+        else:
+            return []
 
 
 
@@ -101,31 +98,6 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
         except:
             traceback.print_exc()
             return []
-
-    def post(self, request, *args, **kwargs):
-        #todo need to change the error messages
-        post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
-        data = json.loads(request.body)
-        try:
-            remoteAuthor = self.createAuthor(data["author"], "getPost")
-        except Exception as e:
-            return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
-        return self.has_pemission(data,post,remoteAuthor)
-
-    def has_pemission(self,data, post,remoteAuthor):
-        
-        if remoteAuthor.post_permission(post):
-            factory = APIRequestFactory()
-            request = factory.get(data['url'])
-            serializer_context = {
-                'request': Request(request),
-            }
-            test = serializers.PostSerializer(post, context=serializer_context) #, context=request
-            return JsonResponse(test.data)
-        else:
-            return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
-
-        return HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
 class CommentsPagination(PageNumberPagination):
     """ The spec wants to be clever with fields. Fine.
@@ -229,16 +201,23 @@ class PostCommentsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
 class AuthorViewSet(MixinCheckServer, RetrieveAPIView):
     # Returns a single author
     serializer_class = serializers.AuthorAltSerializer
-    queryset = models.Author.objects
 
+    def get_queryset(self):
+        server = self.request.META.get("HTTP_AUTHORIZATION")
+        if not self.checkserver(server):
+            return []
+        return models.Author.objects
 
-#get with user credentials
 class AuthorFeedViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
     # Returns the logged in author's feed of posts
     serializer_class = serializers.PostSerializer
     pagination_class = PostsPagination
 
     def get_queryset(self):
+        server = self.request.META.get("HTTP_AUTHORIZATION")
+        if not self.checkserver(server):
+            return []
+
         user = self.request.META.get("HTTP_X_USER")
         author = self.createAuthor({"url": user}, "posts")
         print(f"X-User: {author}")
@@ -266,38 +245,6 @@ class AuthoredByPostsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
         print(f"X-User: {visitor}")
 
         return author.get_visitor(visitor)
-        # try:
-        #     if post.visibility == 'PUBLIC':
-        #         return author.posts_by.filter(visibility='PUBLIC')
-        #     #todo  dont make this a cheap hack
-        #     else:
-        #         return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
-        # except:
-        #     return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
-
-    def post(self, request, *args, **kwargs):
-        #todo need to change the error messages
-
-        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-        data = json.loads(request.body)
-
-        try:
-            remoteAuthor = self.createAuthor(data["author"], "posts")
-        except Exception as e:
-            return self.has_pemission(data, author,None)
-
-        return self.has_pemission(data, author,remoteAuthor)
-
-    def has_pemission(self,data, author,remoteAuthor):
-        postSet = author.get_visitor(remoteAuthor)
-        factory = APIRequestFactory()
-        request = factory.get(data['url'])
-        serializer_context = {
-            'request': Request(request),
-        }
-        page = self.paginate_queryset(postSet)
-        test = serializers.PostSerializer(list(page), context=serializer_context,many=True) 
-        return JsonResponse(test.data, safe=False)
 
 #this probably needs less credentials
 class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
@@ -347,14 +294,18 @@ class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
 
 
 #should this be this class?
-class isFriendsViewSet(MixinCheckServer, ListAPIView):
+class isFriendsViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
     # Returns if author pk and another author are friends
     serializer_class = serializers.AuthorAltSerializer
     pagination_class = StandardResultsSetPagination
 
     def get(self, request, *args, **kwargs):
+        server = self.request.META.get("HTTP_AUTHORIZATION") 
+        if not self.checkserver(server):
+            return []
+
         author1 = get_object_or_404(models.Author, id= self.kwargs.get("pk1"))
-        author2 = get_object_or_404(models.Author, id= self.kwargs.get("pk2"))
+        author2 = self.createAuthor({"url": unquote(self.kwargs.get("pk2")) }, "friendrequest")
         are_friends = False
         if author1.is_friend(author2.id) and author2.is_friend(author1.id):
             are_friends = True
@@ -379,6 +330,10 @@ class FriendsRequestViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
 
     # this is untested
     def post(self, request, *args, **kwargs):
+        server = self.request.META.get("HTTP_AUTHORIZATION") 
+        if not self.checkserver(server):
+            return []
+
         try: 
             print("yeyey")
             data = json.loads(request.body)
