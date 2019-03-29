@@ -52,7 +52,7 @@ id_1 = "http://127.0.0.1:8000/api/author/800612ed-07d6-41b8-bd5c-2ec19fded4c4"
 host_1 = "http://127.0.0.1:8000"
 name_1 = "jejewittt"
 url_1 = "http://127.0.0.1:8000/api/author/800612ed-07d6-41b8-bd5c-2ec19fded4c4"
-url_2 = "http://127.0.0.1:8000/api/posts/63fdc4ee-8bd4-4c6e-98af-878889c5fa13"
+url_2 = "http://127.0.0.1:8000/api/posts/ece0551c-8107-4eb4-b2be-f145c3ae8263"
 github_1 = "https://github.com/jejewittt"
 url_3 = "http://127.0.0.1:8000/api/posts/9bcb740b-e0d6-42ca-b2c5-b2584e27668d/comments"
 qtype_1 = "getPost"
@@ -81,8 +81,8 @@ concat =f'Basic {concat.decode("utf-8")}'
 # p_4 = request_p(url_4,id_1,host_1,name_1,url_1,github_1,post_id_1,qtype_4)
 # print(p_4.content)
 
-p_4 = request_p('http://127.0.0.1:8000/api/author/800612ed-07d6-41b8-bd5c-2ec19fded4c4/friends',id_1,host_1,name_1,url_1,github_1,post_id_1,"friends")
-print(p_4.content)
+# p_4 = request_p('http://127.0.0.1:8000/api/author/800612ed-07d6-41b8-bd5c-2ec19fded4c4/friends',id_1,host_1,name_1,url_1,github_1,post_id_1,"friends")
+# print(p_4.content)
 
 
 # http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812
@@ -90,8 +90,8 @@ print(p_4.content)
 # get testing
 # g = request_g(url=url_1)
 # print(g)
-# g_2 = request_g(url=url_2)
-# print(g_2)
+g_2 = request_g(url=url_2)
+print(g_2)
 
 # g_3 = request_g(url="http://127.0.0.1:8000/api/posts")
 # print(g_3)
@@ -108,12 +108,13 @@ print(p_4.content)
 # g_2 = request_g(url="http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812/friends", auth=concat , head="Authorization")   
 # print(g_2)
 
-# concat = 'http://127.0.0.1:8000/api/author/3455ded2-474b-465d-8ddc-682eedbbc812'
+concat = 'http://127.0.0.1:8001/api/author/800612ed-07d6-41b8-bd5c-2ec19fded4c4'
 # concat = base64.b64encode(concat.encode("utf-8"))
 # g_2 = request_g(url="http://127.0.0.1:8000/api/author/posts", auth=concat, head="X-USER")
 # print(g_2)
 
-
+g_2 = request_g(url=url_2, auth=concat, head="X-USER")
+print(g_2)
 
 
 # data = {

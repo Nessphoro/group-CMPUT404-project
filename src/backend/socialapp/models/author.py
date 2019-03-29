@@ -112,8 +112,10 @@ class Author(models.Model):
         return mod.Post.objects.filter(author=self)
 
     def get_server(self): 
-        return mod.Post.objects.filter(visibility='SERVERONLY',unlisted=False,origin=settings.SITE_URL)
-        # return mod.Post.objects.none()
+        if self.normalizedHost == settings.SITE_URL:
+            return mod.Post.objects.filter(visibility='SERVERONLY',unlisted=False) # ,origin=settings.SITE_URL
+        else:
+            return mod.Post.objects.none()
 
     def get_public(self):
         return mod.Post.objects.filter(visibility='PUBLIC',unlisted=False)
@@ -136,7 +138,7 @@ class Author(models.Model):
                         if fof.friends.filter(pk=self.id).exists()==False and friend_check == False:
                             return False
             elif visibility=='SERVERONLY':  #this may need to change to user host
-                if user.host!=settings.SITE_URL:
+                if self.normalizedHost!=settings.SITE_URL:
                     return False
 
             # if ('http://'+get_current_site(request).domain) != post.origin:
