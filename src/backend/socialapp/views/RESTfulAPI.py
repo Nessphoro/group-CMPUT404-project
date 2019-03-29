@@ -171,7 +171,7 @@ class PostCommentsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
                 return post.comments.all()
             if not author:
                 return []
-            if author.post_permission(author):
+            if author.post_permission(post):
                 return post.comments.all()
             else:
 
