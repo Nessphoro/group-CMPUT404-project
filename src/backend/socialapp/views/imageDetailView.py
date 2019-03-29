@@ -46,6 +46,8 @@ class PostDetailView(MixinContext,UserPassesTestMixin,DetailView):
             return Auth.post_permission(post)
         else:
             return False
+        if visibility != 'PUBLIC':
+            return False
 
         return True
 
