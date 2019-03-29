@@ -98,6 +98,7 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
         except:
             traceback.print_exc()
             return []
+        return []
 
 class CommentsPagination(PageNumberPagination):
     """ The spec wants to be clever with fields. Fine.
