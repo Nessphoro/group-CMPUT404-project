@@ -89,8 +89,8 @@ class Node(models.Model):
                     friend.friends.add(author)
             author.save()
 
-    async def refreshRemoteAuthorPosts(self, author: Author, session: aiohttp.ClientSession):
-        async with session.get(f"{self.endpoint}/author/{author.id}/posts") as r:
+    async def refreshRemoteAuthorPosts(self, requestor: Author, author: Author, session: aiohttp.ClientSession):
+        async with session.get(f"{self.endpoint}/author/{author.id}/posts", headers=self.getUserHeader(requestor)) as r:
             data = await r.json()
             for post in data["posts"]:
                     if Post.objects.filter(id=post["id"]) or post['origin'].startswith(settings.SITE_URL):
