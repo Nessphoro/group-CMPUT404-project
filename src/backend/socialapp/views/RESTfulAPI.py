@@ -251,9 +251,14 @@ class AuthoredByPostsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
     def get_queryset(self):
         author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
         server = self.request.META.get("HTTP_AUTHORIZATION") 
-        if server and self.checkserver(server):
-            return author.posts_by.all()
+        if not self.checkserver(server):
+            return []
 
+        user = self.request.META.get("HTTP_X_USER")
+        visitor = self.createAuthor({"url": user}, "posts") if user else None
+        print(f"X-User: {visitor}")
+
+        return author.get_visitor(user)
         # try:
         #     if post.visibility == 'PUBLIC':
         #         return author.posts_by.filter(visibility='PUBLIC')
