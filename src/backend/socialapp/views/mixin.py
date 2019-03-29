@@ -111,9 +111,6 @@ class MixinCreateAuthor(object):
         author_url = author["url"]
         path = urlparse(author_url).path
         author_id = None
-        host = urlparse(author_url).netloc
-        github = author["github"]
-        displayName = author["displayName"]
         if path:
             author_id = path.split('/')[-1]
         # may need to readd this assumtion, or pull data from serve before checking this

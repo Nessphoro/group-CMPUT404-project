@@ -223,7 +223,7 @@ class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
 
     def get_queryset(self):
         user = self.request.META.get("HTTP_X_USER")
-        author = self.check_author(user)
+        author = self.createAuthor({"url": user}, "posts")
         print(f"X-User: {author}")
         return author.get_all_posts()
 
@@ -252,12 +252,6 @@ class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
         #         return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
         # except:
         #     return [get_object_or_404(models.Post, id=None)] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
-
-
-    def get_queryset(self):
-
-        author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-        return author.posts_by.all()
 
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
