@@ -208,6 +208,7 @@ class AuthorViewSet(MixinCheckServer, RetrieveAPIView):
         if not self.checkserver(server):
             return []
         return models.Author.objects
+        
 
 class AuthorFeedViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
     # Returns the logged in author's feed of posts
