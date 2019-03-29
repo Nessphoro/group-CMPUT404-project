@@ -388,7 +388,7 @@ class FriendsRequestViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
                 if author in friend.friends.all():
                     friend.accept_friend_request(author)
                 else:
-                    author.sent_friend_request(friend)
+                    author.send_friend_request(friend)
             else:
 
                 return HttpResponseNotFound(f'<h1> none type error probABLY</h1>')
