@@ -174,9 +174,9 @@ class PostCommentsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
             if author.post_permission(post):
                 return post.comments.all()
             else:
-
                 return [] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
         except:
+            traceback.print_exc()
             return [] # HttpResponseNotFound('<h1>Invalid u dont get this data</h1>')
 
     def post(self, request, *args, **kwargs):
