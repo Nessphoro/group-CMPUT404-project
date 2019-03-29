@@ -5,7 +5,7 @@ from .mixin import MixinContext
 import aiohttp
 import asyncio
 
-class AuthorDetailView(MixinContext,DetailVi ew):
+class AuthorDetailView(MixinContext,DetailView):
     template_engine = 'jinja2'
     template_name = 'socialapp/author-detail.html'
     model = models.Author
