@@ -20,14 +20,16 @@ from .mixin import MixinCreateAuthor, MixinCheckServer
 
 # https://stackoverflow.com/questions/9626535/get-protocol-host-name-from-url
 class StandardResultsSetPagination(PageNumberPagination):
-    """ Defines the pagination for a modelViewSet
+    """ 
+    Defines the pagination for a modelViewSet.
     """
     page_size = 20
     page_size_query_param = 'size'
     max_page_size = 100
 
 class PostsPagination(PageNumberPagination):
-    """ The spec wants to be clever with fields. Fine.
+    """ 
+    The spec wants to be clever with fields. Fine.
     """
     page_size = 100
     page_size_query_param = 'size'
@@ -68,7 +70,11 @@ class PublicPostsViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
 
 
 class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
-    """  Returns a single post in list form (as requested), per a post id specified in the url.
+    """  
+    get:
+    Returns a single post in list form (as requested), per a post id specified in the url.
+
+    Please include the header for X-User in the form http:/service/author/id
     """
 
     serializer_class = serializers.PostSerializer
@@ -101,7 +107,8 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
         return []
 
 class CommentsPagination(PageNumberPagination):
-    """ The spec wants to be clever with fields. Fine.
+    """ 
+    The spec wants to be clever with fields. Fine.
     """
     page_size = 100
     page_size_query_param = 'size'
@@ -123,8 +130,13 @@ class CommentsPagination(PageNumberPagination):
             
         return Response(OrderedDict(kvs))
 
-class PostCommentsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
-    """ Returns a list of the comments attached to the post as per the pk specified in the url.
+class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
+    """ 
+    get:
+    Returns a list of the comments attached to the post as per the pk specified in the url.
+
+    post:
+    Adds a comment to a post if permissions allows it.
     """
 
     serializer_class = serializers.CommentSerializer
@@ -199,8 +211,10 @@ class PostCommentsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
 
 # TODO: Bind this same url to take comments via POST and create them server side
 
-class AuthorViewSet(MixinCheckServer, RetrieveAPIView):
-    # Returns a single author
+class AuthorViewSet(RetrieveAPIView):
+    """
+    Returns a single author.
+    """
     serializer_class = serializers.AuthorAltSerializer
 
     def get_queryset(self):
@@ -209,8 +223,13 @@ class AuthorViewSet(MixinCheckServer, RetrieveAPIView):
             return []
         return models.Author.objects
 
-class AuthorFeedViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
-    # Returns the logged in author's feed of posts
+#get with user credentials
+class AuthorFeedViewSet(MixinCreateAuthor, ListAPIView):
+    """
+    Returns the logged in author's feed of posts.
+
+    Please include the header for X-User in the form http:/service/author/id
+    """
     serializer_class = serializers.PostSerializer
     pagination_class = PostsPagination
 
@@ -227,9 +246,11 @@ class AuthorFeedViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
     def check_author(self, user):
         return user
 
-class AuthoredByPostsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
-    # Returns all posts by a particular author denoted by author pk
-    # Results may differ depending on authentication
+class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
+    """
+    Returns all posts by a particular author denoted by author pk.
+    Results may differ depending on authentication.
+    """
 
     serializer_class = serializers.PostSerializer
     pagination_class = PostsPagination
@@ -249,8 +270,13 @@ class AuthoredByPostsViewSet(MixinCreateAuthor, MixinCheckServer, ListAPIView):
 
 #this probably needs less credentials
 class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
-    # Returns all friends of a particular author pk
-
+    """
+    get:
+    Returns all friends of a particular author pk.
+    
+    post:
+    Asks if anyone in the list is friends with that author.
+    """
     serializer_class = serializers.AuthorAltSerializer
     pagination_class = StandardResultsSetPagination
 
@@ -295,8 +321,10 @@ class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
 
 
 #should this be this class?
-class isFriendsViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
-    # Returns if author pk and another author are friends
+class isFriendsViewSet(ListAPIView):
+    """
+    Returns if author pk and another author are friends.
+    """
     serializer_class = serializers.AuthorAltSerializer
     pagination_class = StandardResultsSetPagination
 
@@ -319,17 +347,13 @@ class isFriendsViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
 
 
 class FriendsRequestViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
-    # sends a friend request to user
+    """
+    Sends a friend request to user.
+    """
 
     serializer_class = serializers.AuthorAltSerializer
     pagination_class = StandardResultsSetPagination
 
-    # def get_queryset(self):
-
-    #     author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-    #     return author.sent_friend_requests.all()
-
-    # this is untested
     def post(self, request, *args, **kwargs):
         server = self.request.META.get("HTTP_AUTHORIZATION") 
         if not self.checkserver(server):
