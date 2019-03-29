@@ -219,11 +219,16 @@ class Author(models.Model):
     def is_following(self, other_author):
         return (other_author in self.friends.all()) and (self not in other_author.friends.all())
 
+    @property
+    def normalizedHost(self):
+        proto, host = urlparse(self.host)[0:2]
+        return f"{proto}://{host}"
+
     def get_node(self):
         for node in mod.Node.objects.all():
             print(node.host)
-            print(self.host)
-            if node.host == self.host:
+            print(self.normalizedHost)
+            if node.host == self.normalizedHost:
                 return node
 
     def compute_full_id(self):
