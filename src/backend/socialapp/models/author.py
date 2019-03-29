@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 import uuid
 from django.conf import settings
+from urllib.parse import urlparse
 
 class Author(models.Model):
     """ Authors represent a user in the social app's context, note they are distinct from users for modularity.
