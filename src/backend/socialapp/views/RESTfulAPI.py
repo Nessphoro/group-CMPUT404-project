@@ -100,7 +100,7 @@ class PostViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
         post = get_object_or_404(models.Post, id= self.kwargs.get("pk"))
         data = json.loads(request.body)
         try:
-            remoteAuthor = self.createAuthor(data, "getPost")
+            remoteAuthor = self.createAuthor(data["author"], "getPost")
         except Exception as e:
             return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
         return self.has_pemission(data,post,remoteAuthor)
@@ -178,7 +178,7 @@ class PostCommentsViewSet(MixinCreateAuthor, ListAPIView):
         data = json.loads(request.body)
         print(data)
         try:
-            remoteAuthor = self.createAuthor(data["comment"], "addComments")
+            remoteAuthor = self.createAuthor(data["comment"]["author"], "addComments")
             if remoteAuthor.post_permission(post):
                 c = models.Comment(
                     id=data["comment"]["id"],
@@ -275,7 +275,7 @@ class AuthoredByPostsViewSet(MixinCreateAuthor, ListAPIView):
         data = json.loads(request.body)
 
         try:
-            remoteAuthor = self.createAuthor(data, "posts")
+            remoteAuthor = self.createAuthor(data["author"], "posts")
         except Exception as e:
             return self.has_pemission(data, author,None)
 
@@ -374,38 +374,27 @@ class FriendsRequestViewSet(MixinCheckServer, MixinCreateAuthor, ListAPIView):
     def post(self, request, *args, **kwargs):
         #todo need to change the error messages
         # author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
-        print("yeyey")
-        data = json.loads(request.body)
-        print(data['author'])
-        try:
-            author = self.createAuthor(data, "friendrequest")
-        except Exception as e:
-            print(e)
-            return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
-        if 'author' in data:
-            del data["author"]
-        else:
-            return HttpResponseNotFound("err")
-        print('access')
-        if 'friend':
-            data['author'] = data.pop('friend')
-        else:
-            return HttpResponseNotFound("err")
-        try:
-            friend = self.createAuthor(data, "friendrequest")
-        except Exception as e:
-            return HttpResponseNotFound(f'<h1>look at this in the code to find the exception {e}</h1>')
+        
 
         #todo request
         # print(author)
         try: 
+            print("yeyey")
+            data = json.loads(request.body)
+            print(data)
+            author = self.createAuthor(data["author"], "friendrequest")
+            friend = self.createAuthor(data["friend"], "friendrequest")
             if author and friend:
-                friend.friend_requests.add(author)
+                if author in friend.friends.all():
+                    friend.accept_friend_request(author)
+                else:
+                    author.sent_friend_request(friend)
             else:
 
                 return HttpResponseNotFound(f'<h1> none type error probABLY</h1>')
         except Exception as e:
             print(e)
+            traceback.print_exc()
             return HttpResponseNotFound(f'<h1>2: {e}</h1>')
         return HttpResponse('')
 

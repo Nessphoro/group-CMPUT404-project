@@ -107,8 +107,7 @@ async def fetchUser(url, node):
         return await node.fetchRemoteAuthor(url, session)
 
 class MixinCreateAuthor(object):
-    def createAuthor(self,data,requestType):
-        author = data["author"]
+    def createAuthor(self,author,requestType):
         author_url = author["url"]
         path = urlparse(author_url).path
         author_id = None
