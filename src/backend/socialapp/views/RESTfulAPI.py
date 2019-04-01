@@ -258,7 +258,7 @@ class FriendsViewSet(MixinCheckServer, MixinCreateAuthor,ListAPIView):
         author = get_object_or_404(models.Author, id= self.kwargs.get("pk"))
         test = self.request.META.get("HTTP_AUTHORIZATION") 
         if self.checkserver(test):
-            friends = [ i.compute_full_id() for i in author.friend_by.all()]
+            friends = [ i.compute_full_id() for i in author.get_friends()]
             data = {   "query":"friends",
                         # 'author': author.id,
                         'authors': friends,
