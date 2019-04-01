@@ -54,7 +54,7 @@ class CommentCreateView(UserPassesTestMixin, MixinContext,CreateView):
                         "query": "addComment",
                         "post": comment.post.source,
                         "comment": CommentSerializer(comment, context=serializer_context).data
-                    })
+                    }, headers=node.getUserHeader(self.request.user.author))
                     print(r.text)
                     r.raise_for_status()
 

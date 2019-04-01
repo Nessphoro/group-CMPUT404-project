@@ -18,8 +18,14 @@ class CategoryField(fields.ReadOnlyField):
         return value.split(",")
 
 class AuthorSerializer(serializers.ModelSerializer):
-    id = serializers.HyperlinkedIdentityField(view_name="api-author")
-    url = serializers.HyperlinkedIdentityField(view_name="api-author")
+    id = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
+
+    def get_id(self, obj: Author):
+        return obj.compute_full_id()
+
+    def get_url(self, obj: Author):
+        return obj.compute_full_id()
 
     class Meta:
         model = Author
@@ -27,10 +33,16 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class AuthorAltSerializer(serializers.ModelSerializer):
-    id = serializers.HyperlinkedIdentityField(view_name="api-author")
-    url = serializers.HyperlinkedIdentityField(view_name="api-author")
+    id = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
     friends = AuthorSerializer(many=True, read_only=True)
     # friend_requests = AuthorSerializer(many=True, read_only=True)
+
+    def get_id(self, obj: Author):
+        return obj.compute_full_id()
+
+    def get_url(self, obj: Author):
+        return obj.compute_full_id()
 
     class Meta:
         model = Author

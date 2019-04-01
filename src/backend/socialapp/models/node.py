@@ -17,6 +17,8 @@ class Node(models.Model):
     friendlyName = models.CharField(max_length=150, blank=False)
     endpoint = models.URLField(blank=False)
     password = models.CharField(max_length=150, blank=False)
+    basicToken = models.CharField(max_length=300, blank=True, default="")
+
     def __str__(self):
         return f"{self.endpoint}"
     
@@ -47,6 +49,8 @@ class Node(models.Model):
         headers = {}
         if author:
             headers["X-User"] = f"{settings.SITE_URL}{reverse('api-author', kwargs={'pk': author.id})}"
+        if self.basicToken:
+            headers["Authorization"] = f"Basic {self.basicToken}"
         return headers
     
     def getUserEndpoint(self, author):
@@ -56,13 +60,14 @@ class Node(models.Model):
             return f"{self.endpoint}/posts"
 
     async def fetchRemoteAuthor(self, url, session: aiohttp.ClientSession):
-        async with session.get(url) as r:
+        async with session.get(url, headers=self.getUserHeader(None)) as r:
             data = await r.json()
             author = await Node.getOrCreateAuthor(session, data)
             author.firstName = data.get("firstName", "John")
             author.lastName = data.get("lastName", "Smith")
             author.email = data.get("email", "no@email.com")
             author.bio = data.get("bio", "No Bio")
+            author.image = data.get("image", f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
             author.save()
             for a in data["friends"]:
                 friend = await Node.getOrCreateAuthor(session, a)
@@ -74,7 +79,7 @@ class Node(models.Model):
             return author
 
     async def refreshRemoteAuthor(self, author: Author, session: aiohttp.ClientSession):
-        async with session.get(f"{self.endpoint}/author/{author.id}") as r:
+        async with session.get(f"{self.endpoint}/author/{author.id}", headers=self.getUserHeader(None)) as r:
             data = await r.json()
             # import pdb; pdb.set_trace()
             author.firstName = data.get("firstName", "John")

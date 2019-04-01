@@ -82,6 +82,7 @@ class AuthorActionsView(RedirectView):
         headers = {
             "accept": "application/json",
             'Content-Type': 'application/json',
+            **node.getUserHeader(target)
         }
         r=requests.post(node.endpoint+"/friendrequest",
             data=json.dumps(data),
@@ -99,7 +100,7 @@ class AuthorActionsView(RedirectView):
         user = self.request.user.author
         with transaction.atomic():
             user.send_friend_request(friend)
-
+            node = friend.get_node()
             data = {
                 "query":"friendrequest",
                 "author":{ 
@@ -120,8 +121,9 @@ class AuthorActionsView(RedirectView):
             headers = {
                 "accept": "application/json",
                 'Content-Type': 'application/json',
+                **node.getUserHeader(user)
             }
-            node = friend.get_node()
+            
             r=requests.post(node.endpoint+"/friendrequest",
                 data=json.dumps(data),
                 headers=headers)

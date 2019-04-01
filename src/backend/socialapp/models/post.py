@@ -71,7 +71,5 @@ class Post(models.Model):
 
     def get_node(self):
         for node in mod.Node.objects.all():
-            print(node.host)
-            print(self.host)
             if node.host == self.host:
                 return node

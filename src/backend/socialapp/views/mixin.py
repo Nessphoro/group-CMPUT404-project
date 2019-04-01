@@ -132,19 +132,27 @@ class MixinCreateAuthor(object):
 class MixinCheckServer(object):
     def checkserver(self, server):
         if settings.LIMIT_NODE_TO_NODE_CONNECTIONS:
+            if not server:
+                raise Exception("No Authorization Header")
             server = server.split(' ')
             basic = server[0]
             auth = server[-1]
-            decoded = base64.b64decode(auth).decode("utf-8").split('$')
-            username = decoded[0]
-            password = decoded[-1]
-
+            username, _, password = base64.b64decode(auth).decode("utf-8").rpartition(':')
+            print(username)
+            password = password.strip()
+            print(f"{password}:{len(password)}")
             node = generic_find_node(username)
+
+
             if node:
+                print("Found node")
+                print(node)
+                print(f"{node.password}:{len(node.password)}")
                 if node.password == password:
                     return True
                 else:
                     return False
+            print("No Node")
             return False
             # if User.objects.filter(username=username).exists():
             #     user = User.objects.get(username=username)
