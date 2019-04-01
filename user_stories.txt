@@ -13,21 +13,21 @@
    Done - As an author, posts I make can be in markdown (commonMark is good)
    Done - As an author, I want a consistent identity per server
    Done - As a server admin, I want to host multiple authors on my server
-   Not Done - As a server admin, I want to share or not share posts with users on other servers.
-   Not Done - As a server admin, I want to share or not share images with users on other servers.
+   Done - As a server admin, I want to share or not share posts with users on other servers.
+   Done - As a server admin, I want to share or not share images with users on other servers.
    Done - As an author, I want to pull in my github activity to my "stream"
    Done - As an author, I want to post posts to my "stream"
    Done - As an author, I want to delete my own posts.
    Done - As an author, I want to befriend local authors
-   Not Done - As an author, I want to befriend remote authors
-   Not Done - As an author, I want to feel safe about sharing images and posts with my friends -- images should not publicly accessible without authentication.
-   Not Done - As an author, I want un-befriend local and remote authors
+   Done - As an author, I want to befriend remote authors
+   Done - As an author, I want to feel safe about sharing images and posts with my friends -- images should not publicly accessible without authentication.
+   Done - As an author, I want un-befriend local and remote authors
    Done - As an author, I want to be able to use my web-browser to manage my profile
    Done - As an author, I want to be able to use my web-browser to manage/author my posts
    Done - As a server admin, I want to be able add, modify, and remove authors.
-   Not Done - As a server admin, I want to be able allow users to sign up but require my OK to finally be on my server
-   Not Done - As a server admin, I don't want to do heavy setup to get the posts of my author's friends.
-   INPROG - As a server admin, I want a restful interface for most operations
+   Done - As a server admin, I want to be able allow users to sign up but require my OK to finally be on my server
+   Done - As a server admin, I don't want to do heavy setup to get the posts of my author's friends.
+   Done - As a server admin, I want a restful interface for most operations
    Done - As an author, other authors cannot modify my data
    Done - As an author, I want to comment on posts that I can access
    Done - As an author, my server will know about my friends
@@ -35,11 +35,11 @@
    Done - As an author, I want to know if I have friend requests.
    Done - As an author I should be able to browse the public posts of everyone
    Done - As an author I should be able to browse the posts of others depending on my status
-   Not Done - As a server admin, I want to be able to add nodes to share with
-   Not Done - As a server admin, I want to be able to remove nodes and stop sharing with them.
-   Not Done - As a server admin, I can limit nodes connecting to me via authentication.
-   Not Done - As a server admin, node to node connections can be authenticated with HTTP Basic Auth
-   Not Done - As a server admin, I can disable the node to node interfaces for connections that are not authenticated!
+   Done - As a server admin, I want to be able to add nodes to share with
+   Done - As a server admin, I want to be able to remove nodes and stop sharing with them.
+   Done - As a server admin, I can limit nodes connecting to me via authentication.
+   Done - As a server admin, node to node connections can be authenticated with HTTP Basic Auth
+   Done - As a server admin, I can disable the node to node interfaces for connections that are not authenticated!
    Done - As an author, I want to be able to make posts that are unlisted, that are publicly shareable by URI alone (or for embedding images)
 
     27 Done
