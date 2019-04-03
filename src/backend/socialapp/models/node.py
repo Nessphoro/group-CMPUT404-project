@@ -63,6 +63,7 @@ class Node(models.Model):
         async with session.get(url, headers=self.getUserHeader(None)) as r:
             data = await r.json()
             author = await Node.getOrCreateAuthor(session, data)
+            author.host = data.get("host", "invalid.host.com")
             author.firstName = data.get("firstName", "John")
             author.lastName = data.get("lastName", "Smith")
             author.email = data.get("email", "no@email.com")
@@ -83,6 +84,7 @@ class Node(models.Model):
             data = await r.json()
             # import pdb; pdb.set_trace()
             author.firstName = data.get("firstName", "John")
+            author.host = data.get("host", "invalid.host.com)
             author.lastName = data.get("lastName", "Smith")
             author.displayName = data.get("displayName", "User")
             author.email = data.get("email", "no@email.com")
