@@ -86,7 +86,7 @@ class MixinIndex(object):
             asyncio.set_event_loop(loop)
             loop.run_until_complete(self.refresh_async(author))
             loop.close()
-            context['Posts'] = author.get_all_posts()
+            context['Posts'] = author.get_all_posts()[:50]
         else:
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
