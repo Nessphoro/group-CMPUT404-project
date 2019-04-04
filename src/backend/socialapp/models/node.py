@@ -84,7 +84,7 @@ class Node(models.Model):
             data = await r.json()
             # import pdb; pdb.set_trace()
             author.firstName = data.get("firstName", "John")
-            author.host = data.get("host", "invalid.host.com)
+            author.host = data.get("host", "invalid.host.com")
             author.lastName = data.get("lastName", "Smith")
             author.displayName = data.get("displayName", "User")
             author.email = data.get("email", "no@email.com")
