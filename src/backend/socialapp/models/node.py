@@ -118,8 +118,12 @@ class Node(models.Model):
         async with session.get(f"{self.endpoint}/author/{author.id}/posts", headers=self.getUserHeader(requestor)) as r:
             data = await r.json()
             for post in data["posts"]:
-                    if Post.objects.filter(id=post["id"]) or post['origin'].startswith(settings.SITE_URL):
-                        continue
+                    if Post.objects.filter(id=post["id"]):
+                        if not post['origin'].startswith(settings.SITE_URL):
+                            oldPost = Post.objects.filter(id=post["id"])[0]
+                            oldPost.visibility = oldPost.visibility.upper() # Fix shitty servers not returning all upper cased visiblitiy
+                            oldPost.save()
+                            continue
                     newPost = Post(author=author, 
                                 origin=post["origin"], 
                                 source=f"{self.endpoint}/posts/{post['id']}",
@@ -189,8 +193,13 @@ class Node(models.Model):
                 data = await response.json()
 
                 for post in data["posts"]:
-                    if Post.objects.filter(id=post["id"]) or post['origin'].startswith(settings.SITE_URL):
-                        continue
+                    if Post.objects.filter(id=post["id"]):
+                        if not post['origin'].startswith(settings.SITE_URL):
+                            oldPost = Post.objects.filter(id=post["id"])[0]
+                            oldPost.visibility = oldPost.visibility.upper() # Fix shitty servers not returning all upper cased visiblitiy
+                            oldPost.save()
+                            continue
+                        
                     
                     postAuthor = await Node.getOrCreateAuthor(session, post["author"])
                     newPost = Post( author=postAuthor, 
