@@ -34,11 +34,14 @@ class Node(models.Model):
         if authors:
             newAuthor = authors[0]
         else:
+            github = author.get("github", "")
+            if not github:
+                github = ""
             newAuthor = Author(
                 id=authorId,
                 host=author["host"],
                 displayName=author["displayName"],
-                github=author.get("github", "")
+                github=github
             )
 
             newAuthor.save()
