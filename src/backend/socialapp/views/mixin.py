@@ -106,7 +106,7 @@ async def fetchUser(url, node):
     async with aiohttp.ClientSession() as session:
         return await node.fetchRemoteAuthor(url, session, True)
 
-async def refreshUser(url, author, node):
+async def refreshUser(author, node):
     async with aiohttp.ClientSession() as session:
         return await node.refreshRemoteAuthor(author, session, True)
 
