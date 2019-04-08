@@ -28,20 +28,25 @@ class Node(models.Model):
         return f"{proto}://{host}"
 
 
-    async def getOrCreateAuthor(session, author):
+    async def getOrCreateAuthor(session, author, full=False):
         authorId = author["id"].split("/")[-1]
         authors = Author.objects.filter(id=authorId)
         if authors:
-            return authors[0]
-        
-        newAuthor = Author(
-            id=authorId,
-            host=author["host"],
-            displayName=author["displayName"],
-            github=author.get("github", "")
-        )
+            newAuthor = authors[0]
+        else:
+            newAuthor = Author(
+                id=authorId,
+                host=author["host"],
+                displayName=author["displayName"],
+                github=author.get("github", "")
+            )
 
-        newAuthor.save()
+            newAuthor.save()
+        
+        if full:
+            node = newAuthor.get_node()
+            if node:
+                newAuthor = await node.refreshRemoteAuthor(newAuthor, session, False)
 
         return newAuthor
 
@@ -59,7 +64,7 @@ class Node(models.Model):
         else:
             return f"{self.endpoint}/posts"
 
-    async def fetchRemoteAuthor(self, url, session: aiohttp.ClientSession):
+    async def fetchRemoteAuthor(self, url, session: aiohttp.ClientSession, full=False):
         async with session.get(url, headers=self.getUserHeader(None)) as r:
             data = await r.json()
             author = await Node.getOrCreateAuthor(session, data)
@@ -71,7 +76,7 @@ class Node(models.Model):
             author.image = data.get("image", f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
             author.save()
             for a in data["friends"]:
-                friend = await Node.getOrCreateAuthor(session, a)
+                friend = await Node.getOrCreateAuthor(session, a, full)
                 if friend not in author.friends.all():
                     author.friends.add(friend)
                 if author not in friend.friends.all():
@@ -79,7 +84,7 @@ class Node(models.Model):
             author.save()
             return author
 
-    async def refreshRemoteAuthor(self, author: Author, session: aiohttp.ClientSession):
+    async def refreshRemoteAuthor(self, author: Author, session: aiohttp.ClientSession, full=False):
         async with session.get(f"{self.endpoint}/author/{author.id}", headers=self.getUserHeader(None)) as r:
             data = await r.json()
             # import pdb; pdb.set_trace()
@@ -91,12 +96,13 @@ class Node(models.Model):
             author.image = data.get("image", f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
             author.bio = data.get("bio", "No Bio")
             for a in data["friends"]:
-                friend = await Node.getOrCreateAuthor(session, a)
+                friend = await Node.getOrCreateAuthor(session, a, full)
                 if friend not in author.friends.all():
                     author.friends.add(friend)
                 if author not in friend.friends.all():
                     friend.friends.add(author)
             author.save()
+            return author
 
     async def refreshRemoteAuthorPosts(self, requestor: Author, author: Author, session: aiohttp.ClientSession):
         async with session.get(f"{self.endpoint}/author/{author.id}/posts", headers=self.getUserHeader(requestor)) as r:

@@ -104,7 +104,11 @@ class DenyAcess(object):
 
 async def fetchUser(url, node):
     async with aiohttp.ClientSession() as session:
-        return await node.fetchRemoteAuthor(url, session)
+        return await node.fetchRemoteAuthor(url, session, True)
+
+async def refreshUser(url, author, node):
+    async with aiohttp.ClientSession() as session:
+        return await node.refreshRemoteAuthor(author, session, True)
 
 class MixinCreateAuthor(object):
     def createAuthor(self,author,requestType):
@@ -119,6 +123,13 @@ class MixinCreateAuthor(object):
 
         if models.Author.objects.filter(pk=author_id).exists():
             remoteAuthor = models.Author.objects.get(pk=author_id)
+            node = generic_find_node(author_url)
+            if node:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                remoteAuthor = loop.run_until_complete(refreshUser(remoteAuthor, node))
+                loop.close()
+
         else:
             node = generic_find_node(author_url)
             if not node:
