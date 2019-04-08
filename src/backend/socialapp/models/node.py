@@ -107,7 +107,7 @@ class Node(models.Model):
                 return author
             except Exception as e:
                 print(f"Error in {self.endpoint}")
-                print(await r.text())
+                # print(await r.text())
                 traceback.print_exc()
                 return author
 
