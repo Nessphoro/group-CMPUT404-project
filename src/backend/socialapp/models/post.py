@@ -67,7 +67,7 @@ class Post(models.Model):
     @property
     def host(self):
         proto, host = urlparse(self.source)[0:2]
-        return f"{proto}://{host}"
+        return f"https://{host}"
 
     def get_node(self):
         for node in mod.Node.objects.all():

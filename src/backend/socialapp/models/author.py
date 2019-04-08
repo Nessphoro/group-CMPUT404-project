@@ -225,7 +225,7 @@ class Author(models.Model):
     @property
     def normalizedHost(self):
         proto, host = urlparse(self.host)[0:2]
-        return f"{proto}://{host}"
+        return f"https://{host}"
 
     def get_node(self):
         for node in mod.Node.objects.all():
