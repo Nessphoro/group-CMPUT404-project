@@ -31,7 +31,9 @@
     
     
     <!-- <b> {{ post.description }}</b> -->
-    {% if (post.contentType == "image/png;base64") %}
+    {% if post.content.startswith("data:image") %}
+        <img class="ui fluid rounded image" src="{{post.content}}"/>
+    {% elif (post.contentType == "image/png;base64") %}
         <img class="ui fluid rounded image" src="data:image/png;base64,{{post.content}}"/>
     {% elif (post.contentType == "image/jpeg;base64") %}
         <img class="ui fluid rounded image" src="data:image/jpeg;base64,{{post.content}}"/>
