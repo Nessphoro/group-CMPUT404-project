@@ -168,7 +168,7 @@ class Author(models.Model):
                 userId = user.id
                 if not self.is_friend(userId):
                     output = output.exclude(visibility="FRIENDS")
-                if not self.is_friend(userId):
+                if not self.is_friend_of_friend(userId):
                     output = output.exclude(visibility="FOAF")
                 for post in output.all():
                     if post.visibility=="PRIVATE" and not post.visibleTo.filter(id=userId).exists():
