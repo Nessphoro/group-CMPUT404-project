@@ -87,6 +87,7 @@ class Node(models.Model):
     async def refreshRemoteAuthor(self, author: Author, session: aiohttp.ClientSession, full=False):
         async with session.get(f"{self.endpoint}/author/{author.id}", headers=self.getUserHeader(None)) as r:
             try:
+                r.raise_for_status()
                 data = await r.json()
                 # import pdb; pdb.set_trace()
                 author.firstName = data.get("firstName", "John")
@@ -108,7 +109,7 @@ class Node(models.Model):
                 print(f"Error in {self.endpoint}")
                 print(await r.text())
                 traceback.print_exc()
-                return
+                return author
 
     async def refreshRemoteAuthorPosts(self, requestor: Author, author: Author, session: aiohttp.ClientSession):
         async with session.get(f"{self.endpoint}/author/{author.id}/posts", headers=self.getUserHeader(requestor)) as r:
