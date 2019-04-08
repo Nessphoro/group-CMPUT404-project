@@ -86,23 +86,29 @@ class Node(models.Model):
 
     async def refreshRemoteAuthor(self, author: Author, session: aiohttp.ClientSession, full=False):
         async with session.get(f"{self.endpoint}/author/{author.id}", headers=self.getUserHeader(None)) as r:
-            data = await r.json()
-            # import pdb; pdb.set_trace()
-            author.firstName = data.get("firstName", "John")
-            author.host = data.get("host", "invalid.host.com")
-            author.lastName = data.get("lastName", "Smith")
-            author.displayName = data.get("displayName", "User")
-            author.email = data.get("email", "no@email.com")
-            author.image = data.get("image", f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
-            author.bio = data.get("bio", "No Bio")
-            for a in data["friends"]:
-                friend = await Node.getOrCreateAuthor(session, a, full)
-                if friend not in author.friends.all():
-                    author.friends.add(friend)
-                if author not in friend.friends.all():
-                    friend.friends.add(author)
-            author.save()
-            return author
+            try:
+                data = await r.json()
+                # import pdb; pdb.set_trace()
+                author.firstName = data.get("firstName", "John")
+                author.host = data.get("host", "invalid.host.com")
+                author.lastName = data.get("lastName", "Smith")
+                author.displayName = data.get("displayName", "User")
+                author.email = data.get("email", "no@email.com")
+                author.image = data.get("image", f"{settings.SITE_URL}/static/socialapp/question-mark-face.jpg")
+                author.bio = data.get("bio", "No Bio")
+                for a in data["friends"]:
+                    friend = await Node.getOrCreateAuthor(session, a, full)
+                    if friend not in author.friends.all():
+                        author.friends.add(friend)
+                    if author not in friend.friends.all():
+                        friend.friends.add(author)
+                author.save()
+                return author
+            except Exception as e:
+                print(f"Error in {self.endpoint}")
+                print(await r.text())
+                traceback.print_exc()
+                return
 
     async def refreshRemoteAuthorPosts(self, requestor: Author, author: Author, session: aiohttp.ClientSession):
         async with session.get(f"{self.endpoint}/author/{author.id}/posts", headers=self.getUserHeader(requestor)) as r:
