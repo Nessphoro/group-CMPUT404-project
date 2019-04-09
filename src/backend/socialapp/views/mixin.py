@@ -180,6 +180,6 @@ def generic_find_node(url) -> models.Node:
     host = f"{proto}://{host}"
     for node in models.Node.objects.all():
             print(node.host)
-            print(host)
+            print(url)
             if node.host == host:
                 return node
