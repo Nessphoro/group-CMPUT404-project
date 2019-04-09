@@ -189,6 +189,7 @@ class Node(models.Model):
                 newComment.save()
 
     async def pull(self, author, session: aiohttp.ClientSession):
+        print(f"Starting pull on {self.endpoint}")
         async with session.get(self.getUserEndpoint(author), headers=self.getUserHeader(author)) as response:
             try:
                 data = await response.json()
@@ -201,7 +202,8 @@ class Node(models.Model):
                             oldPost.save()
                             continue
                         
-                    
+                    print(post["author"]["id"])
+                    print(post["author"]["id"] not in updateSet)
                     postAuthor = await Node.getOrCreateAuthor(session, post["author"], post["author"]["id"] not in updateSet)
                     updateSet.add(post["author"]["id"])
                     newPost = Post( author=postAuthor, 
