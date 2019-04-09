@@ -47,6 +47,7 @@ class Node(models.Model):
             newAuthor.save()
         
         if full:
+            print(f"Full update on {newAuthor}")
             node = newAuthor.get_node()
             if node:
                 newAuthor = await node.refreshRemoteAuthor(newAuthor, session, False)
