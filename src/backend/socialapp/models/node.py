@@ -200,7 +200,7 @@ class Node(models.Model):
                             oldPost = Post.objects.filter(id=post["id"])[0]
                             oldPost.visibility = oldPost.visibility.upper() # Fix shitty servers not returning all upper cased visiblitiy
                             oldPost.save()
-                            continue
+                        continue
                         
                     print(post["author"]["id"])
                     print(post["author"]["id"] not in updateSet)
