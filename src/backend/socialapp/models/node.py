@@ -191,7 +191,7 @@ class Node(models.Model):
         async with session.get(self.getUserEndpoint(author), headers=self.getUserHeader(author)) as response:
             try:
                 data = await response.json()
-
+                updateSet = set()
                 for post in data["posts"]:
                     if Post.objects.filter(id=post["id"]):
                         if not post['origin'].startswith(settings.SITE_URL):
@@ -201,7 +201,8 @@ class Node(models.Model):
                             continue
                         
                     
-                    postAuthor = await Node.getOrCreateAuthor(session, post["author"])
+                    postAuthor = await Node.getOrCreateAuthor(session, post["author"], post["author"]["id"] not in updateSet)
+                    updateSet.add(post["author"]["id"])
                     newPost = Post( author=postAuthor, 
                                     origin=post["origin"], 
                                     source=f"{self.endpoint}/posts/{post['id']}",
